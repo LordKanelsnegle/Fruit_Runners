@@ -6,7 +6,6 @@ public class Player extends Object {
     public Player() {
         Width = 32;
         Height = 32;
-        changeAnimation(Animation.IDLE);
     }
     
     public void redraw() {
@@ -39,9 +38,10 @@ public class Player extends Object {
         //move upwards by the jump distance
     }
     
-    public void respawn(float x, float y) {
+    public void spawn(float x, float y) {
         xPosition = x;
         yPosition = y;
+        changeAnimation(Animation.IDLE);
         index++;
         if (index == players.length) {
             index = 0;

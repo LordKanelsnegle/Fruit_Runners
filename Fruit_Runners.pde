@@ -3,11 +3,12 @@ String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 ArrayList<Object> objects = new ArrayList<Object>();
-Player player = new Player();
+Player player;
 
 void setup() {
     frameRate(20); //set framerate to 20 (because the assets being used are designed for 20 fps)
     size(500, 300); //set window size
+    player = new Player();
     objects.add(player);
 }
 
@@ -42,7 +43,7 @@ void draw() {
             rows++; //then increase the rows by 1
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
-        player.respawn(0,0);
+        player.spawn(0,0);
     }
     //these nested for loops display the grid of background tiles
     for (int x = 0; x < columns; x++) {
