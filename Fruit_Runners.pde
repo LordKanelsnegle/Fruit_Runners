@@ -15,41 +15,44 @@ void keyReleased() { //using keyReleased instead of keyPressed to prevent resett
 }
 
 //the background is made up of a repeating tile, so these variables keep track of how many
-//tiles need to be placed and at what offset (to create the slowly moving background effect)
+//  tiles need to be placed and at what offset (to create the slowly moving background effect)
 int rows;
 int columns;
 int offset;
 //this variable records the last used background so that no background is ever repeated
 int lastBackground;
 void draw() {
-    if (triggerNewLevel) {
-        triggerNewLevel = false;
+    if (triggerNewLevel) { //if a new level needs to be displayed
+        triggerNewLevel = false; //reset the flag
         int index;
         do {
-          index = int(random(backgrounds.length));
-        } while (index == lastBackground);
-        lastBackground = index;
-        background = loadImage("Assets\\Background\\" + backgrounds[index]);
-        columns = width/background.width;
-        rows = height/background.height;
-        if (width % background.width > 0) {
-            columns++;
+            index = int(random(backgrounds.length));
+        } while (index == lastBackground); //pick a random background which isn't the same as the current one
+        lastBackground = index; //update the value of the last used background
+        background = loadImage("Assets\\Background\\" + backgrounds[index]); //set the background image to the new one
+        columns = width / background.width; //calculate the number of columns needed
+        rows = height / background.height; //calculate the number of rows needed
+        if (width % background.width > 0) { //if there is a bit of width remaining (not an exact fit)
+            columns++; //then increase the columns by 1
         }
-        if (height % background.height > 0) {
-            rows++;
+        if (height % background.height > 0) { //if there is a bit of height remaining (not an exact fit)
+            rows++; //then increase the rows by 1
         }
-        offset = 0;
+        offset = 0; //set the offset to 0 so that the tiles start at the top
     }
-    
+    //these nested for loops display the grid of background tiles
     for (int x = 0; x < columns; x++) {
         for (int y = 0; y < rows; y++) {
             image(background, x * background.width, y * background.height + offset);
         }
+        //this part ensures that the gap at the top created by offsetting the y axis is filled
         image(background, x * background.width, offset - background.height);
     }
-    
+    //this simple if statement ensures that the offset is increased every loop until it has reached
+    //  the size of one full tile height, then resets it to 0 so that the next iteration of draw()
+    //  displays the tiles starting from the top again (with no offset)
     if (offset == background.height) {
-       offset = 0;
+        offset = 0;
     } else {
         offset++;
     }
