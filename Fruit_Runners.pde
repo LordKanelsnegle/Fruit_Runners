@@ -2,14 +2,14 @@ PImage background; //for storing the background tile
 String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
-ArrayList<Object> objects = new ArrayList<Object>();
-Player player;
+ArrayList<Object> objects = new ArrayList<Object>(); //list of objects to keep track of which things need to be redrawn
+Player player; //global instance of the player for use where needed
 
 void setup() {
     frameRate(20); //set framerate to 20 (because the assets being used are designed for 20 fps)
     size(500, 300); //set window size
-    player = new Player();
-    objects.add(player);
+    player = new Player(); //initialize the player variable
+    objects.add(player); //add the player to the list of objects
 }
 
 void keyReleased() { //using keyReleased instead of keyPressed to prevent resetting multiple times if R is held down
@@ -43,7 +43,7 @@ void draw() {
             rows++; //then increase the rows by 1
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
-        player.spawn(0,0);
+        player.spawn(0,0); //spawn the player in at 0,0 (will change depending on what level it is later on)
     }
     //these nested for loops display the grid of background tiles
     for (int x = 0; x < columns; x++) {
@@ -62,6 +62,7 @@ void draw() {
         offset++;
     }
     
+    //lastly, redraw all of the level objects so that they appear in front of the background
     for (Object obj : objects) {
         obj.redraw();
     }
