@@ -2,10 +2,13 @@ PImage background; //for storing the background tile
 String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
+ArrayList<Object> objects = new ArrayList<Object>();
+Player player = new Player();
 
 void setup() {
     frameRate(20); //set framerate to 20 (because the assets being used are designed for 20 fps)
     size(500, 300); //set window size
+    objects.add(player);
 }
 
 void keyReleased() { //using keyReleased instead of keyPressed to prevent resetting multiple times if R is held down
@@ -39,6 +42,7 @@ void draw() {
             rows++; //then increase the rows by 1
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
+        player.respawn(0,0);
     }
     //these nested for loops display the grid of background tiles
     for (int x = 0; x < columns; x++) {
@@ -55,5 +59,9 @@ void draw() {
         offset = 0;
     } else {
         offset++;
+    }
+    
+    for (Object obj : objects) {
+        obj.redraw();
     }
 }
