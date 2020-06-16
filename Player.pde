@@ -37,10 +37,10 @@ public class Player extends Object {
     public void move(Boolean moveRight) {
         if (moveRight) {
             //face right
-            xPosition += 2; //move right
+            xPosition += 1.5; //move right
         } else {
             //face left
-            xPosition -= 2; //move left
+            xPosition -= 1.5; //move left
         }
         if (animationState == Animation.IDLE) {
             changeAnimation(Animation.RUN);
@@ -72,7 +72,7 @@ public class Player extends Object {
         died = false; //reset the death flag
     }
     
-    private void die() {
+    public void die() {
         if (!player.died) {
             index++; //increment the index so that the next character is used on spawn
             if (index == players.length) {

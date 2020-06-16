@@ -17,7 +17,7 @@ void keyReleased() {
    }
    //using keyReleased instead of keyPressed to prevent resetting multiple times if R is held down
    if (Character.toLowerCase(key) == 'r') { //if reset button (R) is pressed
-      triggerNewLevel = true; //then set the flag for a new level to true
+      player.die(); //kill the character off
    }
 }
 
