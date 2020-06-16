@@ -1,6 +1,6 @@
 public class Mushroom extends Object {
     public Mushroom() {
-        objects.add(this);
+        entities.add(this);
     }
     
     public void redraw() {

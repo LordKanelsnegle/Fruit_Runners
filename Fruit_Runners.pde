@@ -2,24 +2,28 @@ PImage background; //for storing the background tile
 String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
+ArrayList<Object> entities = new ArrayList<Object>(); //list of entities to keep track of which things need to be redrawn or collided
 ArrayList<Object> objects = new ArrayList<Object>(); //list of objects to keep track of which things need to be redrawn
 Player player; //global instance of the player for use where needed
 
 void setup() {
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
+    objects.add(new Terrain(TerrainType.GRASS, 100, 132, 288, 48));
 }
 
 void keyPressed() {
     switch (keyCode) {
         case LEFT:
             player.movingLeft = true;
+            player.flipped = true;
             break;
         case UP:
             player.jump();
             break;
         case RIGHT:
             player.movingRight = true;
+            player.flipped = false;
             break;
     }
 }
@@ -29,12 +33,18 @@ void keyReleased() {
     switch (keyCode) {
         case LEFT:
             player.movingLeft = false;
+            if (player.movingRight) {
+                player.flipped = false;
+            }
             if (player.animationState != Animation.FALL) {
                 player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
             }
             break;
         case RIGHT:
             player.movingRight = false;
+            if (player.movingLeft) {
+                player.flipped = true;
+            }
             if (player.animationState != Animation.FALL) {
                 player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
             }
@@ -94,8 +104,13 @@ void draw() {
         offset += 0.32;
     }
     
-    //lastly, redraw all of the level objects so that they appear in front of the background
+    //lastly, redraw all of the level objects so that they appear in front of the background,
+    //  and check their collisions as well
     for (Object obj : objects) {
         obj.redraw();
+    }
+    for (Object obj : entities) {
+        obj.redraw();
+        obj.checkCollisions();
     }
 }

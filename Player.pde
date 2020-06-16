@@ -7,14 +7,15 @@ public class Player extends Object {
     int index = 0; //an index for keeping track of the currently used character
     int frame = 0; //a frame counter for animations
     int maxFrame = 0; //the maximum frame for a given animation (to know when to reset the frame variable)
+    Boolean jumping, doubleJumped, falling;
+    public Boolean movingRight, movingLeft, flipped = false;
     public Boolean died = false;
-    public Boolean movingRight, movingLeft, falling, jumping, doubleJumped;
     public Animation animationState; //a variable for tracking the currently playing animation
     public Player() {
         //on initialization, set the width and height properties to 32 since all of the player characters are 32x32
         Width = 32;
         Height = 32;
-        objects.add(this);
+        entities.add(this);
     }
     
     //this is the function that actually draws the player, using get() to select the required sprite from the sprite sheet
@@ -24,7 +25,7 @@ public class Player extends Object {
     public void redraw() {
         //none of the sprite sheets have multiple lines so the y variable is always 0, but the x variable depends on the frame.
         //  also, if the sprite is facing right (needs to be flipped), the sprite is scaled and position is inverted
-        if (movingLeft) {
+        if (flipped) {
             pushMatrix();
             scale(-1, 1);
             image(spriteSheet.get(frame * Width, 0, Width, Height), -xPosition - Width, yPosition);
@@ -42,6 +43,24 @@ public class Player extends Object {
                 }
             }
             frames = 0; //reset the frames counter
+        }
+    }
+    
+    public void checkCollisions() {
+        Boolean supported = false;
+        for (Object obj : objects) {
+            if (xPosition > obj.xPosition - 0.75 * Width && xPosition + 0.35 * Width <= obj.xPosition + obj.Width && yPosition + Height == obj.yPosition) {
+                supported = true;
+            }
+        }
+        if (supported) {
+            falling = false;
+            doubleJumped = false;
+            if (player.animationState == Animation.FALL) {
+                player.changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
+            }
+        } else {
+            falling = true;
         }
     }
 
@@ -63,6 +82,7 @@ public class Player extends Object {
             }
         }
         float distance = 2 * (int(movingRight) - int(movingLeft));
+        //if xPosition + distance wont collide with a wall, increment xPosition
         xPosition += distance;
         if (distance != 0 && animationState == Animation.IDLE) {
             changeAnimation(Animation.RUN);
