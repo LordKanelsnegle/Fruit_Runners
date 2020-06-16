@@ -11,14 +11,39 @@ void setup() {
     objects.add(player); //add the player to the list of objects
 }
 
+void keyPressed() {
+    switch (keyCode) {
+        case LEFT:
+            player.movingLeft = true;
+            break;
+        case UP:
+            player.jump();
+            break;
+        case RIGHT:
+            player.movingRight = true;
+            break;
+    }
+}
+
 void keyReleased() {
-   if (player.animationState != Animation.FALL) {
-       player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
-   }
-   //using keyReleased instead of keyPressed to prevent resetting multiple times if R is held down
-   if (Character.toLowerCase(key) == 'r') { //if reset button (R) is pressed
-      player.die(); //kill the character off
-   }
+    //using keyReleased instead of keyPressed to prevent resetting multiple times if R is held down
+    switch (keyCode) {
+        case LEFT:
+            player.movingLeft = false;
+            if (player.animationState != Animation.FALL) {
+                player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
+            }
+            break;
+        case RIGHT:
+            player.movingRight = false;
+            if (player.animationState != Animation.FALL) {
+                player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
+            }
+            break;
+        case +'R': //if reset button (R) is pressed
+            player.die(); //kill the character off
+            break;
+    }
 }
 
 //the background is made up of a repeating tile, so these variables keep track of how many
@@ -32,19 +57,7 @@ int lastBackground;
 //  the number of frames which have passed so that the assets are only drawn 1/3rd of the time (20 fps)
 int frames = 0;
 void draw() {
-    if (keyPressed) { //checking in draw() instead of keyPressed() to eliminate delays between first key press and subsequent key presses (when pressing and holding)
-        switch (Character.toLowerCase(key)) {
-            case 'a':
-                player.move(false);
-                break;
-            case 'w':
-                player.jump();
-                break;
-            case 'd':
-                player.move(true);
-                break;
-        }
-    }
+    player.move();
     if (player.died) {
         triggerNewLevel = true;
     }

@@ -8,6 +8,7 @@ public class Player extends Object {
     int frame = 0; //a frame counter for animations
     int maxFrame = 0; //the maximum frame for a given animation (to know when to reset the frame variable)
     public Boolean died = false;
+    public Boolean movingRight = false, movingLeft = false;
     public Animation animationState; //a variable for tracking the currently playing animation
     public Player() {
         //on initialization, set the width and height properties to 32 since all of the player characters are 32x32
@@ -17,8 +18,16 @@ public class Player extends Object {
     
     //this is the function that actually draws the player, using get() to select the required sprite from the sprite sheet
     public void redraw() {
-        //None of the sprite sheets have multiple lines so the y variable is always 0, but the x variable depends on the frame
-        image(spriteSheet.get(frame * Width, 0, Width, Height), xPosition, yPosition);
+        //none of the sprite sheets have multiple lines so the y variable is always 0, but the x variable depends on the frame.
+        //  also, if the sprite is facing right (needs to be flipped), the sprite is scaled and position is inverted
+        if (movingLeft) {
+            pushMatrix();
+            scale(-1, 1);
+            image(spriteSheet.get(frame * Width, 0, Width, Height), -xPosition - Width, yPosition);
+            popMatrix();
+        } else {
+            image(spriteSheet.get(frame * Width, 0, Width, Height), xPosition, yPosition);
+        }
         frame++; //after getting the sprite, increment the frame
         if (frame == maxFrame) {
             if (!died) { //only reset the frame counter if the player hasnt died, so that the death animation doesnt loop
@@ -30,19 +39,14 @@ public class Player extends Object {
     public void checkCollisions() {
         //if touching THE FLOOR and doubleJumped is true, set it to false
         //if touching an enemy from BELOW, call jump
-        //if touching an enemy from the side or above, call die function
+        //if touching an enemy from the side or above, call die function 
     }
     
     //this function controls the horizontal movement of the player
-    public void move(Boolean moveRight) {
-        if (moveRight) {
-            //face right
-            xPosition += 1.5; //move right
-        } else {
-            //face left
-            xPosition -= 1.5; //move left
-        }
-        if (animationState == Animation.IDLE) {
+    public void move() {
+        float distance = 1.5 * (int(movingRight) - int(movingLeft));
+        xPosition += distance;
+        if (distance != 0 && animationState == Animation.IDLE) {
             changeAnimation(Animation.RUN);
         }
     }
