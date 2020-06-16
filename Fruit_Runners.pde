@@ -8,7 +8,6 @@ Player player; //global instance of the player for use where needed
 void setup() {
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
-    objects.add(player); //add the player to the list of objects
 }
 
 void keyPressed() {
@@ -50,14 +49,10 @@ void keyReleased() {
 //  tiles need to be placed and at what offset (to create the slowly moving background effect)
 int rows;
 int columns;
-int offset;
+float offset;
 //this variable records the last used background so that no background is ever repeated
 int lastBackground;
-//the assets used are designed to run at 20 fps but the game itself should run at 60 to be smooth, so this variable counts
-//  the number of frames which have passed so that the assets are only drawn 1/3rd of the time (20 fps)
-int frames = 0;
 void draw() {
-    player.move();
     if (player.died) {
         triggerNewLevel = true;
     }
@@ -78,31 +73,29 @@ void draw() {
             rows++; //then increase the rows by 1
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
-        player.spawn(0,0); //spawn the player in at 0,0 (will change depending on what level it is later on)
+        player.spawn(100,100); //spawn the player in at 0,0 (will change depending on what level it is later on)
+    }
+    player.move();
+    
+    //these nested for loops display the grid of background tiles
+    for (int x = 0; x < columns; x++) {
+        for (int y = 0; y < rows; y++) {
+            image(background, x * background.width, y * background.height + offset);
+        }
+        //this part ensures that the gap at the top created by offsetting the y axis is filled
+        image(background, x * background.width, offset - background.height);
+    }
+    //this simple if statement ensures that the offset is increased every loop until it has reached
+    //  the size of one full tile height, then resets it to 0 so that the next iteration of draw()
+    //  displays the tiles starting from the top again (with no offset)
+    if (offset >= background.height) {
+        offset = 0;
+    } else {
+        offset += 0.32;
     }
     
-    frames++; //increment the frame counter
-    if (frames == 3) { //if 3 frames have passed, redraw everything
-        //these nested for loops display the grid of background tiles
-        for (int x = 0; x < columns; x++) {
-            for (int y = 0; y < rows; y++) {
-                image(background, x * background.width, y * background.height + offset);
-            }
-            //this part ensures that the gap at the top created by offsetting the y axis is filled
-            image(background, x * background.width, offset - background.height);
-        }
-        //this simple if statement ensures that the offset is increased every loop until it has reached
-        //  the size of one full tile height, then resets it to 0 so that the next iteration of draw()
-        //  displays the tiles starting from the top again (with no offset)
-        if (offset == background.height) {
-            offset = 0;
-        } else {
-            offset++;
-        }
-        //lastly, redraw all of the level objects so that they appear in front of the background
-        for (Object obj : objects) {
-            obj.redraw();
-        }
-        frames = 0; //reset the frame counter
+    //lastly, redraw all of the level objects so that they appear in front of the background
+    for (Object obj : objects) {
+        obj.redraw();
     }
 }
