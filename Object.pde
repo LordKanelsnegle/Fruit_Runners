@@ -7,5 +7,6 @@ public class Object {
     PImage spriteSheet;
     public int Width;
     public int Height;
-    public void redraw() {}
+    public void redraw(){}
+    public void checkCollisions(){}
 }
