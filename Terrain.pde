@@ -22,6 +22,7 @@ public class Terrain extends Object {
         columns = Width / spriteSheet.width; //calculate the number of columns needed
         rows = Height / spriteSheet.height; //calculate the number of rows needed
     }
+    
     public void redraw() {
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows; y++) {
@@ -29,6 +30,12 @@ public class Terrain extends Object {
                 //image(spriteSheet, xPosition + Width - 48, yPosition + y * spriteSheet.height);
             }
             //image(spriteSheet, xPosition + x * spriteSheet.width, yPosition + Height - 48);
+        }
+    }
+    
+    public void checkCollisions() {
+        if ((player.xPosition > xPosition - 0.75 * player.Width && player.xPosition + 0.35 * player.Width <= xPosition + Width) && (player.yPosition + player.Height > yPosition && player.yPosition + player.Height < yPosition + Height)) {
+            player.yPosition = yPosition - player.Height;
         }
     }
 }

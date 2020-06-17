@@ -15,7 +15,6 @@ public class Player extends Object {
         //on initialization, set the width and height properties to 32 since all of the player characters are 32x32
         Width = 32;
         Height = 32;
-        entities.add(this);
     }
     
     //this is the function that actually draws the player, using get() to select the required sprite from the sprite sheet
@@ -49,7 +48,7 @@ public class Player extends Object {
     public void checkCollisions() {
         Boolean supported = false;
         for (Object obj : objects) {
-            if (xPosition > obj.xPosition - 0.75 * Width && xPosition + 0.35 * Width <= obj.xPosition + obj.Width && yPosition + Height == obj.yPosition) {
+            if ((xPosition > obj.xPosition - 0.75 * Width && xPosition + 0.35 * Width <= obj.xPosition + obj.Width) && (yPosition + Height == obj.yPosition)) {
                 supported = true;
             }
         }

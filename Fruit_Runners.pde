@@ -2,14 +2,17 @@ PImage background; //for storing the background tile
 String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
-ArrayList<Object> entities = new ArrayList<Object>(); //list of entities to keep track of which things need to be redrawn or collided
+//ArrayList<Object> entities = new ArrayList<Object>(); //list of entities to keep track of which things need to be redrawn or collided
 ArrayList<Object> objects = new ArrayList<Object>(); //list of objects to keep track of which things need to be redrawn
 Player player; //global instance of the player for use where needed
 
 void setup() {
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
-    objects.add(new Terrain(TerrainType.GRASS, 100, 132, 288, 48));
+    objects = new ArrayList<Object>() {{
+      add(new Terrain(TerrainType.GRASS, 100, 132, 240, 48));
+      add(new Terrain(TerrainType.GRASS, 340, 163, 48, 48));
+    }};
 }
 
 void keyPressed() {
@@ -107,10 +110,9 @@ void draw() {
     //lastly, redraw all of the level objects so that they appear in front of the background,
     //  and check their collisions as well
     for (Object obj : objects) {
-        obj.redraw();
-    }
-    for (Object obj : entities) {
-        obj.redraw();
         obj.checkCollisions();
+        obj.redraw();
     }
+    player.checkCollisions();
+    player.redraw();
 }
