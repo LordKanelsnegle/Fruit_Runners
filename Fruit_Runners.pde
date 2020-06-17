@@ -10,6 +10,7 @@ void setup() {
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
     objects = new ArrayList<Object>() {{
+      add(new Terrain(TerrainType.GRASS, 52, 163, 48, 48));
       add(new Terrain(TerrainType.GRASS, 100, 132, 240, 48));
       add(new Terrain(TerrainType.GRASS, 340, 163, 48, 48));
     }};

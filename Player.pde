@@ -48,7 +48,11 @@ public class Player extends Object {
     public void checkCollisions() {
         Boolean supported = false;
         for (Object obj : objects) {
-            if ((xPosition > obj.xPosition - 0.75 * Width && xPosition + 0.35 * Width <= obj.xPosition + obj.Width) && (yPosition + Height == obj.yPosition)) {
+            float rightFootPosition = 0.7 * Width;
+            float leftFootPosition = 0.3 * Width;
+            float feetPosition = yPosition + Height;
+            if ((xPosition + leftFootPosition > obj.xPosition && xPosition + rightFootPosition <= obj.xPosition + obj.Width) && (feetPosition == obj.yPosition)) {
+                yPosition = obj.yPosition - Height;
                 supported = true;
             }
         }
