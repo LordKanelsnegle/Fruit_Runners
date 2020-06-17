@@ -50,6 +50,10 @@ void keyReleased() {
                 player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
             }
             break;
+        case +' ':
+            if (currentLevel == 0) {
+                currentLevel++;
+            }
         case +'R': //if reset button (R) is pressed
             player.die(); //kill the character off
             break;
@@ -119,6 +123,12 @@ void draw() {
 private void loadLevel() {
     switch(currentLevel) {
         case 0:
+            objects = new ArrayList<Object>() {{
+                add(new Terrain(TerrainType.GRASS, 0, height - 48, width, 48));
+            }};
+            player.spawn(10, height - (48 + player.Height));
+            break;
+        case 1:
             objects = new ArrayList<Object>() {{
                 add(new Terrain(TerrainType.GRASS, 52, 163, 48, 48));
                 add(new Terrain(TerrainType.GRASS, 100, 132, 240, 48));
