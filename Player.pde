@@ -45,69 +45,98 @@ public class Player extends Object {
         }
     }
     
+    final float gravity = 1.6;
+    float fallSpeed = 0;
+    final int fallSpeedCap = 10;
     public void checkCollisions() {
         Boolean supported = false;
         for (Object obj : objects) {
             float rightFootPosition = 0.7 * Width;
             float leftFootPosition = 0.3 * Width;
             float feetPosition = yPosition + Height;
-            if ((xPosition + leftFootPosition > obj.xPosition && xPosition + rightFootPosition <= obj.xPosition + obj.Width) && (feetPosition == obj.yPosition)) {
+            if ((xPosition + rightFootPosition > obj.xPosition && xPosition + leftFootPosition <= obj.xPosition + obj.Width) && (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height)) {
                 yPosition = obj.yPosition - Height;
                 supported = true;
             }
         }
         if (supported) {
             falling = false;
+            fallSpeed = 0;
             doubleJumped = false;
             if (player.animationState == Animation.FALL) {
                 player.changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
             }
         } else {
             falling = true;
+            fallSpeed = 1.6;
         }
     }
 
     //this function controls the movement of the player
-    float jumpMaxDistance = 0;
-    float jumpDistance = 0;
+    final float jumpAcceleration = 0.96;
+    float jumpSpeed = 0;
+    final float acceleration = 1.6;
+    float speed = 0;
+    final float speedCap = 2.4;
     public void move() {
-        if (!jumping) {
-            if (falling) {
-                changeAnimation(Animation.FALL);
-                yPosition += 4;
+        if (falling) {
+            if (fallSpeed < fallSpeedCap) {
+                fallSpeed += gravity;
+            } else {
+                fallSpeed = fallSpeedCap;
             }
-        } else {
-            yPosition -= 4;
-            jumpDistance += 4;
-            if (jumpDistance == jumpMaxDistance) {
-                jumping = false;
-                jumpDistance = 0;
+            yPosition += fallSpeed;
+            if (!jumping) {
+                changeAnimation(Animation.FALL);
             }
         }
-        float distance = 2 * (int(movingRight) - int(movingLeft));
-        //if xPosition + distance wont collide with a wall, increment xPosition
-        xPosition += distance;
-        if (distance != 0 && animationState == Animation.IDLE) {
-            changeAnimation(Animation.RUN);
+        
+        jumpSpeed *= jumpAcceleration;
+        if (jumpSpeed < 1 && jumpSpeed > 0) {
+            jumpSpeed = 0;
+        }
+        if (jumping) {
+            if (jumpSpeed <= fallSpeed) {
+                jumping = false;
+            }
+            yPosition -= jumpSpeed;
+        }
+        
+        if (speed < speedCap) {
+            speed *= acceleration;
+        } else {
+            speed = speedCap;
+        }
+        int direction = int(movingRight) - int(movingLeft);
+        if (direction == 0) {
+            speed = 0;
+        } else {
+            if (speed == 0) {
+                speed = 0.5;
+            }
+            xPosition += speed * direction;
+            if (animationState == Animation.IDLE) {
+                changeAnimation(Animation.RUN);
+            }
         }
     }
     
     //this function controls the vertical movement of the player
     public void jump() {
-        if (animationState == Animation.FALL) {
+        if (falling) {
             if (!doubleJumped) {
                 doubleJumped = true;
                 changeAnimation(Animation.DOUBLEJUMP);
-                jumpMaxDistance = 52;
+                jumpSpeed = 8;
                 jumping = true;
             }
         } else {
-            jumpMaxDistance = 60;
+            jumpSpeed = 8;
+            jumping = true;
             if (animationState == Animation.WALLJUMP) {
-                jumpMaxDistance = 40;
+                jumpSpeed = 6;
             }
             changeAnimation(Animation.JUMP);
-            jumping = true;
         }
     }
     
@@ -119,7 +148,7 @@ public class Player extends Object {
         died = false; //reset the death flag
         movingRight = false;
         movingLeft = false;
-        falling = false;
+        falling = true;
         jumping = false;
         doubleJumped = false;
     }

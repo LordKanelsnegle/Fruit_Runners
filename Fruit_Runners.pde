@@ -2,18 +2,12 @@ PImage background; //for storing the background tile
 String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
-//ArrayList<Object> entities = new ArrayList<Object>(); //list of entities to keep track of which things need to be redrawn or collided
-ArrayList<Object> objects = new ArrayList<Object>(); //list of objects to keep track of which things need to be redrawn
+ArrayList<Object> objects; //list of objects to keep track of which things need to be redrawn
 Player player; //global instance of the player for use where needed
 
 void setup() {
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
-    objects = new ArrayList<Object>() {{
-      add(new Terrain(TerrainType.GRASS, 52, 163, 48, 48));
-      add(new Terrain(TerrainType.GRASS, 100, 132, 240, 48));
-      add(new Terrain(TerrainType.GRASS, 340, 163, 48, 48));
-    }};
 }
 
 void keyPressed() {
@@ -29,6 +23,9 @@ void keyPressed() {
             player.movingRight = true;
             player.flipped = false;
             break;
+    }
+    if (player.movingRight && player.movingLeft && player.animationState != Animation.IDLE) {
+        player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, if both left and right are pressed
     }
 }
 
@@ -87,7 +84,7 @@ void draw() {
             rows++; //then increase the rows by 1
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
-        player.spawn(100,100); //spawn the player in at 0,0 (will change depending on what level it is later on)
+        loadLevel();
     }
     player.move();
     
@@ -114,6 +111,20 @@ void draw() {
         obj.checkCollisions();
         obj.redraw();
     }
+    //check player collisions and draw the player separately to the rest of the objects
     player.checkCollisions();
     player.redraw();
+}
+
+private void loadLevel() {
+    switch(currentLevel) {
+        case 0:
+            objects = new ArrayList<Object>() {{
+                add(new Terrain(TerrainType.GRASS, 52, 163, 48, 48));
+                add(new Terrain(TerrainType.GRASS, 100, 132, 240, 48));
+                add(new Terrain(TerrainType.GRASS, 340, 250, 48, 48));
+            }};
+            player.spawn(300,100);
+            break;
+    }
 }

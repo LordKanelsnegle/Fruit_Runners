@@ -32,12 +32,6 @@ public class Terrain extends Object {
             //image(spriteSheet, xPosition + x * spriteSheet.width, yPosition + Height - 48);
         }
     }
-    
-    public void checkCollisions() {
-        if ((player.xPosition > xPosition - 0.75 * player.Width && player.xPosition + 0.35 * player.Width <= xPosition + Width) && (player.yPosition + player.Height > yPosition && player.yPosition + player.Height < yPosition + Height)) {
-            player.yPosition = yPosition - player.Height;
-        }
-    }
 }
 
 public enum TerrainType {
