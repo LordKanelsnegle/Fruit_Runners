@@ -1,7 +1,7 @@
 import ddf.minim.*;
 
 PImage background; //for storing the background tile
-String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
+PImage[] backgrounds; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 ArrayList<Object> objects; //list of objects to keep track of which things need to be redrawn
@@ -28,6 +28,15 @@ void setup() {
         minim.loadFile("Assets\\Sound\\Jump.wav"),
         minim.loadFile("Assets\\Sound\\Land.wav"),
         minim.loadFile("Assets\\Sound\\Hurt.wav")
+    };
+    backgrounds = new PImage[]{
+        loadImage("Assets\\Background\\Blue.png"),
+        loadImage("Assets\\Background\\Brown.png"),
+        loadImage("Assets\\Background\\Gray.png"),
+        loadImage("Assets\\Background\\Green.png"),
+        loadImage("Assets\\Background\\Pink.png"),
+        loadImage("Assets\\Background\\Purple.png"),
+        loadImage("Assets\\Background\\Yellow.png")
     };
     titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42);
     optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25);
@@ -143,7 +152,7 @@ void draw() {
             index = int(random(backgrounds.length));
         } while (index == lastBackground); //pick a random background which isn't the same as the current one
         lastBackground = index; //update the value of the last used background
-        background = loadImage("Assets\\Background\\" + backgrounds[index]); //set the background image to the new one
+        background = backgrounds[index]; //set the background image to the new one
         columns = width / background.width; //calculate the number of columns needed
         rows = height / background.height; //calculate the number of rows needed
         if (width % background.width > 0) { //if there is a bit of width remaining (not an exact fit)
