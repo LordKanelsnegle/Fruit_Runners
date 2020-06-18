@@ -27,6 +27,8 @@ void setup() {
         minim.loadFile("Assets\\Sound\\Land.wav"),
         minim.loadFile("Assets\\Sound\\Hurt.wav")
     };
+    titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42);
+    optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25);
 }
 
 void keyPressed() {
@@ -38,12 +40,12 @@ void keyPressed() {
             player.movingLeft = true;
             player.flipped = true;
             break;
-        case UP:
-            player.jump();
-            break;
         case RIGHT:
             player.movingRight = true;
             player.flipped = false;
+            break;
+        case UP:
+            player.jump();
             break;
     }
     if (player.movingRight && player.movingLeft && player.animationState != Animation.IDLE) {
@@ -178,14 +180,14 @@ void draw() {
     player.redraw();
     
     if (currentLevel == 0) {
-        displayText("FRUIT RUNNERS", "Title", 42, width/2, height * 0.05);
-        displayText("PLAY", "Options", 25, width/2, height * 0.25);
+        displayText("FRUIT RUNNERS", true, width/2, height * 0.05);
+        displayText("PLAY", false, width/2, height * 0.25);
         if (ambient.isPlaying()) {
-            displayText("MUSIC OFF", "Options", 25, width/2, height * 0.36);
+            displayText("MUSIC OFF", false, width/2, height * 0.36);
         } else {
-            displayText("MUSIC ON", "Options", 25, width/2, height * 0.36);
+            displayText("MUSIC ON", false, width/2, height * 0.36);
         }
-        displayText("QUIT", "Options", 25, width/2, height * 0.47);
+        displayText("QUIT", false, width/2, height * 0.47);
         switch (option) {
             case 0:
                 image(indicator, width * 0.35, height * 0.25);
@@ -204,9 +206,13 @@ void draw() {
     }
 }
 
-private void displayText(String text, String fontFile, int size, float x, float y) {
-    PFont font = createFont("Assets\\Menu\\Text\\" + fontFile + ".ttf", size);
-    textFont(font);
+PFont titleFont;
+PFont optionsFont;
+private void displayText(String text, Boolean isTitle, float x, float y) {
+    textFont(optionsFont);
+    if (isTitle) {
+        textFont(titleFont);
+    }
     textAlign(CENTER, TOP);
     fill(0);
     for(int i = -1; i < 2; i++){ //create an outline effect by putting two black coloured text behind the main one with varied offsets
@@ -220,6 +226,7 @@ private void displayText(String text, String fontFile, int size, float x, float 
 private void loadLevel() {
     switch(currentLevel) {
         case 0:
+            frameRate(30);
             objects = new ArrayList<Object>() {{
                 add(new Terrain(TerrainType.GRASS, 0, height - 48, 12, 1));
             }};
@@ -227,11 +234,12 @@ private void loadLevel() {
             player.movingRight = true;
             break;
         case 1:
+            frameRate(60);
             objects = new ArrayList<Object>() {{
                 add(new Terrain(TerrainType.GRASS, 52, 163, 1, 2));
-                add(new Terrain(TerrainType.GRASS, 100, 100, 6, 3));
-                add(new Terrain(TerrainType.GRASS, 300, 260, 4, 1));
-                add(new Terrain(TerrainType.GRASS, 455, 60, 1, 8));
+                add(new Terrain(TerrainType.CARAMEL, 100, 100, 6, 3));
+                add(new Terrain(TerrainType.BRICK, 300, 260, 4, 1));
+                add(new Terrain(TerrainType.COTTONCANDY, 455, 60, 1, 8));
             }};
             player.spawn(300,50);
             break;

@@ -47,22 +47,37 @@ public class Player extends Object {
     
     final float gravity = 1.6;
     float fallSpeed = 0;
-    final int fallSpeedCap = 10;
+    int fallSpeedCap = 10;
     public void checkCollisions() {
         Boolean supported = false;
         for (Object obj : objects) {
             float rightFootPosition = xPosition + 0.7 * Width;
             float leftFootPosition = xPosition + 0.3 * Width;
             float feetPosition = yPosition + Height;
-            float headPosition = yPosition + player.Height * 0.5;
-            if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) {
+            float headPosition = yPosition + Height * 0.5;
+            if (headPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if standing within vertical bounds of object
+                //collisions on left of player
+                if (leftFootPosition < obj.xPosition + obj.Width && leftFootPosition > obj.xPosition) {
+                    xPosition += obj.xPosition + obj.Width - leftFootPosition;
+                    doubleJumped = false;
+                    changeAnimation(Animation.WALLJUMP);
+                    //fallSpeedCap = 2;
+                }
+                //collisions on right of player
+                else if (rightFootPosition > obj.xPosition && rightFootPosition < obj.xPosition + obj.Width) {
+                    xPosition += obj.xPosition - rightFootPosition;
+                    doubleJumped = false;
+                    changeAnimation(Animation.WALLJUMP);
+                    //fallSpeedCap = 5;
+                }
+            } else if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) { //else if standing within horizontal bounds of the object
                 //collisions below player
                 if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) {
                     yPosition += obj.yPosition - feetPosition;
                     supported = true;
                 }
                 //collisions above player
-                if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) {
+                else if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) {
                     yPosition += obj.yPosition + obj.Height - headPosition; //using += because headPosition includes yPosition
                     jumping = false;
                 }
@@ -74,21 +89,21 @@ public class Player extends Object {
                 falling = false;
                 fallSpeed = 0;
                 doubleJumped = false;
-                player.changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
+                changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
             }
         } else {
             falling = true;
             fallSpeed = 1.6;
         }
         //wrap around if going off screen horizontally
-        if (player.xPosition + Width <= 0) {
-            player.xPosition = width;
-        } else if (player.xPosition >= width) {
-            player.xPosition = 0;
+        if (xPosition + Width <= 0) {
+            xPosition = width;
+        } else if (xPosition >= width) {
+            xPosition = 0;
         }
         //kill if falling off screen vertically
-        if (player.yPosition > height) {
-            player.die();
+        if (yPosition > height) {
+            die();
         }
     }
 
@@ -99,6 +114,7 @@ public class Player extends Object {
     float speed = 0;
     final float speedCap = 2.4;
     public void move() {
+        //println(fallSpeed);
         if (falling) {
             if (fallSpeed < fallSpeedCap) {
                 fallSpeed += gravity;
@@ -159,9 +175,9 @@ public class Player extends Object {
         } else {
             jumpSpeed = 8;
             jumping = true;
-            if (animationState == Animation.WALLJUMP) {
+            /*if (animationState == Animation.WALLJUMP) {
                 jumpSpeed = 6;
-            }
+            }*/
             changeAnimation(Animation.JUMP);
                 playSound(Sound.JUMP, false);
         }
@@ -181,7 +197,7 @@ public class Player extends Object {
     }
     
     public void die() {
-        if (!player.died) {
+        if (!died) {
             index++; //increment the index so that the next character is used on spawn
             if (index == players.length) {
                 index = 0; //if the index has reached its max, reset it to 0
@@ -189,7 +205,7 @@ public class Player extends Object {
             changeAnimation(Animation.HIT);
             //knock upwards (half jump) and backwards, tilting at 45 degree angle upwards
             //apply light screen shake and flare (low opacity flash)
-            player.died = true;
+            died = true;
             playSound(Sound.HURT, false);
         }
     }

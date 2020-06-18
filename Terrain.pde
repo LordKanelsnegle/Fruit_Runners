@@ -15,6 +15,8 @@ public class Terrain extends Object {
             case COTTONCANDY:
                 frame = 2;
                 break;
+            case BRICK:
+                frame = 3;
             default:
                 break;
         }
@@ -54,5 +56,6 @@ public class Terrain extends Object {
 public enum TerrainType {
     GRASS,
     CARAMEL,
-    COTTONCANDY
+    COTTONCANDY,
+    BRICK
 }
