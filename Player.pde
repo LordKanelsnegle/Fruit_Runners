@@ -54,13 +54,12 @@ public class Player extends Object {
             float rightFootPosition = xPosition + 0.7 * Width;
             float leftFootPosition = xPosition + 0.3 * Width;
             float feetPosition = yPosition + Height;
-            float headPosition = yPosition + player.Height * 0.15;
+            float headPosition = yPosition + player.Height * 0.5;
             if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) {
                 //collisions below player
                 if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) {
                     yPosition += obj.yPosition - feetPosition;
                     supported = true;
-                    println(obj.Width+obj.xPosition + " " + leftFootPosition);
                 }
                 //collisions above player
                 if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) {
