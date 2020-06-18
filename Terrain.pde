@@ -1,13 +1,11 @@
 public class Terrain extends Object {
-    int columns;
-    int rows;
-    Boolean isPillar;
+    int horizontal;
+    int vertical;
     public Terrain(TerrainType terrainType, float x, float y, int w, int h) {
         xPosition = x;
         yPosition = y;
-        Width = w;
-        Height = h;
-        //isPillar = pillar;
+        horizontal = w;
+        vertical = h;
         spriteSheet = loadImage("Assets\\Terrain\\Terrain.png"); //update the file that spriteSheet points to
         int frame = 0; //set to the grass terrain by default
         switch (terrainType) { //check which animation it actually needs to be set to
@@ -21,37 +19,40 @@ public class Terrain extends Object {
                 break;
         }
         spriteSheet = spriteSheet.get(frame * 48, 0, 48, 48);
-        columns = Width / spriteSheet.width; //calculate the number of columns needed
-        rows = Height / spriteSheet.height; //calculate the number of rows needed
     }
     
     //bottom tiles are 33 tall (trim 13 from top), assuming no sides trimmed
     //trim 2 pixels on any side that has another tile near it
     public void redraw() {
-        for (int x = 0; x < columns; x++) { //if first of row, keep left wall, if last of row, keep right wall, if first row, keep top wall, if last row, keep bottom wall
-            for (int y = 0; y < rows; y++) {
-                if (x == 0) {
-                    if (y == 0) {
-                        image(spriteSheet.get(0,0,46,46), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
-                    } else if (y == columns) {
-                        image(spriteSheet.get(2,0,46,46), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
+        int totalWidth = 0;
+        int totalHeight = 0;
+        for (int y = 0; y < vertical; y++) { //if first of row, keep left wall, if last of row, keep right wall, if first row, keep top wall, if last row, keep bottom wall
+            for (int x = 0; x < horizontal; x++) {
+                if (y == 0) {
+                    if (x == 0) {
+                        image(spriteSheet.get(0,0,48,48), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
+                        totalWidth += 48;
+                        totalHeight += 48;
                     } else {
-                        image(spriteSheet.get(2,0,44,46), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
+                        image(spriteSheet.get(2,0,46,48), xPosition + x * (spriteSheet.width - 4), yPosition + y * spriteSheet.height);
+                        totalWidth += 44;
+                        totalHeight += 48;
                     }
                 } else {
-                    if (y == 0) {
-                        image(spriteSheet.get(0,2,46,44), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
-                    } else if (y == columns) {
-                        image(spriteSheet.get(2,2,46,44), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
+                    if (x == 0) {
+                        image(spriteSheet.get(0,15,48,33), xPosition + x * spriteSheet.width, yPosition + y * (spriteSheet.height - 17));
+                        totalWidth += 48;
+                        totalHeight += 31;
                     } else {
-                        image(spriteSheet.get(2,2,44,44), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
+                        image(spriteSheet.get(2,15,46,33), xPosition + x * (spriteSheet.width - 4), yPosition + y * (spriteSheet.height - 17));
+                        totalWidth += 44;
+                        totalHeight += 31;
                     }
                 }
-                //image(spriteSheet, xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
-                //image(spriteSheet, xPosition + Width - 48, yPosition + y * spriteSheet.height);
             }
-            //image(spriteSheet, xPosition + x * spriteSheet.width, yPosition + Height - 48);
         }
+        Width = totalWidth;
+        Height = totalHeight;
     }
 }
 

@@ -228,11 +228,12 @@ private void loadLevel() {
             break;
         case 1:
             objects = new ArrayList<Object>() {{
-                add(new Terrain(TerrainType.GRASS, 52, 163, 48, 48));
-                add(new Terrain(TerrainType.GRASS, 100, 132, 240, 48));
-                add(new Terrain(TerrainType.GRASS, 300, 250, 100, 48));
+                add(new Terrain(TerrainType.GRASS, 52, 163, 1, 2));
+                add(new Terrain(TerrainType.GRASS, 100, 100, 6, 3));
+                add(new Terrain(TerrainType.GRASS, 300, 260, 4, 1));
+                add(new Terrain(TerrainType.GRASS, 450, 60, 1, 8));
             }};
-            player.spawn(300,100);
+            player.spawn(300,50);
             break;
     }
 }

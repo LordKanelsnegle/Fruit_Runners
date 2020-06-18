@@ -58,8 +58,8 @@ public class Player extends Object {
             if (xPosition + rightFootPosition >= obj.xPosition && xPosition + leftFootPosition <= obj.xPosition + obj.Width) {
                 //collisions below player
                 if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) {
-                yPosition = obj.yPosition - Height; //this one is = because yPosition is not indirectly subtracted from itself
-                supported = true;
+                    yPosition = obj.yPosition - Height; //this one is = because yPosition is not indirectly subtracted from itself
+                    supported = true;
                 }
                 //collisions above player
                 if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) {
@@ -85,6 +85,10 @@ public class Player extends Object {
             player.xPosition = width;
         } else if (player.xPosition >= width) {
             player.xPosition = 0;
+        }
+        //kill if falling off screen vertically
+        if (player.yPosition > height) {
+            player.die();
         }
     }
 
