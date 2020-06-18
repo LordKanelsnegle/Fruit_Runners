@@ -69,6 +69,11 @@ public class Player extends Object {
         } else {
             falling = true;
             fallSpeed = 1.6;
+        }        
+        if (player.xPosition + Width <= 0) {
+            player.xPosition = width;
+        } else if (player.xPosition >= width) {
+            player.xPosition = 0;
         }
     }
 

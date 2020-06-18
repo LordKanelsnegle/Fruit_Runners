@@ -4,13 +4,19 @@ Boolean triggerNewLevel = true; //flag for signalling when to change the backgro
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 ArrayList<Object> objects; //list of objects to keep track of which things need to be redrawn
 Player player; //global instance of the player for use where needed
+Boolean playSound = true;
+PImage indicator;
 
 void setup() {
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
+    indicator = loadImage("Assets\\Menu\\Strawberry.png");
 }
 
 void keyPressed() {
+    if (currentLevel == 0) {
+        return;
+    }
     switch (keyCode) {
         case LEFT:
             player.movingLeft = true;
@@ -29,34 +35,58 @@ void keyPressed() {
     }
 }
 
+int option = 0;
 void keyReleased() {
-    //using keyReleased instead of keyPressed to prevent resetting multiple times if R is held down
-    switch (keyCode) {
-        case LEFT:
-            player.movingLeft = false;
-            if (player.movingRight) {
-                player.flipped = false;
-            }
-            if (player.animationState != Animation.FALL) {
-                player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
-            }
-            break;
-        case RIGHT:
-            player.movingRight = false;
-            if (player.movingLeft) {
-                player.flipped = true;
-            }
-            if (player.animationState != Animation.FALL) {
-                player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
-            }
-            break;
-        case +' ':
-            if (currentLevel == 0) {
-                currentLevel++;
-            }
-        case +'R': //if reset button (R) is pressed
-            player.die(); //kill the character off
-            break;
+    if (currentLevel == 0) {
+        switch (keyCode) {
+            case UP:
+                option--;
+                if (option < 0) {
+                    option = 2;
+                }
+                break;
+            case DOWN:
+                option++;
+                if (option > 2) {
+                    option = 0;
+                }
+                break;
+            case ENTER:
+                if (option == 0) {
+                    currentLevel++;
+                    player.die();
+                } else if (option == 1) {
+                    playSound = !playSound;
+                } else {
+                    exit();
+                }
+                break;
+        }
+    } else {
+        //using keyReleased instead of keyPressed to prevent resetting multiple times if R is held down    
+        switch (keyCode) {
+            case LEFT:
+                player.movingLeft = false;
+                if (player.movingRight) {
+                    player.flipped = false;
+                }
+                if (player.animationState != Animation.FALL) {
+                    player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
+                }
+                break;
+            case RIGHT:
+                player.movingRight = false;
+                if (player.movingLeft) {
+                    player.flipped = true;
+                }
+                if (player.animationState != Animation.FALL) {
+                    player.changeAnimation(Animation.IDLE); //reset the player to the idle animation, unless theyre falling
+                }
+                break;
+            case +'R': //if reset button (R) is pressed
+                player.die(); //kill the character off
+                break;
+        }
     }
 }
 
@@ -118,7 +148,48 @@ void draw() {
     //check player collisions and draw the player separately to the rest of the objects
     player.checkCollisions();
     player.redraw();
+    
+    if (currentLevel == 0) {
+        displayText("FRUIT RUNNERS", "Title", 42, width/2, height * 0.05);
+        displayText("PLAY", "Options", 25, width/2, height * 0.25);
+        if (playSound) {
+            displayText("SOUND OFF", "Options", 25, width/2, height * 0.36);
+        } else {
+            displayText("SOUND ON", "Options", 25, width/2, height * 0.36);
+        }
+        displayText("QUIT", "Options", 25, width/2, height * 0.47);
+        switch (option) {
+            case 0:
+                image(indicator, width * 0.35, height * 0.25);
+                break;
+            case 1:
+                if (playSound) {
+                    image(indicator, width * 0.24, height * 0.36);
+                } else {
+                    image(indicator, width * 0.26, height * 0.36);
+                }
+                break;
+            default:
+                image(indicator, width * 0.35, height * 0.47);
+                break;
+        }
+    }
 }
+
+private void displayText(String text, String fontFile, int size, float x, float y) {
+    PFont font = createFont("Assets\\Menu\\Text\\" + fontFile + ".ttf", size);
+    textFont(font);
+    textAlign(CENTER, TOP);
+    fill(0);
+    for(int i = -1; i < 2; i++){ //create an outline effect by putting two black coloured text behind the main one with varied offsets
+        text(text, x + i, y);
+        text(text, x, y + i);
+    }
+    fill(255);
+    text(text, x, y);
+}
+
+
 
 private void loadLevel() {
     switch(currentLevel) {
@@ -127,6 +198,7 @@ private void loadLevel() {
                 add(new Terrain(TerrainType.GRASS, 0, height - 48, width, 48));
             }};
             player.spawn(10, height - (48 + player.Height));
+            player.movingRight = true;
             break;
         case 1:
             objects = new ArrayList<Object>() {{
