@@ -60,10 +60,11 @@ public class Player extends Object {
             }
         }
         if (supported) {
-            falling = false;
-            fallSpeed = 0;
-            doubleJumped = false;
-            if (player.animationState == Animation.FALL) {
+            if (falling) {
+                playSound(Sound.LAND, false);
+                falling = false;
+                fallSpeed = 0;
+                doubleJumped = false;
                 player.changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
             }
         } else {
@@ -94,8 +95,11 @@ public class Player extends Object {
             if (!jumping) {
                 changeAnimation(Animation.FALL);
             }
-        } else if (movingLeft || movingRight) {
+        }
+        if (currentLevel > 0 && animationState == Animation.RUN) {
             playSound(Sound.RUN, true);
+        } else {
+            stopSound(Sound.RUN);
         }
         
         jumpSpeed *= jumpAcceleration;
@@ -157,7 +161,7 @@ public class Player extends Object {
         died = false; //reset the death flag
         movingRight = false;
         movingLeft = false;
-        falling = true;
+        falling = false;
         jumping = false;
         doubleJumped = false;
     }

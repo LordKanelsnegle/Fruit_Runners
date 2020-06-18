@@ -19,7 +19,14 @@ void setup() {
     minim = new Minim(this);
     ambient = minim.loadFile("Assets\\Sound\\Menu Theme.mp3");
     ambient.loop();
-    soundEffects = new AudioPlayer[]{ minim.loadFile("Assets\\Sound\\Menu Select.wav"), minim.loadFile("Assets\\Sound\\Menu Confirm.wav"), minim.loadFile("Assets\\Sound\\Jump.wav"), minim.loadFile("Assets\\Sound\\Run.mp3"), minim.loadFile("Assets\\Sound\\Hurt.wav") };
+    soundEffects = new AudioPlayer[]{
+        minim.loadFile("Assets\\Sound\\Menu Select.wav"),
+        minim.loadFile("Assets\\Sound\\Menu Confirm.wav"),
+        minim.loadFile("Assets\\Sound\\Run.mp3"),
+        minim.loadFile("Assets\\Sound\\Jump.wav"),
+        minim.loadFile("Assets\\Sound\\Land.wav"),
+        minim.loadFile("Assets\\Sound\\Hurt.wav")
+    };
 }
 
 void keyPressed() {
@@ -239,14 +246,17 @@ public void playSound(Sound sound, Boolean loop) {
         case CONFIRM:
             effect = 1;
             break;
-        case JUMP:
+        case RUN:
             effect = 2;
             break;
-        case RUN:
+        case JUMP:
             effect = 3;
             break;
-        case HURT:
+        case LAND:
             effect = 4;
+            break;
+        case HURT:
+            effect = 5;
             break;
     }
     if (loop) {
@@ -267,14 +277,17 @@ public void stopSound(Sound sound) {
         case CONFIRM:
             effect = 1;
             break;
-        case JUMP:
+        case RUN:
             effect = 2;
             break;
-        case RUN:
+        case JUMP:
             effect = 3;
             break;
-        case HURT:
+        case LAND:
             effect = 4;
+            break;
+        case HURT:
+            effect = 5;
             break;
     }
     if (soundEffects[effect].isPlaying()) {
@@ -285,7 +298,8 @@ public void stopSound(Sound sound) {
 public enum Sound {
     SELECT,
     CONFIRM,
-    JUMP,
     RUN,
+    JUMP,
+    LAND,
     HURT
 }
