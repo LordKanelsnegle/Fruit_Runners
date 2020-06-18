@@ -1,16 +1,25 @@
+import ddf.minim.*;
+
 PImage background; //for storing the background tile
 String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 ArrayList<Object> objects; //list of objects to keep track of which things need to be redrawn
 Player player; //global instance of the player for use where needed
-Boolean playSound = true;
 PImage indicator;
+Minim minim;
+AudioPlayer ambient;
+AudioPlayer[] soundEffects;
+
 
 void setup() {
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
     indicator = loadImage("Assets\\Menu\\Strawberry.png");
+    minim = new Minim(this);
+    ambient = minim.loadFile("Assets\\Sound\\Menu Theme.mp3");
+    ambient.loop();
+    soundEffects = new AudioPlayer[]{ minim.loadFile("Assets\\Sound\\Menu Select.wav"), minim.loadFile("Assets\\Sound\\Menu Confirm.wav"), minim.loadFile("Assets\\Sound\\Jump.wav"), minim.loadFile("Assets\\Sound\\Run.mp3"), minim.loadFile("Assets\\Sound\\Hurt.wav") };
 }
 
 void keyPressed() {
@@ -44,19 +53,31 @@ void keyReleased() {
                 if (option < 0) {
                     option = 2;
                 }
+                playSound(Sound.SELECT, false);
                 break;
             case DOWN:
                 option++;
                 if (option > 2) {
                     option = 0;
                 }
+                playSound(Sound.SELECT, false);
                 break;
             case ENTER:
+                playSound(Sound.CONFIRM, false);
                 if (option == 0) {
                     currentLevel++;
+                    if (ambient.isPlaying()) {
+                        ambient.pause();
+                        ambient = minim.loadFile("Assets\\Sound\\Game Theme.mp3");
+                        ambient.loop();
+                    }
                     player.die();
                 } else if (option == 1) {
-                    playSound = !playSound;
+                    if (ambient.isPlaying()) {
+                        ambient.pause();
+                    } else {
+                        ambient.loop();
+                    }
                 } else {
                     exit();
                 }
@@ -152,10 +173,10 @@ void draw() {
     if (currentLevel == 0) {
         displayText("FRUIT RUNNERS", "Title", 42, width/2, height * 0.05);
         displayText("PLAY", "Options", 25, width/2, height * 0.25);
-        if (playSound) {
-            displayText("SOUND OFF", "Options", 25, width/2, height * 0.36);
+        if (ambient.isPlaying()) {
+            displayText("MUSIC OFF", "Options", 25, width/2, height * 0.36);
         } else {
-            displayText("SOUND ON", "Options", 25, width/2, height * 0.36);
+            displayText("MUSIC ON", "Options", 25, width/2, height * 0.36);
         }
         displayText("QUIT", "Options", 25, width/2, height * 0.47);
         switch (option) {
@@ -163,7 +184,7 @@ void draw() {
                 image(indicator, width * 0.35, height * 0.25);
                 break;
             case 1:
-                if (playSound) {
+                if (ambient.isPlaying()) {
                     image(indicator, width * 0.24, height * 0.36);
                 } else {
                     image(indicator, width * 0.26, height * 0.36);
@@ -189,8 +210,6 @@ private void displayText(String text, String fontFile, int size, float x, float 
     text(text, x, y);
 }
 
-
-
 private void loadLevel() {
     switch(currentLevel) {
         case 0:
@@ -209,4 +228,64 @@ private void loadLevel() {
             player.spawn(300,100);
             break;
     }
+}
+
+public void playSound(Sound sound, Boolean loop) {
+    int effect = 0;
+    switch (sound) {
+        case SELECT:
+            effect = 0;
+            break;
+        case CONFIRM:
+            effect = 1;
+            break;
+        case JUMP:
+            effect = 2;
+            break;
+        case RUN:
+            effect = 3;
+            break;
+        case HURT:
+            effect = 4;
+            break;
+    }
+    if (loop) {
+        if (!soundEffects[effect].isPlaying()) {
+            soundEffects[effect].loop();
+        }
+    } else {
+        soundEffects[effect].rewind();
+        soundEffects[effect].play();
+    }
+}
+public void stopSound(Sound sound) {
+    int effect = 0;
+    switch (sound) {
+        case SELECT:
+            effect = 0;
+            break;
+        case CONFIRM:
+            effect = 1;
+            break;
+        case JUMP:
+            effect = 2;
+            break;
+        case RUN:
+            effect = 3;
+            break;
+        case HURT:
+            effect = 4;
+            break;
+    }
+    if (soundEffects[effect].isPlaying()) {
+        soundEffects[effect].pause();
+    }
+}
+
+public enum Sound {
+    SELECT,
+    CONFIRM,
+    JUMP,
+    RUN,
+    HURT
 }

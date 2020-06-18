@@ -94,6 +94,8 @@ public class Player extends Object {
             if (!jumping) {
                 changeAnimation(Animation.FALL);
             }
+        } else if (movingLeft || movingRight) {
+            playSound(Sound.RUN, true);
         }
         
         jumpSpeed *= jumpAcceleration;
@@ -134,6 +136,7 @@ public class Player extends Object {
                 changeAnimation(Animation.DOUBLEJUMP);
                 jumpSpeed = 8;
                 jumping = true;
+                playSound(Sound.JUMP, false);
             }
         } else {
             jumpSpeed = 8;
@@ -142,6 +145,7 @@ public class Player extends Object {
                 jumpSpeed = 6;
             }
             changeAnimation(Animation.JUMP);
+                playSound(Sound.JUMP, false);
         }
     }
     
@@ -168,6 +172,7 @@ public class Player extends Object {
             //knock upwards (half jump) and backwards, tilting at 45 degree angle upwards
             //apply light screen shake and flare (low opacity flash)
             player.died = true;
+            playSound(Sound.HURT, false);
         }
     }
     
