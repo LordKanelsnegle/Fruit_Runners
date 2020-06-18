@@ -237,25 +237,31 @@ private void displayText(String text, Boolean isTitle, float x, float y) {
     text(text, x, y);
 }
 
+int lastLevel = -1; //keep track of the last level loaded so we dont load resources (by creating a class instance) if the level hasn't changed
 private void loadLevel() {
     switch(currentLevel) {
         case 0:
-            objects = new ArrayList<Object>() {{
-                add(new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1));
-            }};
+            if (lastLevel != currentLevel) {
+                objects = new ArrayList<Object>() {{
+                    add(new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1));
+                }};
+            }
             player.spawn(-player.Width, height - (48 + player.Height));
             player.movingRight = true;
             break;
         case 1:
-            objects = new ArrayList<Object>() {{
-                add(new Terrain(TerrainType.GRASS, 52, 163, 1, 2));
-                add(new Terrain(TerrainType.CARAMEL, 100, 100, 6, 3));
-                add(new Terrain(TerrainType.BRICK, 300, 260, 4, 1));
-                add(new Terrain(TerrainType.COTTONCANDY, 455, 60, 1, 8));
-            }};
+            if (lastLevel != currentLevel) {
+                objects = new ArrayList<Object>() {{
+                    add(new Terrain(TerrainType.GRASS, 52, 163, 1, 2));
+                    add(new Terrain(TerrainType.CARAMEL, 100, 100, 6, 3));
+                    add(new Terrain(TerrainType.BRICK, 300, 260, 4, 1));
+                    add(new Terrain(TerrainType.COTTONCANDY, 455, 60, 1, 8));
+                }};
+            }
             player.spawn(300,50);
             break;
     }
+    lastLevel = currentLevel;
 }
 
 public void playSound(Sound sound, Boolean loop) {
