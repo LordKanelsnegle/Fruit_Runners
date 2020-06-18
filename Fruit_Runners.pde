@@ -13,12 +13,14 @@ AudioPlayer[] soundEffects;
 
 
 void setup() {
+    frameRate(30);
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
     indicator = loadImage("Assets\\Menu\\Strawberry.png");
     minim = new Minim(this);
     ambient = minim.loadFile("Assets\\Sound\\Menu Theme.mp3");
     ambient.loop();
+    ambient.setGain(-10);
     soundEffects = new AudioPlayer[]{
         minim.loadFile("Assets\\Sound\\Menu Select.wav"),
         minim.loadFile("Assets\\Sound\\Menu Confirm.wav"),
@@ -78,8 +80,10 @@ void keyReleased() {
                     if (ambient.isPlaying()) {
                         ambient.pause();
                         ambient = minim.loadFile("Assets\\Sound\\Game Theme.mp3");
+                        ambient.setGain(-10);
                         ambient.loop();
                     }
+                    frameRate(60);
                     player.die();
                 } else if (option == 1) {
                     if (ambient.isPlaying()) {
@@ -226,7 +230,6 @@ private void displayText(String text, Boolean isTitle, float x, float y) {
 private void loadLevel() {
     switch(currentLevel) {
         case 0:
-            frameRate(30);
             objects = new ArrayList<Object>() {{
                 add(new Terrain(TerrainType.GRASS, 0, height - 48, 12, 1));
             }};
@@ -234,7 +237,6 @@ private void loadLevel() {
             player.movingRight = true;
             break;
         case 1:
-            frameRate(60);
             objects = new ArrayList<Object>() {{
                 add(new Terrain(TerrainType.GRASS, 52, 163, 1, 2));
                 add(new Terrain(TerrainType.CARAMEL, 100, 100, 6, 3));
@@ -268,6 +270,7 @@ public void playSound(Sound sound, Boolean loop) {
             effect = 5;
             break;
     }
+    soundEffects[effect].setGain(-10);
     if (loop) {
         if (!soundEffects[effect].isPlaying()) {
             soundEffects[effect].loop();
