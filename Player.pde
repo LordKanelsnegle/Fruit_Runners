@@ -87,9 +87,9 @@ public class Player extends Object {
                 falling = false;
                 fallSpeed = 0;
                 doubleJumped = false;
+                jumping = false;
                 changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
             }
-            speedCap = 2.4;
         } else {
             if (!falling) {
                 falling = true;
@@ -109,11 +109,11 @@ public class Player extends Object {
     }
 
     //this function controls the movement of the player
-    final float jumpAcceleration = 0.97;
+    final float jumpAcceleration = 0.98;
     float jumpSpeed = 0;
     final float acceleration = 1.6;
     float speed = 0;
-    float speedCap = 2.4;
+    final float speedCap = 2.4;
     public void move() {
         println("Horizontal: " + speed + "/" + speedCap + "\nVertical: " + fallSpeed + "/" + fallSpeedCap);
         if (falling) {
@@ -126,7 +126,6 @@ public class Player extends Object {
             if (!jumping) {
                 changeAnimation(Animation.FALL);
             }
-            speedCap = 4.5;
         }
         
         if (currentLevel > 0 && animationState == Animation.RUN) {
@@ -140,9 +139,6 @@ public class Player extends Object {
             jumpSpeed = 0;
         }
         if (jumping) {
-            if (jumpSpeed <= fallSpeed) {
-                jumping = false;
-            }
             yPosition -= jumpSpeed;
         }
         if (speed < speedCap) {
@@ -170,7 +166,7 @@ public class Player extends Object {
             if (!doubleJumped) {
                 doubleJumped = true;
                 changeAnimation(Animation.DOUBLEJUMP);
-                jumpSpeed = 9;
+                jumpSpeed = 7;
                 jumping = true;
                 playSound(Sound.JUMP, false);
                 fallSpeed = 3;
@@ -178,9 +174,9 @@ public class Player extends Object {
         } else {
             jumpSpeed = 9;
             jumping = true;
-            /*if (animationState == Animation.WALLJUMP) {
-                jumpSpeed = 6;
-            }*/
+            if (animationState == Animation.WALLJUMP) {
+                jumpSpeed = 7;
+            }
             changeAnimation(Animation.JUMP);
                 playSound(Sound.JUMP, false);
         }
