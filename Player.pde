@@ -3,8 +3,8 @@
 //This is the Player class, which controls the animations/movements/spawning for the player.
 //  It extends the Object class and thus inherits the necessary properties by default.
 public class Player extends Object {
-    String[] players = new String[] { "Mask Dude\\", "Ninja Frog\\", "Pink Man\\", "Virtual Guy\\" }; //this is an array of the available character folders
-    int index = 0; //an index for keeping track of the currently used character
+    PImage[] spriteSheets; //this is an array of the available character spritesheets
+    int sprite = 0; //an index for keeping track of the currently used character
     int frame = 0; //a frame counter for animations
     int maxFrame = 0; //the maximum frame for a given animation (to know when to reset the frame variable)
     Boolean jumping, doubleJumped, falling;
@@ -15,6 +15,36 @@ public class Player extends Object {
         //on initialization, set the width and height properties to 32 since all of the player characters are 32x32
         Width = 32;
         Height = 32;
+        spriteSheets = new PImage[]{
+            loadImage("Assets\\Players\\Mask Dude\\Idle.png"),
+            loadImage("Assets\\Players\\Mask Dude\\Double Jump.png"),
+            loadImage("Assets\\Players\\Mask Dude\\Fall.png"),
+            loadImage("Assets\\Players\\Mask Dude\\Hit.png"),
+            loadImage("Assets\\Players\\Mask Dude\\Jump.png"),
+            loadImage("Assets\\Players\\Mask Dude\\Run.png"),
+            loadImage("Assets\\Players\\Mask Dude\\Wall Jump.png"),
+            loadImage("Assets\\Players\\Ninja Frog\\Idle.png"),
+            loadImage("Assets\\Players\\Ninja Frog\\Double Jump.png"),
+            loadImage("Assets\\Players\\Ninja Frog\\Fall.png"),
+            loadImage("Assets\\Players\\Ninja Frog\\Hit.png"),
+            loadImage("Assets\\Players\\Ninja Frog\\Jump.png"),
+            loadImage("Assets\\Players\\Ninja Frog\\Run.png"),
+            loadImage("Assets\\Players\\Ninja Frog\\Wall Jump.png"),
+            loadImage("Assets\\Players\\Pink Man\\Idle.png"),
+            loadImage("Assets\\Players\\Pink Man\\Double Jump.png"),
+            loadImage("Assets\\Players\\Pink Man\\Fall.png"),
+            loadImage("Assets\\Players\\Pink Man\\Hit.png"),
+            loadImage("Assets\\Players\\Pink Man\\Jump.png"),
+            loadImage("Assets\\Players\\Pink Man\\Run.png"),
+            loadImage("Assets\\Players\\Pink Man\\Wall Jump.png"),
+            loadImage("Assets\\Players\\Virtual Guy\\Idle.png"),
+            loadImage("Assets\\Players\\Virtual Guy\\Double Jump.png"),
+            loadImage("Assets\\Players\\Virtual Guy\\Fall.png"),
+            loadImage("Assets\\Players\\Virtual Guy\\Hit.png"),
+            loadImage("Assets\\Players\\Virtual Guy\\Jump.png"),
+            loadImage("Assets\\Players\\Virtual Guy\\Run.png"),
+            loadImage("Assets\\Players\\Virtual Guy\\Wall Jump.png")
+        };
     }
     
     //this is the function that actually draws the player, using get() to select the required sprite from the sprite sheet
@@ -96,14 +126,8 @@ public class Player extends Object {
                 fallSpeed = 4;
             }
         }
-        //wrap around if going off screen horizontally
-        if (xPosition + Width <= 0) {
-            xPosition = width;
-        } else if (xPosition >= width) {
-            xPosition = 0;
-        }
-        //kill if falling off screen vertically
-        if (yPosition > height) {
+        //kill if going off screen from the bottom or either side
+        if (xPosition + Width <= 0 || xPosition >= width ||yPosition > height) {
             die();
         }
     }
@@ -115,7 +139,6 @@ public class Player extends Object {
     float speed = 0;
     final float speedCap = 2.4;
     public void move() {
-        println("Horizontal: " + speed + "/" + speedCap + "\nVertical: " + fallSpeed + "/" + fallSpeedCap);
         if (falling) {
             if (fallSpeed < fallSpeedCap) {
                 fallSpeed *= gravity;
@@ -197,9 +220,9 @@ public class Player extends Object {
     
     public void die() {
         if (!died) {
-            index++; //increment the index so that the next character is used on spawn
-            if (index == players.length) {
-                index = 0; //if the index has reached its max, reset it to 0
+            sprite++; //increment the index so that the next character is used on spawn
+            if (sprite == 4) {
+                sprite = 0; //if the index has reached its max, reset it to 0
             }
             changeAnimation(Animation.HIT);
             //knock upwards (half jump) and backwards, tilting at 45 degree angle upwards
@@ -215,30 +238,30 @@ public class Player extends Object {
             return;
         }
         animationState = animation; //update the animation state to reflect the new animation
-        String file = "Idle.png"; //set to the idle animation by default
+        int index = 0;
         switch (animation) { //check which animation it actually needs to be set to
             case DOUBLEJUMP:
-                file = "Double Jump.png";
+                index = 1;
                 break;
             case FALL:
-                file = "Fall.png";
+                index = 2;
                 break;
             case HIT:
-                file = "Hit.png";
+                index = 3;
                 break;
             case JUMP:
-                file = "Jump.png";
+                index = 4;
                 break;
             case RUN:
-                file = "Run.png";
+                index = 5;
                 break;
             case WALLJUMP:
-                file = "Wall Jump.png";
+                index = 6;
                 break;
             default:
                 break;
         }
-        spriteSheet = loadImage("Assets\\Players\\" + players[index] + file); //update the file that spriteSheet points to
+        spriteSheet = spriteSheets[sprite * 7 + index]; //update the file that spriteSheet points to
         frame = 0; //reset the frame to 0
         maxFrame = spriteSheet.width / Width; //reset the maximum number of frames
     }

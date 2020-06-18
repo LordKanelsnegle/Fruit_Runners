@@ -232,9 +232,9 @@ private void loadLevel() {
     switch(currentLevel) {
         case 0:
             objects = new ArrayList<Object>() {{
-                add(new Terrain(TerrainType.GRASS, 0, height - 48, 12, 1));
+                add(new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1));
             }};
-            player.spawn(10, height - (48 + player.Height));
+            player.spawn(-player.Width, height - (48 + player.Height));
             player.movingRight = true;
             break;
         case 1:
