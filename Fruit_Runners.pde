@@ -14,12 +14,12 @@ AudioPlayer[] soundEffects;
 
 void setup() {
     frameRate(30);
+    background(33,31,48);
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
     indicator = loadImage("Assets\\Menu\\Strawberry.png");
     minim = new Minim(this);
     ambient = minim.loadFile("Assets\\Sound\\Menu Theme.mp3");
-    ambient.loop();
     ambient.setGain(-10);
     soundEffects = new AudioPlayer[]{
         minim.loadFile("Assets\\Sound\\Menu Select.wav"),
@@ -31,6 +31,7 @@ void setup() {
     };
     titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42);
     optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25);
+    ambient.loop(); //only play music once all assets have loaded
 }
 
 void keyPressed() {

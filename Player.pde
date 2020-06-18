@@ -45,7 +45,7 @@ public class Player extends Object {
         }
     }
     
-    final float gravity = 1.6;
+    final float gravity = 1.03;
     float fallSpeed = 0;
     int fallSpeedCap = 10;
     public void checkCollisions() {
@@ -61,14 +61,12 @@ public class Player extends Object {
                     xPosition += obj.xPosition + obj.Width - leftFootPosition;
                     doubleJumped = false;
                     changeAnimation(Animation.WALLJUMP);
-                    //fallSpeedCap = 2;
                 }
                 //collisions on right of player
                 else if (rightFootPosition > obj.xPosition && rightFootPosition < obj.xPosition + obj.Width) {
                     xPosition += obj.xPosition - rightFootPosition;
                     doubleJumped = false;
                     changeAnimation(Animation.WALLJUMP);
-                    //fallSpeedCap = 5;
                 }
             } else if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) { //else if standing within horizontal bounds of the object
                 //collisions below player
@@ -91,9 +89,12 @@ public class Player extends Object {
                 doubleJumped = false;
                 changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
             }
+            speedCap = 2.4;
         } else {
-            falling = true;
-            fallSpeed = 1.6;
+            if (!falling) {
+                falling = true;
+                fallSpeed = 4;
+            }
         }
         //wrap around if going off screen horizontally
         if (xPosition + Width <= 0) {
@@ -108,16 +109,16 @@ public class Player extends Object {
     }
 
     //this function controls the movement of the player
-    final float jumpAcceleration = 0.96;
+    final float jumpAcceleration = 0.97;
     float jumpSpeed = 0;
     final float acceleration = 1.6;
     float speed = 0;
-    final float speedCap = 2.4;
+    float speedCap = 2.4;
     public void move() {
-        //println(fallSpeed);
+        println("Horizontal: " + speed + "/" + speedCap + "\nVertical: " + fallSpeed + "/" + fallSpeedCap);
         if (falling) {
             if (fallSpeed < fallSpeedCap) {
-                fallSpeed += gravity;
+                fallSpeed *= gravity;
             } else {
                 fallSpeed = fallSpeedCap;
             }
@@ -125,7 +126,9 @@ public class Player extends Object {
             if (!jumping) {
                 changeAnimation(Animation.FALL);
             }
+            speedCap = 4.5;
         }
+        
         if (currentLevel > 0 && animationState == Animation.RUN) {
             playSound(Sound.RUN, true);
         } else {
@@ -142,7 +145,6 @@ public class Player extends Object {
             }
             yPosition -= jumpSpeed;
         }
-        
         if (speed < speedCap) {
             speed *= acceleration;
         } else {
@@ -168,12 +170,13 @@ public class Player extends Object {
             if (!doubleJumped) {
                 doubleJumped = true;
                 changeAnimation(Animation.DOUBLEJUMP);
-                jumpSpeed = 8;
+                jumpSpeed = 9;
                 jumping = true;
                 playSound(Sound.JUMP, false);
+                fallSpeed = 3;
             }
         } else {
-            jumpSpeed = 8;
+            jumpSpeed = 9;
             jumping = true;
             /*if (animationState == Animation.WALLJUMP) {
                 jumpSpeed = 6;
