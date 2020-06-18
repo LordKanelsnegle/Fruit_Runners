@@ -54,9 +54,18 @@ public class Player extends Object {
             float rightFootPosition = 0.7 * Width;
             float leftFootPosition = 0.3 * Width;
             float feetPosition = yPosition + Height;
-            if ((xPosition + rightFootPosition > obj.xPosition && xPosition + leftFootPosition <= obj.xPosition + obj.Width) && (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height)) {
-                yPosition = obj.yPosition - Height;
+            float headPosition = yPosition + player.Height * 0.15;
+            if (xPosition + rightFootPosition >= obj.xPosition && xPosition + leftFootPosition <= obj.xPosition + obj.Width) {
+                //collisions below player
+                if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) {
+                yPosition = obj.yPosition - Height; //this one is = because yPosition is not indirectly subtracted from itself
                 supported = true;
+                }
+                //collisions above player
+                if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) {
+                    yPosition += obj.yPosition + obj.Height - headPosition; //this one is += because headPosition includes yPosition
+                    jumping = false;
+                }
             }
         }
         if (supported) {
@@ -70,7 +79,8 @@ public class Player extends Object {
         } else {
             falling = true;
             fallSpeed = 1.6;
-        }        
+        }
+        //wrap around if going off screen horizontally
         if (player.xPosition + Width <= 0) {
             player.xPosition = width;
         } else if (player.xPosition >= width) {

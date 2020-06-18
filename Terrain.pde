@@ -28,27 +28,26 @@ public class Terrain extends Object {
     //bottom tiles are 33 tall (trim 13 from top), assuming no sides trimmed
     //trim 2 pixels on any side that has another tile near it
     public void redraw() {
-        
         for (int x = 0; x < columns; x++) { //if first of row, keep left wall, if last of row, keep right wall, if first row, keep top wall, if last row, keep bottom wall
             for (int y = 0; y < rows; y++) {
-                /*if (x == 0) {
+                if (x == 0) {
                     if (y == 0) {
-                        image(spriteSheet.get(0,0,46,46), xPosition, yPosition);
+                        image(spriteSheet.get(0,0,46,46), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
                     } else if (y == columns) {
-                        image(spriteSheet.get(2,0,46,46), xPosition, yPosition);
+                        image(spriteSheet.get(2,0,46,46), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
                     } else {
-                        image(spriteSheet.get(2,0,44,46), xPosition, yPosition);
+                        image(spriteSheet.get(2,0,44,46), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
                     }
                 } else {
                     if (y == 0) {
-                        image(spriteSheet.get(0,2,46,44), xPosition, yPosition);
+                        image(spriteSheet.get(0,2,46,44), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
                     } else if (y == columns) {
-                        image(spriteSheet.get(2,2,46,44), xPosition, yPosition);
+                        image(spriteSheet.get(2,2,46,44), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
                     } else {
-                        image(spriteSheet.get(2,2,44,44), xPosition, yPosition);
+                        image(spriteSheet.get(2,2,44,44), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
                     }
-                }*/
-                image(spriteSheet, xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
+                }
+                //image(spriteSheet, xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
                 //image(spriteSheet, xPosition + Width - 48, yPosition + y * spriteSheet.height);
             }
             //image(spriteSheet, xPosition + x * spriteSheet.width, yPosition + Height - 48);

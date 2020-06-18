@@ -3,7 +3,7 @@ import ddf.minim.*;
 PImage background; //for storing the background tile
 String[] backgrounds = new String[]{ "Blue.png", "Brown.png", "Gray.png", "Green.png", "Pink.png", "Purple.png", "Yellow.png" }; //array containing all of the backgroud tile filenames
 Boolean triggerNewLevel = true; //flag for signalling when to change the background
-int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
+int currentLevel = 1; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 ArrayList<Object> objects; //list of objects to keep track of which things need to be redrawn
 Player player; //global instance of the player for use where needed
 PImage indicator;
@@ -230,7 +230,7 @@ private void loadLevel() {
             objects = new ArrayList<Object>() {{
                 add(new Terrain(TerrainType.GRASS, 52, 163, 48, 48));
                 add(new Terrain(TerrainType.GRASS, 100, 132, 240, 48));
-                add(new Terrain(TerrainType.GRASS, 340, 250, 48, 48));
+                add(new Terrain(TerrainType.GRASS, 300, 250, 100, 48));
             }};
             player.spawn(300,100);
             break;
