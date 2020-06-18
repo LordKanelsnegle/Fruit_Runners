@@ -212,6 +212,9 @@ public class Player extends Object {
     
     //this function controls the animation being displayed
     private void changeAnimation(Animation animation) {
+        if (animationState == animation) { //if the animation is already playing, return so it isnt loaded again
+            return;
+        }
         animationState = animation; //update the animation state to reflect the new animation
         String file = "Idle.png"; //set to the idle animation by default
         switch (animation) { //check which animation it actually needs to be set to
