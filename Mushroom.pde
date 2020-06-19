@@ -18,6 +18,8 @@ public class Mushroom extends Entity {
         initialY = y; //set the mushroom's y spawnpoint
         patrolOne = pOne; //set the first patrol point
         patrolTwo = pTwo; //set the second patrol point
+        xPosition = initialX; //set the mushroom's x coordinate
+        yPosition = initialY; //set the mushroom's y coordinate
     }
     
     final float acceleration = 1.1;
@@ -73,8 +75,6 @@ public class Mushroom extends Entity {
     
     //this function allows the mushroom to be spawned at a given point
     public void spawn() {
-        xPosition = initialX; //set the mushroom's x coordinate
-        yPosition = initialY; //set the mushroom's y coordinate
         changeAnimation(MushroomAnimation.IDLE); //set the animation to be idle initially
         died = false; //reset the death flag
         disabled = false;
