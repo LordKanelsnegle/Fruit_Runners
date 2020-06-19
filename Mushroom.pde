@@ -4,6 +4,7 @@ public class Mushroom extends Entity {
     float initialX, initialY;
     float patrolOne, patrolTwo;
     MushroomAnimation animationState; //a variable for tracking the currently playing animation
+    Boolean movingRight, movingLeft;
     public Mushroom(float x, float y, float pOne, float pTwo) {
         //on initialization, set the width and height properties to 32 since all of the mushroom sprites are 32x32
         Width = 32;
@@ -19,11 +20,55 @@ public class Mushroom extends Entity {
         patrolTwo = pTwo; //set the second patrol point
     }
     
+    final float acceleration = 1.1;
+    float speed = 0;
+    final float speedCap = 1;
+    int delay = 0;
     public void move() {
-        if (patrolOne == 0 && patrolTwo == 0) {
+        if (died || (patrolOne == 0 && patrolTwo == 0)) {
             return;
         }
-        
+        if (speed < speedCap) {
+            speed *= acceleration;
+        } else {
+            speed = speedCap;
+        }
+        if (movingRight) {
+            flipped = true;
+            if (speed == 0) {
+                speed = 0.5;
+                changeAnimation(MushroomAnimation.RUN);
+            }
+            xPosition += speed;
+            if (xPosition >= initialX + patrolTwo) {
+                xPosition = initialX + patrolTwo;
+                movingRight = false;
+            }
+        } else if (movingLeft) {
+            flipped = false;
+            if (speed == 0) {
+                speed = 0.5;
+                changeAnimation(MushroomAnimation.RUN);
+            }
+            xPosition -= speed;
+            if (xPosition <= initialX - patrolOne) {
+                xPosition = initialX - patrolOne;
+                movingLeft = false;
+            }
+        } else {
+            speed = 0;
+            changeAnimation(MushroomAnimation.IDLE);
+            if (delay == 90) {
+                delay = 0;
+                if (xPosition == initialX + patrolTwo) {
+                    movingLeft = true;
+                } else {
+                    movingRight = true;
+                }
+            } else {
+                delay++;
+            }
+        }
     }
     
     //this function allows the mushroom to be spawned at a given point
@@ -33,6 +78,8 @@ public class Mushroom extends Entity {
         changeAnimation(MushroomAnimation.IDLE); //set the animation to be idle initially
         died = false; //reset the death flag
         disabled = false;
+        movingRight = true;
+        movingLeft = true;
     }
     
     public void die() {

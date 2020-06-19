@@ -330,7 +330,7 @@ private void loadLevel() {
                     new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3),
                 };
                 entities = new ArrayList<Entity>(){{ //Mushroom spawn
-                    add(new Mushroom(180, 260, 0,0));
+                    add(new Mushroom(180, 260, 130,0));
                     add(new Mushroom(225, 240, 0,0));
                     add(new Mushroom(270, 195, 0,0));
                     add(new Mushroom(320, 150, 0,0));
