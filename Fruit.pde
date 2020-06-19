@@ -23,6 +23,7 @@ public class Fruit extends Entity {
             spriteSheet = collectedSprite;
             frame = 0;
             died = true;
+            playSound(Sound.COLLECT, false);
         }
     }
 }

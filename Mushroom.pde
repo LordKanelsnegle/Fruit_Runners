@@ -19,6 +19,10 @@ public class Mushroom extends Entity {
         patrolTwo = pTwo; //set the second patrol point
     }
     
+    public void move() {
+        
+    }
+    
     //this function allows the mushroom to be spawned at a given point
     public void spawn() {
         xPosition = initialX; //set the mushroom's x coordinate
@@ -33,7 +37,7 @@ public class Mushroom extends Entity {
             died = true;
             changeAnimation(MushroomAnimation.HIT);
             player.falling = false;
-            player.jump();
+            player.jump(true);
         }
     }
     

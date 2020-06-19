@@ -18,7 +18,6 @@ PFont titleFont; //font for the menu title
 PFont optionsFont; //font for the menu options
 
 void setup() {
-    frameRate(30); //initially set fps to 30 so menu background plays in "slow motion"
     background(33,31,48); //set a backgroud color for when the game is loading up
     size(500, 300); //set window size
     player = new Player(); //initialize the player variable
@@ -32,7 +31,10 @@ void setup() {
         minim.loadFile("Assets\\Sound\\Run.mp3"),
         minim.loadFile("Assets\\Sound\\Jump.wav"),
         minim.loadFile("Assets\\Sound\\Land.wav"),
-        minim.loadFile("Assets\\Sound\\Hurt.wav")
+        minim.loadFile("Assets\\Sound\\Hurt.wav"),
+        minim.loadFile("Assets\\Sound\\Collect.wav"),
+        minim.loadFile("Assets\\Sound\\Kill.wav"),
+        minim.loadFile("Assets\\Sound\\Success.mp3")
     };
     backgrounds = new PImage[]{ //load all of the background image files into the backgrounds array
         loadImage("Assets\\Background\\Blue.png"),
@@ -74,7 +76,7 @@ void keyPressed() {
             player.flipped = false;
             break;
         case UP:
-            player.jump();
+            player.jump(false);
             break;
     }
     //if both left and right are pressed, reset the player to the idle animation since they won't be able to move
@@ -149,7 +151,6 @@ void keyReleased() {
                 }
                 break;
             case +'R': //if reset button (R) is pressed and released (to prevent accidentally resetting everytime if R is pressed too long)
-                currentLevel++;
                 player.die(); //kill the character off, which will cause the level to reset
                 break;
         }
@@ -163,6 +164,7 @@ int columns;
 float offset;
 //this variable records the last used background so that no background is ever repeated twice in a row
 int lastBackground;
+int winDelay;
 void draw() {
     //if the player is dead, trigger a new level
     if (player.died) {
@@ -187,6 +189,12 @@ void draw() {
             rows++; //then increase the rows by 1
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
+        winDelay = 0;
+        if (currentLevel == 0) {
+            frameRate(30); //set menu fps to 30 so menu background plays in "slow motion"
+        } else {
+            frameRate(60); //otherwise set to 60
+        }
         loadLevel(); //load the level (corresponding to currentLevel)
     }
     
@@ -213,9 +221,26 @@ void draw() {
     }
     //move all of the entities however much they should be moved,
     //  then redraw all of the level entities so that they appear in front of the background
+    Boolean levelComplete = !entities.isEmpty();
     for (Entity ent : entities) {
         ent.move();
         ent.redraw();
+        if (levelComplete && !ent.died) {
+            levelComplete = false;
+            playSound(Sound.SUCCESS, false);
+        }
+    }
+    
+    if (levelComplete) {
+        if (winDelay == 90) {
+            currentLevel++;
+            if (currentLevel == 3) {
+                currentLevel = 0;
+            }
+            player.die();
+        } else {
+            winDelay++;
+        }
     }
     
     //lastly, move the player, check player collisions and draw the player separately to the rest of the entities
@@ -285,6 +310,7 @@ private void loadLevel() {
             //spawn the character just offscreen
             player.spawn(-player.Width, height - (48 + player.Height));
             player.movingRight = true; //set the player to be permanently moving to the right
+            player.flipped = false;
             break;
         case 1: //FIRST LEVEL
             //if the level HAS changed, load all of the objects for this level
@@ -312,12 +338,11 @@ private void loadLevel() {
                 objects = new Object[]{
                     new Terrain(TerrainType.CARAMEL, 0, 252, 1, 1),
                     new Terrain(TerrainType.BRICK, 48, 295, 4, 1),
-                    new Terrain(TerrainType.CARAMEL, 452, 50, 1, 9),
-                    new Terrain(TerrainType.CARAMEL, 405, 95, 1, 7),
+                    new Terrain(TerrainType.CARAMEL, 405, 95, 3, 7),
                     new Terrain(TerrainType.CARAMEL, 405-47, 95+45, 1, 6),
                     new Terrain(TerrainType.CARAMEL, 405-47*2, 95+45*2, 1, 5),
                     new Terrain(TerrainType.CARAMEL, 405-47*3, 95+45*3, 1, 4),
-                    new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3),
+                    new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3)
                 };
                 entities = new ArrayList<Entity>(){{
                     add(new Mushroom(180, 260, 50,60));
@@ -326,18 +351,15 @@ private void loadLevel() {
                     add(new Mushroom(320, 150, 50,50));
                     add(new Mushroom(367, 105, 50,50));
                     add(new Mushroom(410, 57, 50,50));
-                    add(new Mushroom(460, 15, 50,50));
          
                 }};
-                //NEW METHOD FOR SEVERAL FRUIT
-                placeFruit(5, 156, FruitSprite.ORANGE, 1, 3, 20);
-                placeFruit(50, 240, FruitSprite.APPLE, 6, 1, 20);
-                placeFruit(225, 220, FruitSprite.BANANAS, 1, 1, 1);
-                placeFruit(270, 170, FruitSprite.CHERRIES, 1, 1, 1);
-                placeFruit(320, 130, FruitSprite.KIWI, 1, 1, 1);
-                placeFruit(367, 85, FruitSprite.MELON, 1, 1, 1);
-                placeFruit(410, 37, FruitSprite.PINEAPPLE, 1, 1, 1);
-                placeFruit(460, 0, FruitSprite.STRAWBERRY, 1, 1, 1);
+                placeFruit(5, 140, FruitSprite.ORANGE, 1, 3, 20);
+                placeFruit(55, 240, FruitSprite.APPLE, 6, 1, 25);
+                placeFruit(225, 220, FruitSprite.BANANAS, 1, 1, 0);
+                placeFruit(270, 170, FruitSprite.CHERRIES, 1, 1, 0);
+                placeFruit(320, 130, FruitSprite.KIWI, 1, 1, 0);
+                placeFruit(367, 85, FruitSprite.MELON, 1, 1, 0);
+                placeFruit(410, 37, FruitSprite.PINEAPPLE, 3, 1, 30);
                 
             }
             for (Entity entity : entities) {
@@ -352,10 +374,8 @@ private void loadLevel() {
 //the following 2 functions and enumerator are used for playing and stopping sound effects
 public void playSound(Sound sound, Boolean loop) {
     int effect = 0;
+    int gain = -10;
     switch (sound) {
-        case SELECT:
-            effect = 0;
-            break;
         case CONFIRM:
             effect = 1;
             break;
@@ -371,8 +391,21 @@ public void playSound(Sound sound, Boolean loop) {
         case HURT:
             effect = 5;
             break;
+        case COLLECT:
+            effect = 6;
+            gain = 0;
+            break;
+        case KILL:
+            effect = 7;
+            break;
+        case SUCCESS:
+            effect = 8;
+            gain = 10;
+            break;
+        default:
+            break;
     }
-    soundEffects[effect].setGain(-10); //set the gain to -10db before playing it
+    soundEffects[effect].setGain(gain); //set the gain to -10db before playing it
     if (loop) { //if the sound needs to be looped (e.g. running sound effect)
         if (!soundEffects[effect].isPlaying()) { //and it wasnt already running
             soundEffects[effect].loop(); //then play/loop it
@@ -385,9 +418,6 @@ public void playSound(Sound sound, Boolean loop) {
 public void stopSound(Sound sound) {
     int effect = 0;
     switch (sound) {
-        case SELECT:
-            effect = 0;
-            break;
         case CONFIRM:
             effect = 1;
             break;
@@ -402,6 +432,17 @@ public void stopSound(Sound sound) {
             break;
         case HURT:
             effect = 5;
+            break;
+        case COLLECT:
+            effect = 6;
+            break;
+        case KILL:
+            effect = 7;
+            break;
+        case SUCCESS:
+            effect = 8;
+            break;
+        default:
             break;
     }
     //if the effect chosen is playing, pause it
@@ -415,5 +456,8 @@ public enum Sound {
     RUN,
     JUMP,
     LAND,
-    HURT
+    HURT,
+    COLLECT,
+    KILL,
+    SUCCESS
 }

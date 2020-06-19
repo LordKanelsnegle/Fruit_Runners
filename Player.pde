@@ -50,7 +50,7 @@ public class Player extends Entity {
         float rightFootPosition = xPosition + 0.7 * Width;
         float leftFootPosition = xPosition + 0.3 * Width;
         float feetPosition = yPosition + Height;
-        float headPosition = yPosition + Height * 0.5;
+        float headPosition = yPosition + Height * 0.3;
         for (Entity ent : entities) {
             if (ent.died) {
                 continue;
@@ -177,7 +177,7 @@ public class Player extends Entity {
     }
     
     //this function controls the vertical movement of the player
-    public void jump() {
+    public void jump(Boolean killedEnemy) {
         if (falling) {
             if (!doubleJumped) {
                 doubleJumped = true;
@@ -198,7 +198,11 @@ public class Player extends Entity {
                 }
             }
             changeAnimation(Animation.JUMP);
-            playSound(Sound.JUMP, false);
+            Sound jump = Sound.JUMP;
+            if (killedEnemy) {
+                jump = Sound.KILL;
+            }
+            playSound(jump, false);
         }
     }
     
