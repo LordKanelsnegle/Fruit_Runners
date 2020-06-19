@@ -1,7 +1,6 @@
 public class Fruit extends Entity {
     PImage baseSprite;
     PImage collectedSprite;
-    public Boolean collected;
     public Fruit(float x, float y, PImage sprite) {
         xPosition = x;
         yPosition = y;
@@ -11,37 +10,19 @@ public class Fruit extends Entity {
         collectedSprite = loadImage("Assets\\Items\\Fruits\\Collected.png");
     }
     
-    public void redraw() {
-        if (died) {
-            return;
-        }
-        image(spriteSheet.get(frame * Width, 0, Width, Height), xPosition, yPosition);
-        framesPassed++; //increment the frame counter
-        if (framesPassed == 3) { //if 3 frames have passed, allow the next animation frame to be drawn
-            frame++; //increment the frame
-            if (frame == maxFrame) { //if the frame is at the maximum, reset it to the first one unless the item has been collected
-                if (collected) {
-                    died = true;
-                }
-                frame = 0;
-            }
-            framesPassed = 0; //reset the frames counter
-        }
-    }
-    
     public void spawn() {
         spriteSheet = baseSprite;
         frame = 0; //reset the frame to 0
         maxFrame = spriteSheet.width / Width; //reset the maximum number of frames
-        collected = false;
         died = false;
+        disabled = false;
     }
     
     public void die() {
-        if (!collected) {
+        if (!died) {
             spriteSheet = collectedSprite;
             frame = 0;
-            collected = true;
+            died = true;
         }
     }
 }

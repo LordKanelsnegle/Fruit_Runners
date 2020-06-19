@@ -149,6 +149,7 @@ void keyReleased() {
                 }
                 break;
             case +'R': //if reset button (R) is pressed and released (to prevent accidentally resetting everytime if R is pressed too long)
+                currentLevel++;
                 player.die(); //kill the character off, which will cause the level to reset
                 break;
         }
@@ -163,7 +164,6 @@ float offset;
 //this variable records the last used background so that no background is ever repeated twice in a row
 int lastBackground;
 void draw() {
-    println("X:" + mouseX + " Y:" + mouseY); //print mouse coords for debugging
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
@@ -298,7 +298,7 @@ private void loadLevel() {
                 entities = new ArrayList<Entity>(){{
                     add(new Mushroom(250, 68, 50, 50));
                 }};
-                placeFruit(200, 70, FruitSprite.APPLE, 5, 1, 40);
+                //placeFruit(200, 70, FruitSprite.APPLE, 5, 1, 40);
             }
             //spawn the entities
             for (Entity entity : entities) {
@@ -311,8 +311,8 @@ private void loadLevel() {
             if (lastLevelLoaded != currentLevel) {
                 objects = new Object[]{
                     new Terrain(TerrainType.CARAMEL, 0, 252, 1, 1),
-                    new Terrain(TerrainType.CARAMEL, 48, 295, 4, 1),
-                    new Terrain(TerrainType.CARAMEL, 452, 50, 1, 8),
+                    new Terrain(TerrainType.BRICK, 48, 295, 4, 1),
+                    new Terrain(TerrainType.CARAMEL, 452, 50, 1, 9),
                     new Terrain(TerrainType.CARAMEL, 405, 95, 1, 7),
                     new Terrain(TerrainType.CARAMEL, 405-47, 95+45, 1, 6),
                     new Terrain(TerrainType.CARAMEL, 405-47*2, 95+45*2, 1, 5),
@@ -320,14 +320,25 @@ private void loadLevel() {
                     new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3),
                 };
                 entities = new ArrayList<Entity>(){{
-                    add(new Mushroom(250, 68, 50,50));
-                    //OLD METHOD FOR SEVERAL FRUIT
-                    /*new Fruit(5,156, FruitAnimation.ORANGE),
-                    new Fruit(5,176, FruitAnimation.ORANGE),
-                    new Fruit(5,196, FruitAnimation.ORANGE)*/
+                    add(new Mushroom(180, 260, 50,60));
+                    add(new Mushroom(225, 240, 50,50));
+                    add(new Mushroom(270, 195, 50,50));
+                    add(new Mushroom(320, 150, 50,50));
+                    add(new Mushroom(367, 105, 50,50));
+                    add(new Mushroom(410, 57, 50,50));
+                    add(new Mushroom(460, 15, 50,50));
+         
                 }};
                 //NEW METHOD FOR SEVERAL FRUIT
                 placeFruit(5, 156, FruitSprite.ORANGE, 1, 3, 20);
+                placeFruit(50, 240, FruitSprite.APPLE, 6, 1, 20);
+                placeFruit(225, 220, FruitSprite.BANANAS, 1, 1, 1);
+                placeFruit(270, 170, FruitSprite.CHERRIES, 1, 1, 1);
+                placeFruit(320, 130, FruitSprite.KIWI, 1, 1, 1);
+                placeFruit(367, 85, FruitSprite.MELON, 1, 1, 1);
+                placeFruit(410, 37, FruitSprite.PINEAPPLE, 1, 1, 1);
+                placeFruit(460, 0, FruitSprite.STRAWBERRY, 1, 1, 1);
+                
             }
             for (Entity entity : entities) {
                 entity.spawn();

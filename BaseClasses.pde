@@ -10,6 +10,7 @@ public class Object {
 //this is the base class for the player, enemies, items and traps in the level as they will all need the following
 //  properties and functions (since they need to be redrawable (animated), able to move and able to die)
 public class Entity {
+    Boolean disabled = false;
     PImage[] spriteSheets; //this is an array of the available character spritesheets
     PImage spriteSheet; //the sprite sheet in use at any given time
     int frame = 0; //a frame counter for animations
@@ -24,6 +25,9 @@ public class Entity {
     //  counts the number of frames which have passed so that the necessary assets are only drawn 1/3rd of the time (20 fps)
     int framesPassed = 0;
     public void redraw() {
+        if (disabled) {
+            return;
+        }
         //none of the sprite sheets have multiple lines so the y variable is always 0, but the x variable depends on the frame.
         //  also, if the sprite is facing right (needs to be flipped), the sprite is scaled and position is inverted
         if (flipped) {
@@ -38,7 +42,10 @@ public class Entity {
         framesPassed++; //increment the frame counter
         if (framesPassed == 3) { //if 3 frames have passed, allow the next animation frame to be drawn
             frame++; //increment the frame
-            if (frame == maxFrame && !died) { //if the frame is at the maximum, reset it to the first one
+            if (frame == maxFrame) { //if the frame is at the maximum, reset it to the first one
+                if (died) {
+                    disabled = true;
+                }
                 frame = 0; //only reset the frame counter if the entity hasnt died, so that the death animation doesnt loop
             }
             framesPassed = 0; //reset the frames counter

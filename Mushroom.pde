@@ -25,6 +25,16 @@ public class Mushroom extends Entity {
         yPosition = initialY; //set the mushroom's y coordinate
         changeAnimation(MushroomAnimation.IDLE); //set the animation to be idle initially
         died = false; //reset the death flag
+        disabled = false;
+    }
+    
+    public void die() {
+        if (!died) {
+            died = true;
+            changeAnimation(MushroomAnimation.HIT);
+            player.falling = false;
+            player.jump();
+        }
     }
     
     //this function controls the animation being displayed

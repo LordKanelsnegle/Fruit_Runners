@@ -52,6 +52,9 @@ public class Player extends Entity {
         float feetPosition = yPosition + Height;
         float headPosition = yPosition + Height * 0.5;
         for (Entity ent : entities) {
+            if (ent.died) {
+                continue;
+            }
             if (headPosition >= ent.yPosition && feetPosition <= ent.yPosition + ent.Height) { //if standing within vertical bounds of entity
                 //collisions on either side of player
                 if (leftFootPosition < ent.xPosition + ent.Width && leftFootPosition > ent.xPosition || (rightFootPosition > ent.xPosition && rightFootPosition < ent.xPosition + ent.Width)) {
