@@ -85,6 +85,7 @@ public class Player extends Entity {
                 fallSpeed = 0;
                 doubleJumped = false;
                 jumping = false;
+                jumpSpeed = 0;
                 changeAnimation(Animation.IDLE); //reset the player to the idle animation if theyre still set to falling
             }
         } else {
@@ -125,9 +126,6 @@ public class Player extends Entity {
         }
         
         jumpSpeed *= jumpAcceleration;
-        if (jumpSpeed < 1 && jumpSpeed > 0) {
-            jumpSpeed = 0;
-        }
         if (jumping) {
             yPosition -= jumpSpeed;
         }

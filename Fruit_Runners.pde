@@ -152,6 +152,7 @@ float offset;
 //this variable records the last used background so that no background is ever repeated twice in a row
 int lastBackground;
 void draw() {
+    println("X:" + mouseX + " Y:" + mouseY); //print mouse coords for debugging
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
