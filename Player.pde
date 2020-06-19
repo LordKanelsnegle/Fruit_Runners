@@ -53,24 +53,33 @@ public class Player extends Entity {
         float headPosition = yPosition + Height * 0.3;
         for (Entity ent : entities) {
             if (ent.died) {
-                continue;
+                continue; //skip dead entities
             }
-            if (headPosition >= ent.yPosition && feetPosition <= ent.yPosition + ent.Height) { //if standing within vertical bounds of entity
+            float entityLeft = ent.xPosition + 7;
+            float entityRight = ent.xPosition + ent.Width - 7;
+            float entityTop = ent.yPosition + 7;
+            float entityBottom = ent.yPosition + ent.Height - 7;
+            if (ent instanceof Mushroom) {
+                entityTop = ent.yPosition + 12;
+                entityLeft = ent.xPosition + 2;
+                entityRight = ent.xPosition + ent.Width - 2;
+            }
+            if (headPosition >= entityTop && feetPosition <= entityBottom) { //if standing within vertical bounds of entity
                 //collisions on either side of player
-                if (leftFootPosition < ent.xPosition + ent.Width && leftFootPosition > ent.xPosition || (rightFootPosition > ent.xPosition && rightFootPosition < ent.xPosition + ent.Width)) {
+                if (leftFootPosition < entityRight && leftFootPosition > entityLeft || (rightFootPosition > entityLeft && rightFootPosition < entityRight)) {
                     if (ent instanceof Fruit) {
                         ent.die(); //collect it
                     } else { //otherwise, must be an enemy
                         die();
                     }
                 }
-            } else if (rightFootPosition >= ent.xPosition && leftFootPosition <= ent.xPosition + ent.Width) { //else if standing within horizontal bounds of the object
+            } else if (rightFootPosition >= entityLeft && leftFootPosition <= entityRight) { //else if standing within horizontal bounds of the object
                 //collisions below player
-                if (feetPosition >= ent.yPosition && feetPosition <= ent.yPosition + ent.Height) {
+                if (feetPosition >= entityTop && feetPosition <= entityBottom) {
                     ent.die(); //whether enemy or fruit, kill it
                 }
                 //collisions above player
-                else if (headPosition < ent.yPosition + ent.Height && headPosition > ent.yPosition) {
+                else if (headPosition < entityBottom && headPosition > entityTop) {
                     if (ent instanceof Fruit) {
                         ent.die(); //collect it
                     } else { //otherwise, must be an enemy
@@ -212,6 +221,7 @@ public class Player extends Entity {
         yPosition = y; //set the player's y coordinate
         changeAnimation(Animation.IDLE); //set the animation to be idle initially
         died = false; //reset the death flag
+        disabled = false; //reset the disabled flag
         movingRight = false;
         movingLeft = false;
         falling = false;

@@ -2,7 +2,7 @@
 //  It extends the Entity class and thus inherits most necessary properties by default.
 public class Mushroom extends Entity {
     float initialX, initialY;
-    float patrolOne = 0, patrolTwo = 0;
+    float patrolOne, patrolTwo;
     MushroomAnimation animationState; //a variable for tracking the currently playing animation
     public Mushroom(float x, float y, float pOne, float pTwo) {
         //on initialization, set the width and height properties to 32 since all of the mushroom sprites are 32x32
@@ -20,6 +20,9 @@ public class Mushroom extends Entity {
     }
     
     public void move() {
+        if (patrolOne == 0 && patrolTwo == 0) {
+            return;
+        }
         
     }
     

@@ -345,12 +345,12 @@ private void loadLevel() {
                     new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3)
                 };
                 entities = new ArrayList<Entity>(){{
-                    add(new Mushroom(180, 260, 50,60));
-                    add(new Mushroom(225, 240, 50,50));
-                    add(new Mushroom(270, 195, 50,50));
-                    add(new Mushroom(320, 150, 50,50));
-                    add(new Mushroom(367, 105, 50,50));
-                    add(new Mushroom(410, 57, 50,50));
+                    add(new Mushroom(180, 260, 0,0));
+                    add(new Mushroom(225, 240, 0,0));
+                    add(new Mushroom(270, 195, 0,0));
+                    add(new Mushroom(320, 150, 0,0));
+                    add(new Mushroom(367, 105, 0,0));
+                    add(new Mushroom(410, 57, 0,0));
          
                 }};
                 placeFruit(5, 140, FruitSprite.ORANGE, 1, 3, 20);
