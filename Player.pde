@@ -2,14 +2,9 @@
 
 //This is the Player class, which controls the animations/movements/spawning for the player.
 //  It extends the Object class and thus inherits the necessary properties by default.
-public class Player extends Object {
-    PImage[] spriteSheets; //this is an array of the available character spritesheets
-    int sprite = 0; //an index for keeping track of the currently used character
-    int frame = 0; //a frame counter for animations
-    int maxFrame = 0; //the maximum frame for a given animation (to know when to reset the frame variable)
+public class Player extends Entity {
     Boolean jumping, doubleJumped, falling;
-    public Boolean movingRight, movingLeft, flipped = false;
-    public Boolean died = false;
+    public Boolean movingRight, movingLeft;
     public Animation animationState; //a variable for tracking the currently playing animation
     public Player() {
         //on initialization, set the width and height properties to 32 since all of the player characters are 32x32
@@ -47,44 +42,16 @@ public class Player extends Object {
         };
     }
     
-    //this is the function that actually draws the player, using get() to select the required sprite from the sprite sheet
-    //most of the player assets used are designed to run at 20 fps but the game itself should run at 60 to be smooth, so this variable
-    //  counts the number of frames which have passed so that the necessary assets are only drawn 1/3rd of the time (20 fps)
-    int frames = 0;
-    public void redraw() {
-        //none of the sprite sheets have multiple lines so the y variable is always 0, but the x variable depends on the frame.
-        //  also, if the sprite is facing right (needs to be flipped), the sprite is scaled and position is inverted
-        if (flipped) {
-            pushMatrix();
-            scale(-1, 1);
-            image(spriteSheet.get(frame * Width, 0, Width, Height), -xPosition - Width, yPosition);
-            popMatrix();
-        } else {
-            image(spriteSheet.get(frame * Width, 0, Width, Height), xPosition, yPosition);
-        }
-        
-        frames++; //increment the frame counter
-        if (frames == 3) { //if 3 frames have passed, allow the next animation frame to be drawn
-            frame++; //after getting the sprite, increment the frame
-            if (frame == maxFrame) {
-                if (!died) { //only reset the frame counter if the player hasnt died, so that the death animation doesnt loop
-                    frame = 0; //if the frame is at the maximum, reset it to the first one
-                }
-            }
-            frames = 0; //reset the frames counter
-        }
-    }
-    
     final float gravity = 1.03;
     float fallSpeed = 0;
     int fallSpeedCap = 10;
     public void checkCollisions() {
         Boolean supported = false;
+        float rightFootPosition = xPosition + 0.7 * Width;
+        float leftFootPosition = xPosition + 0.3 * Width;
+        float feetPosition = yPosition + Height;
+        float headPosition = yPosition + Height * 0.5;
         for (Object obj : objects) {
-            float rightFootPosition = xPosition + 0.7 * Width;
-            float leftFootPosition = xPosition + 0.3 * Width;
-            float feetPosition = yPosition + Height;
-            float headPosition = yPosition + Height * 0.5;
             if (headPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if standing within vertical bounds of object
                 //collisions on left of player
                 if (leftFootPosition < obj.xPosition + obj.Width && leftFootPosition > obj.xPosition) {
@@ -126,8 +93,8 @@ public class Player extends Object {
                 fallSpeed = 4;
             }
         }
-        //kill if going off screen from the bottom or either side
-        if (xPosition + Width <= 0 || xPosition >= width ||yPosition > height) {
+        //kill the player if they go off screen
+        if (xPosition + Width <= 0 || xPosition >= width || yPosition <= -Height || yPosition >= height) {
             die();
         }
     }
