@@ -268,6 +268,7 @@ private void loadLevel() {
                 objects = new Object[]{
                     new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1)
                 };
+                entities = new Entity[0];
             }
             //spawn the character just offscreen
             player.spawn(-player.Width, height - (48 + player.Height));
@@ -281,6 +282,9 @@ private void loadLevel() {
                     new Terrain(TerrainType.CARAMEL, 100, 100, 6, 3),
                     new Terrain(TerrainType.BRICK, 300, 260, 4, 1),
                     new Terrain(TerrainType.COTTONCANDY, 455, 60, 1, 8)
+                };
+                entities = new Entity[]{
+                    new Mushroom(250, 50)
                 };
             }
             //spawn the player

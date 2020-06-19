@@ -1,25 +1,24 @@
-//This is a base class for everything in the level as the player, enemies, obstacles and terrain will
-//  all need the following properties and function (since they all need to be redrawable to appear in
-//  front of the background and they all have position and dimension properties)
+//this is the base class for all terrain and platforms in the level as they will all need the following
+//  properties and function (since they need to be redrawable to appear in front of the background)
 public class Object {
-    PImage spriteSheet;
-    public float xPosition;
-    public float yPosition;
-    public int Width;
-    public int Height;
-    public void redraw(){}
+    PImage spriteSheet; //the sprite sheet in use at any given time
+    public float xPosition, yPosition; //position properties
+    public int Width, Height; //dimension properties
+    public void redraw(){} //function for redrawing the object
 }
 
+//this is the base class for the player, enemies, items and traps in the level as they will all need the following
+//  properties and functions (since they need to be redrawable (animated), able to move and able to die)
 public class Entity {
     PImage[] spriteSheets; //this is an array of the available character spritesheets
-    PImage spriteSheet;
-    int sprite = 0; //an index for keeping track of the currently used character
+    PImage spriteSheet; //the sprite sheet in use at any given time
     int frame = 0; //a frame counter for animations
     int maxFrame = 0; //the maximum frame for a given animation (to know when to reset the frame variable)
-    public float xPosition, yPosition;
-    public int Width, Height;
-    public Boolean flipped;
-    public Boolean died = false;
+    public float xPosition, yPosition; //position properties
+    public int Width, Height; //dimension properties
+    public Boolean flipped = false; //direction properties
+    public Boolean died = false; //death flag
+    
     //this function draws the entity, using get() to select the required sprite from the sprite sheet
     //most of the entity assets used are designed to run at 20 fps but the game itself should run at 60 to be smooth, so this variable
     //  counts the number of frames which have passed so that the necessary assets are only drawn 1/3rd of the time (20 fps)
@@ -47,6 +46,7 @@ public class Entity {
             framesPassed = 0; //reset the frames counter
         }
     }
+    //functions for entity movement and death
     public void move(){}
     public void die(){}
 }

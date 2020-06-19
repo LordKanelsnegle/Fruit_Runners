@@ -1,13 +1,13 @@
-//TODO: Complete die() function after finishing checkCollisions() and jump()
-
 //This is the Player class, which controls the animations/movements/spawning for the player.
-//  It extends the Object class and thus inherits the necessary properties by default.
+//  It extends the Entity class and thus inherits most necessary properties by default.
 public class Player extends Entity {
-    Boolean jumping, doubleJumped, falling;
-    public Boolean movingRight, movingLeft;
+    int sprite = 0; //an index for keeping track of the currently used character
+    Boolean jumping, doubleJumped, falling; //movement flags for tracking how to move the player
     public Animation animationState; //a variable for tracking the currently playing animation
+    public Boolean movingRight, movingLeft; //more movement flags but these are public so they
+                                            //  can be edited from Fruit_Runners functions
     public Player() {
-        //on initialization, set the width and height properties to 32 since all of the player characters are 32x32
+        //on initialization, set the width and height properties to 32 since all of the player sprites are 32x32
         Width = 32;
         Height = 32;
         spriteSheets = new PImage[]{
