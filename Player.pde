@@ -51,6 +51,31 @@ public class Player extends Entity {
         float leftFootPosition = xPosition + 0.3 * Width;
         float feetPosition = yPosition + Height;
         float headPosition = yPosition + Height * 0.5;
+        for (Entity ent : entities) {
+            if (headPosition >= ent.yPosition && feetPosition <= ent.yPosition + ent.Height) { //if standing within vertical bounds of entity
+                //collisions on either side of player
+                if (leftFootPosition < ent.xPosition + ent.Width && leftFootPosition > ent.xPosition || (rightFootPosition > ent.xPosition && rightFootPosition < ent.xPosition + ent.Width)) {
+                    if (ent instanceof Fruit) {
+                        ent.die(); //collect it
+                    } else { //otherwise, must be an enemy
+                        die();
+                    }
+                }
+            } else if (rightFootPosition >= ent.xPosition && leftFootPosition <= ent.xPosition + ent.Width) { //else if standing within horizontal bounds of the object
+                //collisions below player
+                if (feetPosition >= ent.yPosition && feetPosition <= ent.yPosition + ent.Height) {
+                    ent.die(); //whether enemy or fruit, kill it
+                }
+                //collisions above player
+                else if (headPosition < ent.yPosition + ent.Height && headPosition > ent.yPosition) {
+                    if (ent instanceof Fruit) {
+                        ent.die(); //collect it
+                    } else { //otherwise, must be an enemy
+                        die();
+                    }
+                }
+            }
+        }
         for (Object obj : objects) {
             if (headPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if standing within vertical bounds of object
                 //collisions on left of player

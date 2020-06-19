@@ -1,4 +1,5 @@
 public class Fruit extends Entity {
+    PImage baseSprite;
     PImage collectedSprite;
     public Boolean collected;
     public Fruit(float x, float y, PImage sprite) {
@@ -6,7 +7,7 @@ public class Fruit extends Entity {
         yPosition = y;
         Width = 32;
         Height = 32;
-        spriteSheet = sprite;
+        baseSprite = sprite;
         collectedSprite = loadImage("Assets\\Items\\Fruits\\Collected.png");
     }
     
@@ -29,15 +30,19 @@ public class Fruit extends Entity {
     }
     
     public void spawn() {
+        spriteSheet = baseSprite;
         frame = 0; //reset the frame to 0
         maxFrame = spriteSheet.width / Width; //reset the maximum number of frames
         collected = false;
         died = false;
     }
     
-    public void collect() {
-        spriteSheet = collectedSprite;
-        collected = true;
+    public void die() {
+        if (!collected) {
+            spriteSheet = collectedSprite;
+            frame = 0;
+            collected = true;
+        }
     }
 }
 
