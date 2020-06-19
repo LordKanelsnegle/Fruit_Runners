@@ -155,17 +155,21 @@ public class Player extends Entity {
         if (falling) {
             if (!doubleJumped) {
                 doubleJumped = true;
-                changeAnimation(Animation.DOUBLEJUMP);
                 jumpSpeed = 7;
                 jumping = true;
                 playSound(Sound.JUMP, false);
                 fallSpeed = 3;
+                changeAnimation(Animation.DOUBLEJUMP);
             }
         } else {
             jumpSpeed = 9;
             jumping = true;
             if (animationState == Animation.WALLJUMP) {
                 jumpSpeed = 7;
+                xPosition -= 20;
+                if (flipped) {
+                    xPosition += 40;
+                }
             }
             changeAnimation(Animation.JUMP);
                 playSound(Sound.JUMP, false);

@@ -1,8 +1,10 @@
 //This is the Mushroom class, which controls the animations/movements/spawning for the Mushroom enemy.
 //  It extends the Entity class and thus inherits most necessary properties by default.
 public class Mushroom extends Entity {
+    float initialX, initialY;
+    float patrolOne = 0, patrolTwo = 0;
     MushroomAnimation animationState; //a variable for tracking the currently playing animation
-    public Mushroom(float x, float y) {
+    public Mushroom(float x, float y, float pOne, float pTwo) {
         //on initialization, set the width and height properties to 32 since all of the mushroom sprites are 32x32
         Width = 32;
         Height = 32;
@@ -11,9 +13,18 @@ public class Mushroom extends Entity {
             loadImage("Assets\\Enemies\\Mushroom\\Run.png"),
             loadImage("Assets\\Enemies\\Mushroom\\Hit.png")
         };
-        xPosition = x; //set the mushroom's x coordinate
-        yPosition = y; //set the mushroom's y coordinate
+        initialX = x; //set the mushroom's x spawnpoint
+        initialY = y; //set the mushroom's y spawnpoint
+        patrolOne = pOne; //set the first patrol point
+        patrolTwo = pTwo; //set the second patrol point
+    }
+    
+    //this function allows the mushroom to be spawned at a given point
+    public void spawn() {
+        xPosition = initialX; //set the mushroom's x coordinate
+        yPosition = initialY; //set the mushroom's y coordinate
         changeAnimation(MushroomAnimation.IDLE); //set the animation to be idle initially
+        died = false; //reset the death flag
     }
     
     //this function controls the animation being displayed

@@ -46,7 +46,8 @@ public class Entity {
             framesPassed = 0; //reset the frames counter
         }
     }
-    //functions for entity movement and death
+    //functions for entity spawning, movement and death
+    public void spawn(){}
     public void move(){}
     public void die(){}
 }
