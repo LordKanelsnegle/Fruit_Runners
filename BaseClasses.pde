@@ -38,10 +38,8 @@ public class Entity {
         framesPassed++; //increment the frame counter
         if (framesPassed == 3) { //if 3 frames have passed, allow the next animation frame to be drawn
             frame++; //increment the frame
-            if (frame == maxFrame) {
-                if (!died) { //only reset the frame counter if the entity hasnt died, so that the death animation doesnt loop
-                    frame = 0; //if the frame is at the maximum, reset it to the first one
-                }
+            if (frame == maxFrame && !died) { //if the frame is at the maximum, reset it to the first one
+                frame = 0; //only reset the frame counter if the entity hasnt died, so that the death animation doesnt loop
             }
             framesPassed = 0; //reset the frames counter
         }

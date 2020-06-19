@@ -284,7 +284,7 @@ private void loadLevel() {
                     new Terrain(TerrainType.COTTONCANDY, 455, 60, 1, 8)
                 };
                 entities = new Entity[]{
-                    new Mushroom(250, 50, 50,50)
+                    new Mushroom(250, 68, 50,50)
                 };
             }
             //spawn the entities

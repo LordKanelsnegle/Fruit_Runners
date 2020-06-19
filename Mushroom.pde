@@ -29,7 +29,7 @@ public class Mushroom extends Entity {
     
     //this function controls the animation being displayed
     private void changeAnimation(MushroomAnimation animation) {
-        if (animationState == animation) { //if the animation is already playing, return so it isnt loaded again
+        if (animationState == animation) { //if the animation is already playing, return so it isnt played again
             return;
         }
         animationState = animation; //update the animation state to reflect the new animation

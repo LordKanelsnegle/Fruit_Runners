@@ -54,27 +54,27 @@ public class Player extends Entity {
         for (Object obj : objects) {
             if (headPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if standing within vertical bounds of object
                 //collisions on left of player
-                if (leftFootPosition < obj.xPosition + obj.Width && leftFootPosition > obj.xPosition) {
-                    xPosition += obj.xPosition + obj.Width - leftFootPosition;
-                    doubleJumped = false;
-                    changeAnimation(Animation.WALLJUMP);
+                if (leftFootPosition < obj.xPosition + obj.Width && leftFootPosition > obj.xPosition) { //if left foot is within horizontal bounds of object,
+                    xPosition += obj.xPosition + obj.Width - leftFootPosition;                          //  then its safe to assume the player is colliding with
+                    doubleJumped = false;                                                               //  the object from the left (ie the RIGHT side of the object)
+                    changeAnimation(Animation.WALLJUMP);                                                //  and should be placed beside it then switched to walljumping
                 }
                 //collisions on right of player
-                else if (rightFootPosition > obj.xPosition && rightFootPosition < obj.xPosition + obj.Width) {
-                    xPosition += obj.xPosition - rightFootPosition;
-                    doubleJumped = false;
-                    changeAnimation(Animation.WALLJUMP);
+                else if (rightFootPosition > obj.xPosition && rightFootPosition < obj.xPosition + obj.Width) { //if right foot is within horizontal bounds of object,
+                    xPosition += obj.xPosition - rightFootPosition;                                            //  then its safe to assume the player is colliding with
+                    doubleJumped = false;                                                                      //  the object from the right (ie the LEFT side of the object)
+                    changeAnimation(Animation.WALLJUMP);                                                       //  and should be placed beside it then switched to walljumping
                 }
             } else if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) { //else if standing within horizontal bounds of the object
                 //collisions below player
-                if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) {
-                    yPosition += obj.yPosition - feetPosition;
-                    supported = true;
+                if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if feet position is within vertical bounds of object then the object
+                    yPosition += obj.yPosition - feetPosition;                                     //  must be below the player (ie the TOP side of the object) and thus the
+                    supported = true;                                                              //  player is supported by an object and should be placed ontop of it
                 }
                 //collisions above player
-                else if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) {
-                    yPosition += obj.yPosition + obj.Height - headPosition; //using += because headPosition includes yPosition
-                    jumping = false;
+                else if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) { //if head position is within vertical bounds of object then the object
+                    yPosition += obj.yPosition + obj.Height - headPosition;                           //  must be above the player (ie the BOTTOM side of the object) and thus
+                    jumping = false;                                                                  //  the player should bump his head/cancel jump and be placed below it
                 }
             }
         }
@@ -205,7 +205,7 @@ public class Player extends Entity {
     
     //this function controls the animation being displayed
     private void changeAnimation(Animation animation) {
-        if (animationState == animation) { //if the animation is already playing, return so it isnt loaded again
+        if (animationState == animation) { //if the animation is already playing, return so it isnt played again
             return;
         }
         animationState = animation; //update the animation state to reflect the new animation

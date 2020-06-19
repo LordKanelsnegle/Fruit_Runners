@@ -7,20 +7,20 @@ public class Terrain extends Object {
         horizontal = w;
         vertical = h;
         spriteSheet = loadImage("Assets\\Terrain\\Terrain.png"); //update the file that spriteSheet points to
-        int frame = 0; //set to the grass terrain by default
-        switch (terrainType) { //check which animation it actually needs to be set to
+        int sprite = 0; //set to the grass terrain by default
+        switch (terrainType) { //check which sprite it actually needs to be set to
             case CARAMEL:
-                frame = 1;
+                sprite = 1;
                 break;
             case COTTONCANDY:
-                frame = 2;
+                sprite = 2;
                 break;
             case BRICK:
-                frame = 3;
+                sprite = 3;
             default:
                 break;
         }
-        spriteSheet = spriteSheet.get(frame * 48, 0, 48, 48);
+        spriteSheet = spriteSheet.get(sprite * 48, 0, 48, 48);
     }
     
     public void redraw() {
