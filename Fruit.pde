@@ -1,13 +1,12 @@
+PImage collectedSprite;
 public class Fruit extends Entity {
     PImage baseSprite;
-    PImage collectedSprite;
     public Fruit(float x, float y, PImage sprite) {
         xPosition = x;
         yPosition = y;
         Width = 32;
         Height = 32;
         baseSprite = sprite;
-        collectedSprite = loadImage("Assets\\Items\\Fruits\\Collected.png");
     }
     
     public void spawn() {

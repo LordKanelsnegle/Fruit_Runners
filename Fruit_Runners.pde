@@ -55,6 +55,7 @@ void setup() {
         loadImage("Assets\\Items\\Fruits\\Pineapple.png"),
         loadImage("Assets\\Items\\Fruits\\Strawberry.png")
     };
+    collectedSprite = loadImage("Assets\\Items\\Fruits\\Collected.png");;
     titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42); //load the font for the menu title
     optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25); //load the font for the menu options
     ambient.loop(); //play/loop the menu music once all assets have loaded
@@ -313,38 +314,22 @@ private void loadLevel() {
             player.flipped = false;
             break;
         case 1: //FIRST LEVEL
-            //if the level HAS changed, load all of the objects for this level
             if (lastLevelLoaded != currentLevel) {
-                objects = new Object[]{
-                    new Terrain(TerrainType.GRASS, 52, 163, 1, 2),
-                    new Terrain(TerrainType.CARAMEL, 100, 100, 6, 3),
-                    new Terrain(TerrainType.BRICK, 300, 260, 4, 1),
-                    new Terrain(TerrainType.COTTONCANDY, 455, 60, 1, 8)
-                };
-                entities = new ArrayList<Entity>(){{
-                    add(new Mushroom(250, 68, 50, 50));
-                }};
-                //placeFruit(200, 70, FruitSprite.APPLE, 5, 1, 40);
-            }
-            //spawn the entities
-            for (Entity entity : entities) {
-                entity.spawn();
-            }
-            //spawn the player
-            player.spawn(300,50);
-            break;
-        case 2: //SECOND LEVEL
-            if (lastLevelLoaded != currentLevel) {
-                objects = new Object[]{
-                    new Terrain(TerrainType.CARAMEL, 0, 252, 1, 1),
+                objects = new Object[]{ // Terrain creation
+                    //Border
+                    new Terrain(TerrainType.BRICK, -48, -10, 1, 15),
+                    new Terrain(TerrainType.BRICK, 500, -10, 1, 15),
+                    new Terrain(TerrainType.BRICK, 0, -48, 18, 1),
+                    //Level Terrain
+                    new Terrain(TerrainType.COTTONCANDY, 0, 255, 1, 1),
                     new Terrain(TerrainType.BRICK, 48, 295, 4, 1),
                     new Terrain(TerrainType.CARAMEL, 405, 95, 3, 7),
                     new Terrain(TerrainType.CARAMEL, 405-47, 95+45, 1, 6),
                     new Terrain(TerrainType.CARAMEL, 405-47*2, 95+45*2, 1, 5),
                     new Terrain(TerrainType.CARAMEL, 405-47*3, 95+45*3, 1, 4),
-                    new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3)
+                    new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3),
                 };
-                entities = new ArrayList<Entity>(){{
+                entities = new ArrayList<Entity>(){{ //Mushroom spawn
                     add(new Mushroom(180, 260, 0,0));
                     add(new Mushroom(225, 240, 0,0));
                     add(new Mushroom(270, 195, 0,0));
@@ -353,12 +338,13 @@ private void loadLevel() {
                     add(new Mushroom(410, 57, 0,0));
          
                 }};
+                //Fruit Spawn
                 placeFruit(5, 140, FruitSprite.ORANGE, 1, 3, 20);
                 placeFruit(55, 240, FruitSprite.APPLE, 6, 1, 25);
-                placeFruit(225, 220, FruitSprite.BANANAS, 1, 1, 0);
-                placeFruit(270, 170, FruitSprite.CHERRIES, 1, 1, 0);
-                placeFruit(320, 130, FruitSprite.KIWI, 1, 1, 0);
-                placeFruit(367, 85, FruitSprite.MELON, 1, 1, 0);
+                placeFruit(225, 220, FruitSprite.BANANAS, 1, 1, 1);
+                placeFruit(270, 170, FruitSprite.CHERRIES, 1, 1, 1);
+                placeFruit(320, 130, FruitSprite.KIWI, 1, 1, 1);
+                placeFruit(367, 85, FruitSprite.MELON, 1, 1, 1);
                 placeFruit(410, 37, FruitSprite.PINEAPPLE, 3, 1, 30);
                 
             }
@@ -366,6 +352,41 @@ private void loadLevel() {
                 entity.spawn();
             }
             player.spawn(5,200);
+            break;
+        case 2: //SECOND LEVEL
+            //if the level HAS changed, load all of the objects for this level
+            if (lastLevelLoaded != currentLevel) {
+                objects = new Object[]{
+                    //Border
+                    new Terrain(TerrainType.BRICK, -48, -10, 1, 15),
+                    new Terrain(TerrainType.BRICK, 500, -10, 1, 15),
+                    new Terrain(TerrainType.BRICK, 0, -48, 17, 1),
+                    //Level Terrain
+                    new Terrain(TerrainType.GRASS, 0, 140, 3, 6),
+                    new Terrain(TerrainType.COTTONCANDY, 133, 285, 9, 1),
+                    new Terrain(TerrainType.BRICK, 225, 195, 7, 1),
+                    new Terrain(TerrainType.BRICK, 250, 70, 6, 1)
+                    
+                };
+                entities = new ArrayList<Entity>(){{
+                    add(new Mushroom(150, 252, 50, 50));
+                    add(new Mushroom(280, 160, 50, 50));
+                    add(new Mushroom(420, 160, 50, 50));
+                    add(new Mushroom(420, 35, 50, 50));
+                    add(new Mushroom(280, 35, 50, 50));
+                    add(new Mushroom(15, 107, 50, 50));
+                }};
+                placeFruit(230, 250, FruitSprite.STRAWBERRY, 6, 1, 40);
+                placeFruit(250, 140, FruitSprite.PINEAPPLE, 6, 1, 40);
+                placeFruit(285, 15, FruitSprite.CHERRIES, 5, 1, 40);
+                placeFruit(5, 85, FruitSprite.ORANGE, 3, 1, 40);
+            }
+            //spawn the entities
+            for (Entity entity : entities) {
+                entity.spawn();
+            }
+            //spawn the player
+            player.spawn(460,250);
             break;
     }
     lastLevelLoaded = currentLevel; //update the value of the last level loaded to be the current level
