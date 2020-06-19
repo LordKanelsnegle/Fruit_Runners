@@ -10,36 +10,7 @@ public class Player extends Entity {
         //on initialization, set the width and height properties to 32 since all of the player sprites are 32x32
         Width = 32;
         Height = 32;
-        spriteSheets = new PImage[]{
-            loadImage("Assets\\Players\\Mask Dude\\Idle.png"),
-            loadImage("Assets\\Players\\Mask Dude\\Double Jump.png"),
-            loadImage("Assets\\Players\\Mask Dude\\Fall.png"),
-            loadImage("Assets\\Players\\Mask Dude\\Hit.png"),
-            loadImage("Assets\\Players\\Mask Dude\\Jump.png"),
-            loadImage("Assets\\Players\\Mask Dude\\Run.png"),
-            loadImage("Assets\\Players\\Mask Dude\\Wall Jump.png"),
-            loadImage("Assets\\Players\\Ninja Frog\\Idle.png"),
-            loadImage("Assets\\Players\\Ninja Frog\\Double Jump.png"),
-            loadImage("Assets\\Players\\Ninja Frog\\Fall.png"),
-            loadImage("Assets\\Players\\Ninja Frog\\Hit.png"),
-            loadImage("Assets\\Players\\Ninja Frog\\Jump.png"),
-            loadImage("Assets\\Players\\Ninja Frog\\Run.png"),
-            loadImage("Assets\\Players\\Ninja Frog\\Wall Jump.png"),
-            loadImage("Assets\\Players\\Pink Man\\Idle.png"),
-            loadImage("Assets\\Players\\Pink Man\\Double Jump.png"),
-            loadImage("Assets\\Players\\Pink Man\\Fall.png"),
-            loadImage("Assets\\Players\\Pink Man\\Hit.png"),
-            loadImage("Assets\\Players\\Pink Man\\Jump.png"),
-            loadImage("Assets\\Players\\Pink Man\\Run.png"),
-            loadImage("Assets\\Players\\Pink Man\\Wall Jump.png"),
-            loadImage("Assets\\Players\\Virtual Guy\\Idle.png"),
-            loadImage("Assets\\Players\\Virtual Guy\\Double Jump.png"),
-            loadImage("Assets\\Players\\Virtual Guy\\Fall.png"),
-            loadImage("Assets\\Players\\Virtual Guy\\Hit.png"),
-            loadImage("Assets\\Players\\Virtual Guy\\Jump.png"),
-            loadImage("Assets\\Players\\Virtual Guy\\Run.png"),
-            loadImage("Assets\\Players\\Virtual Guy\\Wall Jump.png")
-        };
+        spriteSheets = players;
     }
     
     final float gravity = 1.03;

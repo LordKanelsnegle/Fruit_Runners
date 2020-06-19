@@ -2,7 +2,10 @@ import ddf.minim.*; //import Minim audio library
 
 PImage background; //for storing the background tile
 PImage[] backgrounds; //array containing all of the backgroud tile files
+PImage[] players; //array containing all of the player files
+PImage[] mushrooms; //array containing all of the mushroom files
 PImage[] fruits; //array containing all of the fruit files
+PImage terrain; //terrain spritesheet
 Boolean triggerNewLevel = true; //flag for signalling when to change the level
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 Object[] objects; //array of objects to keep track of which things need to be redrawn
@@ -20,7 +23,6 @@ PFont optionsFont; //font for the menu options
 void setup() {
     background(33,31,48); //set a backgroud color for when the game is loading up
     size(500, 300); //set window size
-    player = new Player(); //initialize the player variable
     indicator = loadImage("Assets\\Menu\\Strawberry.png"); //load the indicator
     minim = new Minim(this); //pass 'this' to Minim so it can load files
     ambient = minim.loadFile("Assets\\Sound\\Menu Theme.mp3"); //load menu theme mp3 into ambient
@@ -45,6 +47,41 @@ void setup() {
         loadImage("Assets\\Background\\Purple.png"),
         loadImage("Assets\\Background\\Yellow.png")
     };
+    players = new PImage[]{
+        loadImage("Assets\\Players\\Mask Dude\\Idle.png"),
+        loadImage("Assets\\Players\\Mask Dude\\Double Jump.png"),
+        loadImage("Assets\\Players\\Mask Dude\\Fall.png"),
+        loadImage("Assets\\Players\\Mask Dude\\Hit.png"),
+        loadImage("Assets\\Players\\Mask Dude\\Jump.png"),
+        loadImage("Assets\\Players\\Mask Dude\\Run.png"),
+        loadImage("Assets\\Players\\Mask Dude\\Wall Jump.png"),
+        loadImage("Assets\\Players\\Ninja Frog\\Idle.png"),
+        loadImage("Assets\\Players\\Ninja Frog\\Double Jump.png"),
+        loadImage("Assets\\Players\\Ninja Frog\\Fall.png"),
+        loadImage("Assets\\Players\\Ninja Frog\\Hit.png"),
+        loadImage("Assets\\Players\\Ninja Frog\\Jump.png"),
+        loadImage("Assets\\Players\\Ninja Frog\\Run.png"),
+        loadImage("Assets\\Players\\Ninja Frog\\Wall Jump.png"),
+        loadImage("Assets\\Players\\Pink Man\\Idle.png"),
+        loadImage("Assets\\Players\\Pink Man\\Double Jump.png"),
+        loadImage("Assets\\Players\\Pink Man\\Fall.png"),
+        loadImage("Assets\\Players\\Pink Man\\Hit.png"),
+        loadImage("Assets\\Players\\Pink Man\\Jump.png"),
+        loadImage("Assets\\Players\\Pink Man\\Run.png"),
+        loadImage("Assets\\Players\\Pink Man\\Wall Jump.png"),
+        loadImage("Assets\\Players\\Virtual Guy\\Idle.png"),
+        loadImage("Assets\\Players\\Virtual Guy\\Double Jump.png"),
+        loadImage("Assets\\Players\\Virtual Guy\\Fall.png"),
+        loadImage("Assets\\Players\\Virtual Guy\\Hit.png"),
+        loadImage("Assets\\Players\\Virtual Guy\\Jump.png"),
+        loadImage("Assets\\Players\\Virtual Guy\\Run.png"),
+        loadImage("Assets\\Players\\Virtual Guy\\Wall Jump.png")
+    };
+    mushrooms = new PImage[]{ //load all of the sprite sheets
+        loadImage("Assets\\Enemies\\Mushroom\\Idle.png"),
+        loadImage("Assets\\Enemies\\Mushroom\\Run.png"),
+        loadImage("Assets\\Enemies\\Mushroom\\Hit.png")
+    };
     fruits = new PImage[]{
         loadImage("Assets\\Items\\Fruits\\Apple.png"),
         loadImage("Assets\\Items\\Fruits\\Bananas.png"),
@@ -55,9 +92,11 @@ void setup() {
         loadImage("Assets\\Items\\Fruits\\Pineapple.png"),
         loadImage("Assets\\Items\\Fruits\\Strawberry.png")
     };
-    collectedSprite = loadImage("Assets\\Items\\Fruits\\Collected.png");;
+    collectedSprite = loadImage("Assets\\Items\\Fruits\\Collected.png");
+    terrain = loadImage("Assets\\Terrain\\Terrain.png");
     titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42); //load the font for the menu title
     optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25); //load the font for the menu options
+    player = new Player(); //initialize the player variable
     ambient.loop(); //play/loop the menu music once all assets have loaded
 }
 

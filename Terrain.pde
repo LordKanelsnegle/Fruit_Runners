@@ -6,7 +6,7 @@ public class Terrain extends Object {
         yPosition = y;
         horizontal = w;
         vertical = h;
-        spriteSheet = loadImage("Assets\\Terrain\\Terrain.png"); //update the file that spriteSheet points to
+        spriteSheet = terrain; //update the file that spriteSheet points to
         int sprite = 0; //set to the grass terrain by default
         switch (terrainType) { //check which sprite it actually needs to be set to
             case CARAMEL:

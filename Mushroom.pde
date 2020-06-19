@@ -9,11 +9,7 @@ public class Mushroom extends Entity {
         //on initialization, set the width and height properties to 32 since all of the mushroom sprites are 32x32
         Width = 32;
         Height = 32;
-        spriteSheets = new PImage[]{ //load all of the sprite sheets
-            loadImage("Assets\\Enemies\\Mushroom\\Idle.png"),
-            loadImage("Assets\\Enemies\\Mushroom\\Run.png"),
-            loadImage("Assets\\Enemies\\Mushroom\\Hit.png")
-        };
+        spriteSheets = mushrooms;
         initialX = x; //set the mushroom's x spawnpoint
         initialY = y; //set the mushroom's y spawnpoint
         patrolOne = pOne; //set the first patrol point
