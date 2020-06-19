@@ -170,7 +170,7 @@ public class Player extends Entity {
                 }
             }
             changeAnimation(Animation.JUMP);
-                playSound(Sound.JUMP, false);
+            playSound(Sound.JUMP, false);
         }
     }
     

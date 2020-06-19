@@ -1,11 +1,12 @@
 import ddf.minim.*; //import Minim audio library
 
 PImage background; //for storing the background tile
-PImage[] backgrounds; //array containing all of the backgroud tile filenames
+PImage[] backgrounds; //array containing all of the backgroud tile files
+PImage[] fruits; //array containing all of the fruit files
 Boolean triggerNewLevel = true; //flag for signalling when to change the level
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 Object[] objects; //array of objects to keep track of which things need to be redrawn
-Entity[] entities; //array of entities to keep track of which entities need to move and be redrawn
+ArrayList<Entity> entities; //list of entities to keep track of which entities need to move and be redrawn
 
 Player player; //global instance of the player for use where needed
 PImage indicator; //image of an indicator for use on the main menu
@@ -41,6 +42,16 @@ void setup() {
         loadImage("Assets\\Background\\Pink.png"),
         loadImage("Assets\\Background\\Purple.png"),
         loadImage("Assets\\Background\\Yellow.png")
+    };
+    fruits = new PImage[]{
+        loadImage("Assets\\Items\\Fruits\\Apple.png"),
+        loadImage("Assets\\Items\\Fruits\\Bananas.png"),
+        loadImage("Assets\\Items\\Fruits\\Cherries.png"),
+        loadImage("Assets\\Items\\Fruits\\Kiwi.png"),
+        loadImage("Assets\\Items\\Fruits\\Melon.png"),
+        loadImage("Assets\\Items\\Fruits\\Orange.png"),
+        loadImage("Assets\\Items\\Fruits\\Pineapple.png"),
+        loadImage("Assets\\Items\\Fruits\\Strawberry.png")
     };
     titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42); //load the font for the menu title
     optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25); //load the font for the menu options
@@ -269,7 +280,7 @@ private void loadLevel() {
                 objects = new Object[]{
                     new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1)
                 };
-                entities = new Entity[0];
+                entities = new ArrayList<Entity>();
             }
             //spawn the character just offscreen
             player.spawn(-player.Width, height - (48 + player.Height));
@@ -284,9 +295,10 @@ private void loadLevel() {
                     new Terrain(TerrainType.BRICK, 300, 260, 4, 1),
                     new Terrain(TerrainType.COTTONCANDY, 455, 60, 1, 8)
                 };
-                entities = new Entity[]{
-                    new Mushroom(250, 68, 50,50)
-                };
+                entities = new ArrayList<Entity>(){{
+                    add(new Mushroom(250, 68, 50, 50));
+                }};
+                placeFruit(200, 70, FruitSprite.APPLE, 5, 1, 40);
             }
             //spawn the entities
             for (Entity entity : entities) {
@@ -294,6 +306,33 @@ private void loadLevel() {
             }
             //spawn the player
             player.spawn(300,50);
+            break;
+        case 2: //SECOND LEVEL
+            if (lastLevelLoaded != currentLevel) {
+                objects = new Object[]{
+                    new Terrain(TerrainType.CARAMEL, 0, 252, 1, 1),
+                    new Terrain(TerrainType.CARAMEL, 48, 295, 4, 1),
+                    new Terrain(TerrainType.CARAMEL, 452, 50, 1, 8),
+                    new Terrain(TerrainType.CARAMEL, 405, 95, 1, 7),
+                    new Terrain(TerrainType.CARAMEL, 405-47, 95+45, 1, 6),
+                    new Terrain(TerrainType.CARAMEL, 405-47*2, 95+45*2, 1, 5),
+                    new Terrain(TerrainType.CARAMEL, 405-47*3, 95+45*3, 1, 4),
+                    new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3),
+                };
+                entities = new ArrayList<Entity>(){{
+                    add(new Mushroom(250, 68, 50,50));
+                    //OLD METHOD FOR SEVERAL FRUIT
+                    /*new Fruit(5,156, FruitAnimation.ORANGE),
+                    new Fruit(5,176, FruitAnimation.ORANGE),
+                    new Fruit(5,196, FruitAnimation.ORANGE)*/
+                }};
+                //NEW METHOD FOR SEVERAL FRUIT
+                placeFruit(5, 156, FruitSprite.ORANGE, 1, 3, 20);
+            }
+            for (Entity entity : entities) {
+                entity.spawn();
+            }
+            player.spawn(5,200);
             break;
     }
     lastLevelLoaded = currentLevel; //update the value of the last level loaded to be the current level
