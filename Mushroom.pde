@@ -58,7 +58,7 @@ public class Mushroom extends Entity {
         } else {
             speed = 0;
             changeAnimation(MushroomAnimation.IDLE);
-            if (delay == 90) {
+            if (delay == 60) {
                 delay = 0;
                 if (xPosition == initialX + patrolTwo) {
                     movingLeft = true;

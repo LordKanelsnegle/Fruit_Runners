@@ -64,9 +64,9 @@ public class Player extends Entity {
                 entityLeft = ent.xPosition + 2;
                 entityRight = ent.xPosition + ent.Width - 2;
             }
-            if (headPosition >= entityTop && feetPosition <= entityBottom) { //if standing within vertical bounds of entity
+            if (headPosition <= entityTop && feetPosition >= entityBottom) { //if entity standing within vertical bounds of player
                 //collisions on either side of player
-                if (leftFootPosition < entityRight && leftFootPosition > entityLeft || (rightFootPosition > entityLeft && rightFootPosition < entityRight)) {
+                if ((leftFootPosition < entityRight && leftFootPosition > entityLeft) || (rightFootPosition > entityLeft && rightFootPosition < entityRight)) {
                     if (ent instanceof Fruit) {
                         ent.die(); //collect it
                     } else { //otherwise, must be an enemy

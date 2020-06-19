@@ -330,12 +330,12 @@ private void loadLevel() {
                     new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3),
                 };
                 entities = new ArrayList<Entity>(){{ //Mushroom spawn
-                    add(new Mushroom(180, 260, 130,0));
-                    add(new Mushroom(225, 240, 0,0));
-                    add(new Mushroom(270, 195, 0,0));
-                    add(new Mushroom(320, 150, 0,0));
-                    add(new Mushroom(367, 105, 0,0));
-                    add(new Mushroom(410, 57, 0,0));
+                    add(new Mushroom(180, 263, 130,0));
+                    add(new Mushroom(225, 243, 0,0));
+                    add(new Mushroom(270, 198, 0,0));
+                    add(new Mushroom(320, 153, 0,0));
+                    add(new Mushroom(367, 108, 0,0));
+                    add(new Mushroom(410, 63, 0,50));
          
                 }};
                 //Fruit Spawn
@@ -369,12 +369,12 @@ private void loadLevel() {
                     
                 };
                 entities = new ArrayList<Entity>(){{
-                    add(new Mushroom(150, 252, 50, 50));
-                    add(new Mushroom(280, 160, 50, 50));
-                    add(new Mushroom(420, 160, 50, 50));
-                    add(new Mushroom(420, 35, 50, 50));
-                    add(new Mushroom(280, 35, 50, 50));
-                    add(new Mushroom(15, 107, 50, 50));
+                    add(new Mushroom(150, 253, 0, 200));
+                    add(new Mushroom(280, 163, 60, 190));
+                    add(new Mushroom(420, 163, 175, 30));
+                    add(new Mushroom(420, 38, 155, 30));
+                    add(new Mushroom(280, 38, 30, 165));
+                    add(new Mushroom(15, 108, 17, 70));
                 }};
                 placeFruit(230, 250, FruitSprite.STRAWBERRY, 6, 1, 40);
                 placeFruit(250, 140, FruitSprite.PINEAPPLE, 6, 1, 40);
