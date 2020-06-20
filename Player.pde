@@ -199,6 +199,7 @@ public class Player extends Entity {
             Sound jump = Sound.JUMP;
             if (killedEnemy) {
                 jump = Sound.KILL;
+                doubleJumped = false;
             }
             playSound(jump, false);
         }
