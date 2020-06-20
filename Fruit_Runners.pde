@@ -7,7 +7,7 @@ PImage[] mushrooms; //array containing all of the mushroom files
 PImage[] fruits; //array containing all of the fruit files
 PImage terrain; //terrain spritesheet
 Boolean triggerNewLevel = true; //flag for signalling when to change the level
-int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
+int currentLevel = 2; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 Object[] objects; //array of objects to keep track of which things need to be redrawn
 ArrayList<Entity> entities; //list of entities to keep track of which entities need to move and be redrawn
 
@@ -24,6 +24,7 @@ PFont smallFont; //font for the tips and fps counter
 void setup() {
     background(33,31,48); //set a backgroud color for when the game is loading up
     size(500, 300, P2D); //set window size and set graphics renderer to P2D
+    frame.setResizable(false);
     noCursor();
     noStroke();
     indicator = loadImage("Assets\\Menu\\Strawberry.png"); //load the indicator
@@ -205,6 +206,7 @@ float offset;
 int lastBackground;
 int winDelay;
 void draw() {
+    scale( width/500.0, height/300.0);
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
