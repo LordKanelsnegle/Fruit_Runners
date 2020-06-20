@@ -73,12 +73,15 @@ public class Player extends Entity {
                 //collisions on left of player
                 if (leftFootPosition - 4 <= obj.xPosition + obj.Width && leftFootPosition - 4 >= obj.xPosition) {
                     xPosition += obj.xPosition + obj.Width - leftFootPosition + 4;
-                    if (falling && jumpSpeed <= fallSpeed) {
-                        wallJumping = true;
-                        doubleJumped = false;
-                        flipped = true;
-                        changeAnimation(Animation.WALLJUMP);
-                        xPosition -= 3;
+                    if (falling) {
+                        if (jumpSpeed <= fallSpeed) {
+                            wallJumping = true;
+                            doubleJumped = false;
+                            flipped = true;
+                            changeAnimation(Animation.WALLJUMP);
+                            xPosition -= 3;
+                            jumpSpeed = 0;
+                        }
                     } else {
                         changeAnimation(Animation.IDLE);
                     }
@@ -86,12 +89,15 @@ public class Player extends Entity {
                 //collisions on right of player
                 else if (rightFootPosition + 4 >= obj.xPosition && rightFootPosition + 4 <= obj.xPosition + obj.Width) {
                     xPosition += obj.xPosition - rightFootPosition - 4;
-                    if (falling && jumpSpeed <= fallSpeed) {
-                        wallJumping = true;
-                        doubleJumped = false;
-                        flipped = false;
-                        changeAnimation(Animation.WALLJUMP);
-                        xPosition += 3;
+                    if (falling) {
+                        if (jumpSpeed <= fallSpeed) {
+                            wallJumping = true;
+                            doubleJumped = false;
+                            flipped = false;
+                            changeAnimation(Animation.WALLJUMP);
+                            xPosition += 3;
+                            jumpSpeed = 0;
+                        }
                     } else {
                         changeAnimation(Animation.IDLE);
                     }
@@ -140,9 +146,8 @@ public class Player extends Entity {
     float speed = 0;
     float speedCap = 2.4;
     public void move() {
-        if (wallJumping) {
+        if (animationState == Animation.WALLJUMP) {
             fallSpeedCap = 2;
-            println("wall jumping "+frameCount);
         } else {
             fallSpeedCap = 10;
         }
@@ -171,7 +176,7 @@ public class Player extends Entity {
         }
         
         jumpSpeed *= jumpAcceleration;
-        if (jumping) {
+        if (jumping && !wallJumping) {
             yPosition -= jumpSpeed;
             if (jumpSpeed < fallSpeed) {
                 changeAnimation(Animation.FALL);
@@ -212,13 +217,6 @@ public class Player extends Entity {
             jumping = true;
             if (wallJumping) {
                 jumpSpeed = 7;
-                if (flipped) {
-                    movingLeft = true;
-                    movingRight = false;
-                } else {
-                    movingRight = true;
-                    movingLeft = false;
-                }
             }
             changeAnimation(Animation.JUMP);
             Sound jump = Sound.JUMP;
@@ -263,6 +261,9 @@ public class Player extends Entity {
     private void changeAnimation(Animation animation) {
         if (animationState == animation || (falling && (animation == Animation.RUN || animation == Animation.IDLE))) { //if the animation is already playing, return so it isnt played again
             return;
+        }
+        if (animationState == Animation.WALLJUMP) { //if about to change from walljumping (ie walljump has ended), revert flipped
+            flipped = !flipped;
         }
         animationState = animation; //update the animation state to reflect the new animation
         int index = 0;
