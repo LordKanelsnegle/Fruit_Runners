@@ -371,7 +371,6 @@ private void loadLevel() {
                 };
                 entities = new ArrayList<Entity>(){{ //Mushroom spawn
                     add(new Mushroom(180,263, 130,0));
-                    add(new Mushroom(180,263, 130,0));
                     add(new Mushroom(225,243, 0,0));
                     add(new Mushroom(270,198, 0,0));
                     add(new Mushroom(320,153, 0,0));
