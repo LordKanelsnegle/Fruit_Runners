@@ -74,8 +74,13 @@ public class Mushroom extends Entity {
         changeAnimation(MushroomAnimation.IDLE); //set the animation to be idle initially
         died = false; //reset the death flag
         disabled = false;
-        movingRight = true;
-        movingLeft = true;
+        if (abs(xPosition - (initialX - patrolOne)) < abs(xPosition - (initialX + patrolTwo))) {
+            movingLeft = true;
+            movingRight = false;
+        } else {
+            movingRight = true;
+            movingLeft = false;
+        }
     }
     
     public void die() {
