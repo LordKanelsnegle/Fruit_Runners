@@ -19,10 +19,13 @@ AudioPlayer[] soundEffects; //array of sound effect audio players
 
 PFont titleFont; //font for the menu title
 PFont optionsFont; //font for the menu options
+PFont smallFont; //font for the tips and fps counter
 
 void setup() {
     background(33,31,48); //set a backgroud color for when the game is loading up
-    size(500, 300); //set window size
+    size(500, 300, P2D); //set window size and set graphics renderer to P2D
+    noCursor();
+    noStroke();
     indicator = loadImage("Assets\\Menu\\Strawberry.png"); //load the indicator
     minim = new Minim(this); //pass 'this' to Minim so it can load files
     ambient = minim.loadFile("Assets\\Sound\\Menu Theme.mp3"); //load menu theme mp3 into ambient
@@ -96,6 +99,7 @@ void setup() {
     terrain = loadImage("Assets\\Terrain\\Terrain.png");
     titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42); //load the font for the menu title
     optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25); //load the font for the menu options
+    smallFont = createFont("Assets\\Menu\\Text\\Options.ttf", 10); //load the font for the small text
     player = new Player(); //initialize the player variable
     ambient.loop(); //play/loop the menu music once all assets have loaded
 }
@@ -153,7 +157,6 @@ void keyReleased() {
                         ambient.setGain(-10); //set gain to -10db again since loading a new track resets the gain
                         ambient.loop(); //loop the game music
                     }
-                    frameRate(60); //set the framerate back up to 60
                     player.die(); //kill the player to load the next level
                 } else if (option == 1) { //if the music toggle has been selected
                     if (ambient.isPlaying()) {
@@ -230,15 +233,15 @@ void draw() {
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
         winDelay = 0;
-        if (currentLevel == 0) {
-            frameRate(30); //set menu fps to 30 so menu background plays in "slow motion"
-        } else {
-            frameRate(60); //otherwise set to 60
-        }
         loadLevel(); //load the level (corresponding to currentLevel)
     }
     
     //these nested for loops display the grid of background tiles
+    int skipFrames = 1;
+    if (currentLevel == 0) {
+        skipFrames = 2;
+    }
+    if (frameCount % skipFrames == 0) {
     for (int x = 0; x < columns; x++) {
         for (int y = 0; y < rows; y++) {
             image(background, x * background.width, y * background.height + offset);
@@ -259,6 +262,8 @@ void draw() {
     for (Object obj : objects) {
         obj.redraw();
     }
+    }
+    
     //move all of the entities however much they should be moved,
     //  then redraw all of the level entities so that they appear in front of the background
     Boolean levelComplete = !entities.isEmpty();
@@ -290,15 +295,15 @@ void draw() {
     
     //if this is the menu, additionally display menu text
     if (currentLevel == 0) {
-        displayText("FRUIT RUNNERS", true, width/2, height * 0.05);
-        displayText("PLAY", false, width/2, height * 0.25);
+        displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
+        displayText("PLAY", optionsFont, width/2, height * 0.25);
         //display different music option text depending on whether the music is playing or not
         if (ambient.isPlaying()) {
-            displayText("MUSIC OFF", false, width/2, height * 0.36);
+            displayText("MUSIC OFF", optionsFont, width/2, height * 0.36);
         } else {
-            displayText("MUSIC ON", false, width/2, height * 0.36);
+            displayText("MUSIC ON", optionsFont, width/2, height * 0.36);
         }
-        displayText("QUIT", false, width/2, height * 0.47);
+        displayText("QUIT", optionsFont, width/2, height * 0.47);
         switch (option) {  //check the currently selected option and display the indicator beside it
             case 0:
                 image(indicator, width * 0.35, height * 0.25);
@@ -314,15 +319,15 @@ void draw() {
                 image(indicator, width * 0.35, height * 0.47);
                 break;
         }
+        displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
+        displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
     }
+    displayText(int(frameRate) + " FPS", smallFont, 28, 2);
 }
 
 //this function is used for displaying the text on the menu (with an outline)
-private void displayText(String text, Boolean isTitle, float x, float y) {
-    textFont(optionsFont); //set the font to the options font by default
-    if (isTitle) { //if the text being displayed is for the title, set the font to the title font instead
-        textFont(titleFont);
-    }
+private void displayText(String text, PFont font, float x, float y) {
+    textFont(font); //set the font
     textAlign(CENTER, TOP); //set the text align to be centered and anchored from the top
     fill(0); //set the color to black
     //create an outline effect by putting two black texts behind the white one with varied offsets
@@ -433,6 +438,9 @@ private void loadLevel() {
 
 //the following 2 functions and enumerator are used for playing and stopping sound effects
 public void playSound(Sound sound, Boolean loop) {
+    if (currentLevel == 0 && !(sound == Sound.SELECT || sound == Sound.CONFIRM || sound == Sound.HURT)) { //dont play sound effects on main menu unless its a menu or death sound
+        return;
+    }
     int effect = 0;
     int gain = -10;
     switch (sound) {

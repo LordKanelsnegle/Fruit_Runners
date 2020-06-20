@@ -47,7 +47,16 @@ public class Player extends Entity {
             } else if (rightFootPosition >= entityLeft && leftFootPosition <= entityRight) { //else if standing within horizontal bounds of the object
                 //collisions below player
                 if (feetPosition >= entityTop && feetPosition <= entityBottom) {
-                    ent.die(); //whether enemy or fruit, kill it
+                    //ent.die(); //whether enemy or fruit, kill it
+                    if (ent instanceof Fruit) {
+                        ent.die(); //collect it
+                    } else { //otherwise, must be an enemy
+                        if (animationState == Animation.FALL) {
+                            ent.die();
+                        } else {
+                            die();
+                        }
+                    }
                 }
                 //collisions above player
                 else if (headPosition < entityBottom && headPosition > entityTop) {
@@ -113,7 +122,7 @@ public class Player extends Entity {
     float jumpSpeed = 0;
     final float acceleration = 1.6;
     float speed = 0;
-    final float speedCap = 2.4;
+    float speedCap = 2.4;
     public void move() {
         if (falling) {
             if (fallSpeed < fallSpeedCap) {
@@ -127,15 +136,24 @@ public class Player extends Entity {
             }
         }
         
-        if (currentLevel > 0 && animationState == Animation.RUN) {
-            playSound(Sound.RUN, true);
+        if (currentLevel != 0) {
+            speedCap = 2.4;
+            if (animationState == Animation.RUN) {
+                playSound(Sound.RUN, true);
+            } else {
+                stopSound(Sound.RUN);
+            }
         } else {
+            speedCap = 1.2;
             stopSound(Sound.RUN);
         }
         
         jumpSpeed *= jumpAcceleration;
         if (jumping) {
             yPosition -= jumpSpeed;
+            if (jumpSpeed < fallSpeed) {
+                changeAnimation(Animation.FALL);
+            }
         }
         if (speed < speedCap) {
             speed *= acceleration;
