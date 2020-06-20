@@ -7,7 +7,7 @@ PImage[] mushrooms; //array containing all of the mushroom files
 PImage[] fruits; //array containing all of the fruit files
 PImage terrain; //terrain spritesheet
 Boolean triggerNewLevel = true; //flag for signalling when to change the level
-int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
+int currentLevel = 1; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 Object[] objects; //array of objects to keep track of which things need to be redrawn
 ArrayList<Entity> entities; //list of entities to keep track of which entities need to move and be redrawn
 
@@ -125,7 +125,7 @@ void keyPressed() {
     }
     //if both left and right are pressed, reset the player to the idle animation since they won't be able to move
     if (player.movingRight && player.movingLeft && player.animationState != Animation.IDLE) {
-        player.changeAnimation(Animation.IDLE); 
+        player.changeAnimation(Animation.IDLE);
     }
 }
 
@@ -177,10 +177,8 @@ void keyReleased() {
                 if (player.movingRight) {
                     player.flipped = false;
                 }
-                //if the player is NOT falling, set them back to the idle animation once they release the left key
-                if (player.animationState != Animation.FALL) {
-                    player.changeAnimation(Animation.IDLE);
-                }
+                //set the player back to the idle animation once they release the left key
+                player.changeAnimation(Animation.IDLE);
                 break;
             case RIGHT:
                 player.movingRight = false; //update the player's movingRight flag
@@ -188,10 +186,8 @@ void keyReleased() {
                 if (player.movingLeft) {
                     player.flipped = true;
                 }
-                //if the player is NOT falling, set them back to the idle animation once they release the right key
-                if (player.animationState != Animation.FALL) {
-                    player.changeAnimation(Animation.IDLE);
-                }
+                //set the player back to the idle animation once they release the right key
+                player.changeAnimation(Animation.IDLE);
                 break;
             case +'R': //if reset button (R) is pressed and released (to prevent accidentally resetting everytime if R is pressed too long)
                 player.die(); //kill the character off, which will cause the level to reset
@@ -242,26 +238,26 @@ void draw() {
         skipFrames = 2;
     }
     if (frameCount % skipFrames == 0) {
-    for (int x = 0; x < columns; x++) {
-        for (int y = 0; y < rows; y++) {
-            image(background, x * background.width, y * background.height + offset);
+        for (int x = 0; x < columns; x++) {
+            for (int y = 0; y < rows; y++) {
+                image(background, x * background.width, y * background.height + offset);
+            }
+            //this part ensures that the gap at the top created by offsetting the y axis is filled
+            image(background, x * background.width, offset - background.height);
         }
-        //this part ensures that the gap at the top created by offsetting the y axis is filled
-        image(background, x * background.width, offset - background.height);
-    }
-    //this simple if statement ensures that the offset is increased every loop until it has reached
-    //  the size of one full tile height, then resets it to 0 so that the next iteration of draw()
-    //  displays the tiles starting from the top again (with no offset)
-    if (offset >= background.height) {
-        offset = 0;
-    } else {
-        offset += 0.32;
-    }
-    
-    //redraw all of the level objects so that they appear in front of the background
-    for (Object obj : objects) {
-        obj.redraw();
-    }
+        //this simple if statement ensures that the offset is increased every loop until it has reached
+        //  the size of one full tile height, then resets it to 0 so that the next iteration of draw()
+        //  displays the tiles starting from the top again (with no offset)
+        if (offset >= background.height) {
+            offset = 0;
+        } else {
+            offset += 0.32;
+        }
+        
+        //redraw all of the level objects so that they appear in front of the background
+        for (Object obj : objects) {
+            obj.redraw();
+        }
     }
     
     //move all of the entities however much they should be moved,
@@ -361,35 +357,35 @@ private void loadLevel() {
             if (lastLevelLoaded != currentLevel) {
                 objects = new Object[]{ // Terrain creation
                     //Border
-                    new Terrain(TerrainType.BRICK, -48, -10, 1, 15),
-                    new Terrain(TerrainType.BRICK, 500, -10, 1, 15),
-                    new Terrain(TerrainType.BRICK, 0, -48, 18, 1),
+                    new Terrain(TerrainType.BRICK, -46,0, 1,15),
+                    new Terrain(TerrainType.BRICK, width-2,0, 1,15),
+                    new Terrain(TerrainType.BRICK, 0,-46, 15,1),
                     //Level Terrain
-                    new Terrain(TerrainType.COTTONCANDY, 0, 255, 1, 1),
-                    new Terrain(TerrainType.BRICK, 48, 295, 4, 1),
-                    new Terrain(TerrainType.CARAMEL, 405, 95, 3, 7),
-                    new Terrain(TerrainType.CARAMEL, 405-47, 95+45, 1, 6),
-                    new Terrain(TerrainType.CARAMEL, 405-47*2, 95+45*2, 1, 5),
-                    new Terrain(TerrainType.CARAMEL, 405-47*3, 95+45*3, 1, 4),
-                    new Terrain(TerrainType.CARAMEL, 405-47*4, 95+45*4, 1,3),
+                    new Terrain(TerrainType.COTTONCANDY, 0,255, 1, 1),
+                    new Terrain(TerrainType.BRICK, 48,295, 4,1),
+                    new Terrain(TerrainType.CARAMEL, 405,95, 3,7),
+                    new Terrain(TerrainType.CARAMEL, 405-47,95+45, 1,6),
+                    new Terrain(TerrainType.CARAMEL, 405-47*2,95+45*2, 1,5),
+                    new Terrain(TerrainType.CARAMEL, 405-47*3,95+45*3, 1,4),
+                    new Terrain(TerrainType.CARAMEL, 405-47*4,95+45*4, 1,3),
                 };
                 entities = new ArrayList<Entity>(){{ //Mushroom spawn
-                    add(new Mushroom(180, 263, 130,0));
-                    add(new Mushroom(225, 243, 0,0));
-                    add(new Mushroom(270, 198, 0,0));
-                    add(new Mushroom(320, 153, 0,0));
-                    add(new Mushroom(367, 108, 0,0));
-                    add(new Mushroom(410, 63, 0,50));
+                    add(new Mushroom(180,263, 130,0));
+                    add(new Mushroom(225,243, 0,0));
+                    add(new Mushroom(270,198, 0,0));
+                    add(new Mushroom(320,153, 0,0));
+                    add(new Mushroom(367,108, 0,0));
+                    add(new Mushroom(410,63, 0,50));
          
                 }};
                 //Fruit Spawn
-                placeFruit(5, 140, FruitSprite.ORANGE, 1, 3, 20);
-                placeFruit(55, 240, FruitSprite.APPLE, 6, 1, 25);
-                placeFruit(225, 220, FruitSprite.BANANAS, 1, 1, 1);
-                placeFruit(270, 170, FruitSprite.CHERRIES, 1, 1, 1);
-                placeFruit(320, 130, FruitSprite.KIWI, 1, 1, 1);
-                placeFruit(367, 85, FruitSprite.MELON, 1, 1, 1);
-                placeFruit(410, 37, FruitSprite.PINEAPPLE, 3, 1, 30);
+                placeFruit(5,140, FruitSprite.ORANGE, 1,3, 20);
+                placeFruit(55,240, FruitSprite.APPLE, 6,1, 25);
+                placeFruit(225,220, FruitSprite.BANANAS, 1,1, 1);
+                placeFruit(270,170, FruitSprite.CHERRIES, 1,1, 1);
+                placeFruit(320,130, FruitSprite.KIWI, 1,1, 1);
+                placeFruit(367,85, FruitSprite.MELON, 1,1, 1);
+                placeFruit(410,37, FruitSprite.PINEAPPLE, 3,1, 30);
                 
             }
             for (Entity entity : entities) {
@@ -402,28 +398,28 @@ private void loadLevel() {
             if (lastLevelLoaded != currentLevel) {
                 objects = new Object[]{
                     //Border
-                    new Terrain(TerrainType.BRICK, -48, -10, 1, 15),
-                    new Terrain(TerrainType.BRICK, 500, -10, 1, 15),
-                    new Terrain(TerrainType.BRICK, 0, -48, 17, 1),
+                    new Terrain(TerrainType.BRICK, -46,0, 1,15),
+                    new Terrain(TerrainType.BRICK, width-2,0, 1,15),
+                    new Terrain(TerrainType.BRICK, 0,-46, 15,1),
                     //Level Terrain
-                    new Terrain(TerrainType.GRASS, 0, 140, 3, 6),
-                    new Terrain(TerrainType.COTTONCANDY, 133, 285, 9, 1),
-                    new Terrain(TerrainType.BRICK, 225, 195, 7, 1),
-                    new Terrain(TerrainType.BRICK, 250, 70, 6, 1)
+                    new Terrain(TerrainType.GRASS, 0,140, 3,6),
+                    new Terrain(TerrainType.COTTONCANDY, 133,285, 9,1),
+                    new Terrain(TerrainType.BRICK, 225,195, 7,1),
+                    new Terrain(TerrainType.BRICK, 250,70, 6,1)
                     
                 };
                 entities = new ArrayList<Entity>(){{
-                    add(new Mushroom(150, 253, 0, 200));
-                    add(new Mushroom(280, 163, 60, 190));
-                    add(new Mushroom(420, 163, 175, 30));
-                    add(new Mushroom(420, 38, 155, 30));
-                    add(new Mushroom(280, 38, 30, 165));
-                    add(new Mushroom(15, 108, 17, 70));
+                    add(new Mushroom(150,253, 0,200));
+                    add(new Mushroom(280,163, 60,190));
+                    add(new Mushroom(420,163, 175,30));
+                    add(new Mushroom(420,38, 155,30));
+                    add(new Mushroom(280,38, 30,165));
+                    add(new Mushroom(15,108, 17,70));
                 }};
-                placeFruit(230, 250, FruitSprite.STRAWBERRY, 6, 1, 40);
-                placeFruit(250, 140, FruitSprite.PINEAPPLE, 6, 1, 40);
-                placeFruit(285, 15, FruitSprite.CHERRIES, 5, 1, 40);
-                placeFruit(5, 85, FruitSprite.ORANGE, 3, 1, 40);
+                placeFruit(230,250, FruitSprite.STRAWBERRY, 6,1, 40);
+                placeFruit(250,140, FruitSprite.PINEAPPLE, 6,1, 40);
+                placeFruit(285,15, FruitSprite.CHERRIES, 5,1, 40);
+                placeFruit(5,85, FruitSprite.ORANGE, 3,1, 40);
             }
             //spawn the entities
             for (Entity entity : entities) {

@@ -20,7 +20,7 @@ public class Terrain extends Object {
             default:
                 break;
         }
-        spriteSheet = spriteSheet.get(sprite * 48, 0, 48, 48);
+        spriteSheet = spriteSheet.get(sprite * spriteSheet.height, 0, spriteSheet.height, spriteSheet.height);
     }
     
     public void redraw() {

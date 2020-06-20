@@ -2,7 +2,7 @@
 //  It extends the Entity class and thus inherits most necessary properties by default.
 public class Player extends Entity {
     int sprite = 0; //an index for keeping track of the currently used character
-    Boolean jumping, doubleJumped, falling; //movement flags for tracking how to move the player
+    Boolean jumping, doubleJumped, wallJumping, falling; //movement flags for tracking how to move the player
     public Animation animationState; //a variable for tracking the currently playing animation
     public Boolean movingRight, movingLeft; //more movement flags but these are public so they
                                             //  can be edited from Fruit_Runners functions
@@ -71,16 +71,32 @@ public class Player extends Entity {
         for (Object obj : objects) {
             if (headPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if standing within vertical bounds of object
                 //collisions on left of player
-                if (leftFootPosition - 2 < obj.xPosition + obj.Width && leftFootPosition - 2 > obj.xPosition) { //if left foot is within horizontal bounds of object,
-                    xPosition += obj.xPosition + obj.Width - leftFootPosition + 2;                      //  then its safe to assume the player is colliding with
-                    doubleJumped = false;                                                               //  the object from the left (ie the RIGHT side of the object)
-                    changeAnimation(Animation.WALLJUMP);                                                //  and should be placed beside it then switched to walljumping
+                if (leftFootPosition - 4 <= obj.xPosition + obj.Width && leftFootPosition - 4 >= obj.xPosition) {
+                    xPosition += obj.xPosition + obj.Width - leftFootPosition + 4;
+                    if (falling && jumpSpeed <= fallSpeed) {
+                        wallJumping = true;
+                        doubleJumped = false;
+                        flipped = true;
+                        changeAnimation(Animation.WALLJUMP);
+                        xPosition -= 3;
+                    } else {
+                        changeAnimation(Animation.IDLE);
+                    }
                 }
                 //collisions on right of player
-                else if (rightFootPosition + 2 > obj.xPosition && rightFootPosition + 2 < obj.xPosition + obj.Width) { //if right foot is within horizontal bounds of object,
-                    xPosition += obj.xPosition - rightFootPosition - 2;                                            //  then its safe to assume the player is colliding with
-                    doubleJumped = false;                                                                      //  the object from the right (ie the LEFT side of the object)
-                    changeAnimation(Animation.WALLJUMP);                                                       //  and should be placed beside it then switched to walljumping
+                else if (rightFootPosition + 4 >= obj.xPosition && rightFootPosition + 4 <= obj.xPosition + obj.Width) {
+                    xPosition += obj.xPosition - rightFootPosition - 4;
+                    if (falling && jumpSpeed <= fallSpeed) {
+                        wallJumping = true;
+                        doubleJumped = false;
+                        flipped = false;
+                        changeAnimation(Animation.WALLJUMP);
+                        xPosition += 3;
+                    } else {
+                        changeAnimation(Animation.IDLE);
+                    }
+                } else {
+                    wallJumping = false;
                 }
             } else if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) { //else if standing within horizontal bounds of the object
                 //collisions below player
@@ -124,6 +140,12 @@ public class Player extends Entity {
     float speed = 0;
     float speedCap = 2.4;
     public void move() {
+        if (wallJumping) {
+            fallSpeedCap = 2;
+            println("wall jumping "+frameCount);
+        } else {
+            fallSpeedCap = 10;
+        }
         if (falling) {
             if (fallSpeed < fallSpeedCap) {
                 fallSpeed *= gravity;
@@ -168,7 +190,7 @@ public class Player extends Entity {
                 speed = 0.5;
             }
             xPosition += speed * direction;
-            if (animationState == Animation.IDLE) {
+            if (!wallJumping && animationState == Animation.IDLE) {
                 changeAnimation(Animation.RUN);
             }
         }
@@ -188,11 +210,14 @@ public class Player extends Entity {
         } else {
             jumpSpeed = 9;
             jumping = true;
-            if (animationState == Animation.WALLJUMP) {
+            if (wallJumping) {
                 jumpSpeed = 7;
-                xPosition -= 20;
                 if (flipped) {
-                    xPosition += 40;
+                    movingLeft = true;
+                    movingRight = false;
+                } else {
+                    movingRight = true;
+                    movingLeft = false;
                 }
             }
             changeAnimation(Animation.JUMP);
@@ -209,7 +234,6 @@ public class Player extends Entity {
     public void spawn(float x, float y) {
         xPosition = x; //set the player's x coordinate
         yPosition = y; //set the player's y coordinate
-        changeAnimation(Animation.IDLE); //set the animation to be idle initially
         died = false; //reset the death flag
         disabled = false; //reset the disabled flag
         movingRight = false;
@@ -217,6 +241,8 @@ public class Player extends Entity {
         falling = false;
         jumping = false;
         doubleJumped = false;
+        wallJumping = false;
+        changeAnimation(Animation.IDLE); //set the animation to be idle initially
     }
     
     public void die() {
@@ -235,7 +261,7 @@ public class Player extends Entity {
     
     //this function controls the animation being displayed
     private void changeAnimation(Animation animation) {
-        if (animationState == animation) { //if the animation is already playing, return so it isnt played again
+        if (animationState == animation || (falling && (animation == Animation.RUN || animation == Animation.IDLE))) { //if the animation is already playing, return so it isnt played again
             return;
         }
         animationState = animation; //update the animation state to reflect the new animation
