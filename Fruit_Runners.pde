@@ -7,7 +7,7 @@ PImage[] mushrooms; //array containing all of the mushroom files
 PImage[] fruits; //array containing all of the fruit files
 PImage terrain; //terrain spritesheet
 Boolean triggerNewLevel = true; //flag for signalling when to change the level
-int currentLevel = 1; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
+int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 Object[] objects; //array of objects to keep track of which things need to be redrawn
 ArrayList<Entity> entities; //list of entities to keep track of which entities need to move and be redrawn
 
@@ -120,7 +120,7 @@ void keyPressed() {
             player.flipped = false;
             break;
         case UP:
-            player.jump(false);
+            player.jump();
             break;
     }
     //if both left and right are pressed, reset the player to the idle animation since they won't be able to move
@@ -370,6 +370,7 @@ private void loadLevel() {
                     new Terrain(TerrainType.CARAMEL, 405-47*4,95+45*4, 1,3),
                 };
                 entities = new ArrayList<Entity>(){{ //Mushroom spawn
+                    add(new Mushroom(180,263, 130,0));
                     add(new Mushroom(180,263, 130,0));
                     add(new Mushroom(225,243, 0,0));
                     add(new Mushroom(270,198, 0,0));

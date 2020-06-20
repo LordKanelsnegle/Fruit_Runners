@@ -88,7 +88,7 @@ public class Mushroom extends Entity {
             died = true;
             changeAnimation(MushroomAnimation.HIT);
             player.falling = false;
-            player.jump(true);
+            player.jump();
         }
     }
     

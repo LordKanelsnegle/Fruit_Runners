@@ -2,7 +2,7 @@
 //  It extends the Entity class and thus inherits most necessary properties by default.
 public class Player extends Entity {
     int sprite = 0; //an index for keeping track of the currently used character
-    Boolean jumping, doubleJumped, wallJumping, falling; //movement flags for tracking how to move the player
+    Boolean jumping, doubleJumped, wallJumping, falling, justKilled; //movement flags for tracking how to move the player
     public Animation animationState; //a variable for tracking the currently playing animation
     public Boolean movingRight, movingLeft; //more movement flags but these are public so they
                                             //  can be edited from Fruit_Runners functions
@@ -53,7 +53,8 @@ public class Player extends Entity {
                     } else { //otherwise, must be an enemy
                         if (animationState == Animation.FALL) {
                             ent.die();
-                        } else {
+                            justKilled = true;
+                        } else if (!justKilled) {
                             die();
                         }
                     }
@@ -150,6 +151,9 @@ public class Player extends Entity {
             fallSpeedCap = 2;
         } else {
             fallSpeedCap = 10;
+            if (fallSpeed == 2) {
+                fallSpeed = 4;
+            }
         }
         if (falling) {
             if (fallSpeed < fallSpeedCap) {
@@ -202,7 +206,7 @@ public class Player extends Entity {
     }
     
     //this function controls the vertical movement of the player
-    public void jump(Boolean killedEnemy) {
+    public void jump() {
         if (falling) {
             if (!doubleJumped) {
                 doubleJumped = true;
@@ -220,9 +224,10 @@ public class Player extends Entity {
             }
             changeAnimation(Animation.JUMP);
             Sound jump = Sound.JUMP;
-            if (killedEnemy) {
+            if (justKilled) {
                 jump = Sound.KILL;
                 doubleJumped = false;
+                justKilled = false;
             }
             playSound(jump, false);
         }
@@ -240,6 +245,7 @@ public class Player extends Entity {
         jumping = false;
         doubleJumped = false;
         wallJumping = false;
+        justKilled = false;
         changeAnimation(Animation.IDLE); //set the animation to be idle initially
     }
     
