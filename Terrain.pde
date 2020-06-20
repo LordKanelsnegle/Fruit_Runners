@@ -26,38 +26,51 @@ public class Terrain extends Object {
     public void redraw() {
         int totalWidth = 0;
         int totalHeight = 0;
+        pushMatrix();
         for (int y = 0; y < vertical; y++) {
             for (int x = 0; x < horizontal; x++) {
+                int xOffset = 0;
+                int yOffset = 15;
+                int spriteWidth = spriteSheet.width;
+                int spriteHeight = spriteSheet.height;
                 if (y == 0) {
-                    int spriteWidth = 48;
-                    int xOffset = 0;
                     if (x == 0) {
-                        //image(spriteSheet.get(0,0,48,48), xPosition + x * spriteSheet.width, yPosition + y * spriteSheet.height);
-                        totalHeight += 48;
+                        totalHeight += spriteHeight;
                     } else {
-                        //image(spriteSheet.get(2,0,46,48), xPosition + x * (spriteSheet.width - 4), yPosition + y * spriteSheet.height);
                         xOffset = 2;
-                        spriteWidth -= 2*xOffset;
+                        spriteWidth -= 2 + xOffset;
                     }
                     totalWidth += spriteWidth;
-                    float xPos = xPosition + x * (spriteSheet.width - 2*xOffset);
+                    float xPos = xPosition + x * spriteWidth;
                     beginShape();
                     texture(spriteSheet);
                     vertex(xPos,yPosition, xOffset,0);
                     vertex(xPos+spriteSheet.width-xOffset,yPosition, spriteSheet.width,0);
-                    vertex(xPos+spriteSheet.width-xOffset,yPosition+spriteSheet.height, spriteSheet.width,Height);
-                    vertex(xPos,yPosition+Height, xOffset,Height);
+                    vertex(xPos+spriteSheet.width-xOffset,yPosition+spriteSheet.height, spriteSheet.width,spriteSheet.height);
+                    vertex(xPos,yPosition+spriteSheet.height, xOffset,spriteSheet.height);
                     endShape();
                 } else {
                     if (x == 0) {
-                        image(spriteSheet.get(0,15,48,33), xPosition + x * spriteSheet.width, yPosition + y * (spriteSheet.height - 17));
-                        totalHeight += 31;
+                        spriteHeight -= 2 + yOffset;
+                        totalHeight += spriteHeight;
                     } else {
-                        image(spriteSheet.get(2,15,46,33), xPosition + x * (spriteSheet.width - 4), yPosition + y * (spriteSheet.height - 17));
+                        xOffset = 2;
+                        spriteWidth -= 2 + xOffset;
+                        spriteHeight -= 2 + yOffset;
                     }
+                    float xPos = xPosition + x * spriteWidth;
+                    float yPos = yPosition + y * spriteHeight;
+                    beginShape();
+                    texture(spriteSheet);
+                    vertex(xPos,yPos, xOffset,yOffset);
+                    vertex(xPos+spriteSheet.width-xOffset,yPos, spriteSheet.width,yOffset);
+                    vertex(xPos+spriteSheet.width-xOffset,yPos+spriteSheet.height-yOffset, spriteSheet.width,spriteSheet.height);
+                    vertex(xPos,yPos+spriteSheet.height-yOffset, xOffset,spriteSheet.height);
+                    endShape();
                 }
             }
         }
+        popMatrix();
         Width = totalWidth;
         Height = totalHeight;
     }
