@@ -71,14 +71,14 @@ public class Player extends Entity {
         for (Object obj : objects) {
             if (headPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if standing within vertical bounds of object
                 //collisions on left of player
-                if (leftFootPosition < obj.xPosition + obj.Width && leftFootPosition > obj.xPosition) { //if left foot is within horizontal bounds of object,
-                    xPosition += obj.xPosition + obj.Width - leftFootPosition;                          //  then its safe to assume the player is colliding with
+                if (leftFootPosition - 2 < obj.xPosition + obj.Width && leftFootPosition - 2 > obj.xPosition) { //if left foot is within horizontal bounds of object,
+                    xPosition += obj.xPosition + obj.Width - leftFootPosition + 2;                      //  then its safe to assume the player is colliding with
                     doubleJumped = false;                                                               //  the object from the left (ie the RIGHT side of the object)
                     changeAnimation(Animation.WALLJUMP);                                                //  and should be placed beside it then switched to walljumping
                 }
                 //collisions on right of player
-                else if (rightFootPosition > obj.xPosition && rightFootPosition < obj.xPosition + obj.Width) { //if right foot is within horizontal bounds of object,
-                    xPosition += obj.xPosition - rightFootPosition;                                            //  then its safe to assume the player is colliding with
+                else if (rightFootPosition + 2 > obj.xPosition && rightFootPosition + 2 < obj.xPosition + obj.Width) { //if right foot is within horizontal bounds of object,
+                    xPosition += obj.xPosition - rightFootPosition - 2;                                            //  then its safe to assume the player is colliding with
                     doubleJumped = false;                                                                      //  the object from the right (ie the LEFT side of the object)
                     changeAnimation(Animation.WALLJUMP);                                                       //  and should be placed beside it then switched to walljumping
                 }
