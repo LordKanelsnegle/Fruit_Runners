@@ -7,7 +7,7 @@ PImage[] mushrooms; //array containing all of the mushroom files
 PImage[] fruits; //array containing all of the fruit files
 PImage terrain; //terrain spritesheet
 Boolean triggerNewLevel = true; //flag for signalling when to change the level
-int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
+int currentLevel = 1; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 Object[] objects; //array of objects to keep track of which things need to be redrawn
 ArrayList<Entity> entities; //list of entities to keep track of which entities need to move and be redrawn
 
@@ -21,9 +21,15 @@ PFont titleFont; //font for the menu title
 PFont optionsFont; //font for the menu options
 PFont smallFont; //font for the tips and fps counter
 
-void setup() {
-    background(33,31,48); //set a backgroud color for when the game is loading up
+void settings() {
+    PJOGL.setIcon("Assets\\Players\\Mask Dude\\Jump.png");
     size(500, 300, P2D); //set window size and set graphics renderer to P2D
+}
+
+void setup() {
+    surface.setTitle("Fruit Runners");
+    surface.setResizable(false);
+    background(33,31,48); //set a backgroud color for when the game is loading up
     noCursor();
     noStroke();
     indicator = loadImage("Assets\\Menu\\Strawberry.png"); //load the indicator
@@ -78,7 +84,9 @@ void setup() {
         loadImage("Assets\\Players\\Virtual Guy\\Hit.png"),
         loadImage("Assets\\Players\\Virtual Guy\\Jump.png"),
         loadImage("Assets\\Players\\Virtual Guy\\Run.png"),
-        loadImage("Assets\\Players\\Virtual Guy\\Wall Jump.png")
+        loadImage("Assets\\Players\\Virtual Guy\\Wall Jump.png"),
+        loadImage("Assets\\Players\\Appearing.png"),
+        loadImage("Assets\\Players\\Disappearing.png")
     };
     mushrooms = new PImage[]{ //load all of the sprite sheets
         loadImage("Assets\\Enemies\\Mushroom\\Idle.png"),
@@ -106,7 +114,7 @@ void setup() {
 
 void keyPressed() {
     //ignore key presses if this is the main menu
-    if (currentLevel == 0) {
+    if (currentLevel == 0 || player.spawning) {
         return;
     }
     //otherwise, check the keycode and get the player ready to move accordingly
@@ -170,6 +178,9 @@ void keyReleased() {
                 break;
         }
     } else { //otherwise, check if the player movement flags need to be updated
+        if (player.spawning) {
+            return;
+        }
         switch (keyCode) {
             case LEFT:
                 player.movingLeft = false; //update the player's movingLeft flag
@@ -190,8 +201,7 @@ void keyReleased() {
                 player.changeAnimation(Animation.IDLE);
                 break;
             case +'R': //if reset button (R) is pressed and released (to prevent accidentally resetting everytime if R is pressed too long)
-                //player.die(); //kill the character off, which will cause the level to reset
-                player.yPosition += 5;
+                player.die(); //kill the character off, which will cause the level to reset
                 break;
         }
     }
@@ -206,7 +216,7 @@ float offset;
 int lastBackground;
 int winDelay;
 void draw() {
-    scale(width/500.0, height/300.0);
+    //scale(width/500.0, height/300.0);
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
@@ -280,6 +290,7 @@ void draw() {
             if (currentLevel == 3) {
                 currentLevel = 0;
             }
+            //player.changeAnimation(Animation.DISAPPEAR);
             player.die();
         } else {
             winDelay++;
@@ -287,8 +298,10 @@ void draw() {
     }
     
     //lastly, move the player, check player collisions and draw the player separately to the rest of the entities
-    player.move();
-    player.checkCollisions();
+    if (!(player.animationState == Animation.APPEAR || player.animationState == Animation.DISAPPEAR)) {
+        player.move();
+        player.checkCollisions();
+    }
     player.redraw();
     
     //if this is the menu, additionally display menu text
@@ -393,7 +406,7 @@ private void loadLevel() {
             for (Entity entity : entities) {
                 entity.spawn();
             }
-            player.spawn(5,200);
+            player.spawn(5-32,207-32);
             break;
         case 2: //SECOND LEVEL
             //if the level HAS changed, load all of the objects for this level
@@ -428,7 +441,7 @@ private void loadLevel() {
                 entity.spawn();
             }
             //spawn the player
-            player.spawn(460,250);
+            player.spawn(460-32,250-32);
             break;
     }
     lastLevelLoaded = currentLevel; //update the value of the last level loaded to be the current level

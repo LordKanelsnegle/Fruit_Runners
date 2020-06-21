@@ -4,7 +4,7 @@ public class Player extends Entity {
     int sprite = 0; //an index for keeping track of the currently used character
     Boolean jumping, doubleJumped, wallJumping, falling, justKilled; //movement flags for tracking how to move the player
     public Animation animationState; //a variable for tracking the currently playing animation
-    public Boolean movingRight, movingLeft; //more movement flags but these are public so they
+    public Boolean movingRight, movingLeft, spawning = false; //more movement flags but these are public so they
                                             //  can be edited from Fruit_Runners functions
     public Player() {
         //on initialization, set the width and height properties to 32 since all of the player sprites are 32x32
@@ -238,6 +238,7 @@ public class Player extends Entity {
     
     //this function allows the player to be spawned at a given point
     public void spawn(float x, float y) {
+        spawning = true;
         xPosition = x; //set the player's x coordinate
         yPosition = y; //set the player's y coordinate
         died = false; //reset the death flag
@@ -249,7 +250,7 @@ public class Player extends Entity {
         doubleJumped = false;
         wallJumping = false;
         justKilled = false;
-        changeAnimation(Animation.IDLE); //set the animation to be idle initially
+        changeAnimation(Animation.APPEAR);
     }
     
     public void die() {
@@ -267,7 +268,7 @@ public class Player extends Entity {
     }
     
     //this function controls the animation being displayed
-    private void changeAnimation(Animation animation) {
+    public void changeAnimation(Animation animation) {
         if (animationState == animation || (falling && (animation == Animation.RUN || animation == Animation.IDLE))) { //if the animation is already playing, return so it isnt played again
             return;
         }
@@ -303,10 +304,22 @@ public class Player extends Entity {
             case WALLJUMP:
                 index = 6;
                 break;
+            case APPEAR:
+                index = 7;
+                break;
+            case DISAPPEAR:
+                index = 8;
+                break;
             default:
                 break;
         }
-        spriteSheet = spriteSheets[sprite * 7 + index]; //update the file that spriteSheet points to
+        if (index < 7) {
+            spriteSheet = spriteSheets[sprite * 7 + index]; //update the file that spriteSheet points to
+        } else {
+            spriteSheet = spriteSheets[spriteSheets.length - (9-index)]; //update the file that spriteSheet points to
+            Width = 96;
+            Height = 96;
+        }
         frame = 0; //reset the frame to 0
         maxFrame = spriteSheet.width / Width; //reset the maximum number of frames
     }
@@ -320,5 +333,7 @@ public enum Animation {
     IDLE,
     JUMP,
     RUN,
-    WALLJUMP
+    WALLJUMP,
+    APPEAR,
+    DISAPPEAR
 }
