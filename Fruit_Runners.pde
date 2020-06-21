@@ -298,7 +298,7 @@ void draw() {
     }
     
     //lastly, move the player, check player collisions and draw the player separately to the rest of the entities
-    if (!(player.animationState == Animation.APPEAR || player.animationState == Animation.DISAPPEAR)) {
+    if (!player.spawning) {
         player.move();
         player.checkCollisions();
     }

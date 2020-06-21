@@ -52,8 +52,8 @@ public class Player extends Entity {
                         ent.die(); //collect it
                     } else { //otherwise, must be an enemy
                         if (animationState == Animation.FALL) {
-                            ent.die();
                             justKilled = true;
+                            ent.die();
                         } else if (!justKilled) {
                             die();
                         }
