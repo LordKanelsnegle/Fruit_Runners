@@ -21,7 +21,7 @@ public class Player extends Entity {
         float rightFootPosition = xPosition + 0.7 * Width;
         float leftFootPosition = xPosition + 0.3 * Width;
         float feetPosition = yPosition + Height;
-        float headPosition = yPosition + Height * 0.3;
+        float headPosition = yPosition + Height * 0.1;
         for (Entity ent : entities) {
             if (ent.died) {
                 continue; //skip dead entities
@@ -70,10 +70,11 @@ public class Player extends Entity {
             }
         }
         for (Object obj : objects) {
-            if (headPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if standing within vertical bounds of object
+            //HORIZONTAL COLLISIONS - check if standing within vertical bounds of object
+            if (feetPosition >= obj.yPosition && headPosition <= obj.yPosition + obj.Height) {
                 //collisions on left of player
-                if (leftFootPosition - 4 <= obj.xPosition + obj.Width && leftFootPosition - 4 >= obj.xPosition) {
-                    xPosition += obj.xPosition + obj.Width - leftFootPosition + 4;
+                if (leftFootPosition - 4 <= obj.xPosition + obj.Width && leftFootPosition - 4 >= obj.xPosition + obj.Width - 4 - speed) {
+                    xPosition += obj.xPosition + obj.Width - (leftFootPosition - 4);
                     if (falling) {
                         if (jumpSpeed <= fallSpeed) {
                             wallJumping = true;
@@ -88,8 +89,8 @@ public class Player extends Entity {
                     }
                 }
                 //collisions on right of player
-                else if (rightFootPosition + 4 >= obj.xPosition && rightFootPosition + 4 <= obj.xPosition + obj.Width) {
-                    xPosition += obj.xPosition - rightFootPosition - 4;
+                else if (rightFootPosition + 4 >= obj.xPosition && rightFootPosition <= obj.xPosition + 4 + speed) {
+                    xPosition += obj.xPosition - (rightFootPosition + 4);
                     if (falling) {
                         if (jumpSpeed <= fallSpeed) {
                             wallJumping = true;
@@ -105,14 +106,16 @@ public class Player extends Entity {
                 } else {
                     wallJumping = false;
                 }
-            } else if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) { //else if standing within horizontal bounds of the object
+            }
+            //VERTICAL COLLISIONS - check if standing within horizontal bounds of the object
+            if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) {
                 //collisions below player
-                if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + obj.Height) { //if feet position is within vertical bounds of object then the object
+                if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + fallSpeed) { //if feet position is within vertical bounds of object then the object
                     yPosition += obj.yPosition - feetPosition;                                     //  must be below the player (ie the TOP side of the object) and thus the
                     supported = true;                                                              //  player is supported by an object and should be placed ontop of it
                 }
                 //collisions above player
-                else if (headPosition < obj.yPosition + obj.Height && headPosition > obj.yPosition) { //if head position is within vertical bounds of object then the object
+                else if (headPosition <= obj.yPosition + obj.Height && headPosition >= obj.yPosition + obj.Height - jumpSpeed) { //if head position is within vertical bounds of object then the object
                     yPosition += obj.yPosition + obj.Height - headPosition;                           //  must be above the player (ie the BOTTOM side of the object) and thus
                     jumping = false;                                                                  //  the player should bump his head/cancel jump and be placed below it
                 }
