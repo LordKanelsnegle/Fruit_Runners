@@ -210,7 +210,7 @@ public class Player extends Entity {
     
     //this function controls the vertical movement of the player
     public void jump() {
-        if (falling) {
+        if (falling && !wallJumping) {
             if (!doubleJumped) {
                 doubleJumped = true;
                 jumpSpeed = 7;
@@ -223,7 +223,7 @@ public class Player extends Entity {
             jumpSpeed = 9;
             jumping = true;
             if (wallJumping) {
-                jumpSpeed = 7;
+                doubleJumped = false;
             }
             changeAnimation(Animation.JUMP);
             Sound jump = Sound.JUMP;
