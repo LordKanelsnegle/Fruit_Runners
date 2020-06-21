@@ -59,13 +59,13 @@ public class Entity {
             if (frame == maxFrame) { //if the frame is at the maximum, reset it to the first one
                 if (died) {
                     disabled = true;
-                } else if (this instanceof Player && (player.animationState == Animation.APPEAR || player.animationState == Animation.DISAPPEAR)) {
+                } else if (this instanceof Player) {
                     if (player.animationState == Animation.APPEAR) {
                         player.spawning = false;
                         player.xPosition += 32;
                         player.yPosition += 32;
                         player.changeAnimation(Animation.IDLE);
-                    }/* else {
+                    }/* else if (player.animationState == Animation.DISAPPEAR){
                       
                     }*/
                     player.Width = 32;

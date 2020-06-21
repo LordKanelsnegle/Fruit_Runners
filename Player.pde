@@ -73,14 +73,14 @@ public class Player extends Entity {
             //VERTICAL COLLISIONS - check if standing within horizontal bounds of the object
             if (rightFootPosition >= obj.xPosition && leftFootPosition <= obj.xPosition + obj.Width) {
                 //collisions below player
-                if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + fallSpeed) { //if feet position is within vertical bounds of object then the object
-                    yPosition += obj.yPosition - feetPosition;                                     //  must be below the player (ie the TOP side of the object) and thus the
-                    supported = true;                                                              //  player is supported by an object and should be placed ontop of it
+                if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + fallSpeed) {
+                    yPosition = obj.yPosition - Height; //using = method instead of += method to prevent weird spazzing
+                    supported = true;
                 }
                 //collisions above player
-                else if (headPosition <= obj.yPosition + obj.Height && headPosition >= obj.yPosition + obj.Height - jumpSpeed) { //if head position is within vertical bounds of object then the object
-                    yPosition += obj.yPosition + obj.Height - headPosition;                           //  must be above the player (ie the BOTTOM side of the object) and thus
-                    jumping = false;                                                                  //  the player should bump his head/cancel jump and be placed below it
+                else if (headPosition <= obj.yPosition + obj.Height && headPosition >= obj.yPosition + obj.Height - jumpSpeed) {
+                    yPosition += obj.yPosition + obj.Height - headPosition;
+                    jumping = false;
                 }
             }
             //HORIZONTAL COLLISIONS - check if standing within vertical bounds of object
