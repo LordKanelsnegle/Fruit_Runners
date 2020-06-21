@@ -272,7 +272,15 @@ public class Player extends Entity {
             return;
         }
         if (animationState == Animation.WALLJUMP) { //if about to change from walljumping (ie walljump has ended), revert flipped
-            flipped = !flipped;
+            if (flipped) {
+                if (!movingLeft) {
+                    flipped = false;
+                }
+            } else {
+                if (!movingRight) {
+                    flipped = true;
+                }
+            }
         }
         animationState = animation; //update the animation state to reflect the new animation
         int index = 0;
