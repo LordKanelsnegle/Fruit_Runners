@@ -138,7 +138,7 @@ public class Player extends Entity {
             }
         }
         //kill the player if they go off screen
-        if (xPosition + Width <= 0 || xPosition >= width || yPosition <= -Height || yPosition >= height) {
+        if (xPosition + Width <= 0 || xPosition >= baseWidth || yPosition <= -Height || yPosition >= baseHeight) {
             die();
         }
     }

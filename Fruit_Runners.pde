@@ -31,9 +31,12 @@ int optionMax;
 int gameStart;
 ArrayList<Integer> times;
 
+final int baseWidth = 500;
+final int baseHeight = 300;
+
 void settings() {
     PJOGL.setIcon("Assets\\Players\\Mask Dude\\Jump.png");
-    size(500, 300, P2D); //set window size and set graphics renderer to P2D
+    size(baseWidth, baseHeight, P2D); //set window size and set graphics renderer to P2D
 }
 
 void setup() {
@@ -131,7 +134,7 @@ void setup() {
     smallFont = createFont("Assets\\Menu\\Text\\Options.ttf", 10); //load the font for the small text
     indicatorSprite = loadImage("Assets\\Menu\\Strawberry.png");
     indicator = new Indicator();
-    indicator.move(width * 0.35, height * 0.25);
+    indicator.move(baseWidth * 0.35, baseHeight * 0.25);
     option = 0;
     optionMax = 3;
     player = new Player(); //initialize the player variable
@@ -191,7 +194,7 @@ void keyReleased() {
         switch (option) {
             case 0:
                 if (currentLevel == 0) {
-                    indicator.move(width * 0.35, height * 0.25);
+                    indicator.move(baseWidth * 0.35, baseHeight * 0.25);
                     if (confirmed) {
                         currentLevel++;
                         if (!muteMusic) { //if the music is playing (ie hasnt been disabled)
@@ -205,7 +208,7 @@ void keyReleased() {
                         player.die(); //kill the player to load the next level
                     }
                 } else if (currentLevel == -1) {
-                    indicator.move(width * 0.245, height * 0.25);
+                    indicator.move(baseWidth * 0.245, baseHeight * 0.25);
                     if (confirmed) {
                         if (muteMusic) {
                             muteMusic = false;
@@ -219,14 +222,14 @@ void keyReleased() {
                 break;
             case 1:
                 if (currentLevel == 0) {
-                    indicator.move(width * 0.285, height * 0.36);
+                    indicator.move(baseWidth * 0.285, baseHeight * 0.36);
                     if (confirmed) {
                         currentLevel = -1;
                         option = 0;
-                        indicator.move(width * 0.245, height * 0.25);
+                        indicator.move(baseWidth * 0.245, baseHeight * 0.25);
                     }
                 } else if (currentLevel == -1) {
-                    indicator.move(width * 0.2, height * 0.36);
+                    indicator.move(baseWidth * 0.2, baseHeight * 0.36);
                     if (confirmed) {
                         muteSFX = !muteSFX;
                     }
@@ -234,15 +237,15 @@ void keyReleased() {
                 break;
             case 2:
                 if (currentLevel == 0) {
-                    indicator.move(width * 0.305, height * 0.47);
+                    indicator.move(baseWidth * 0.305, baseHeight * 0.47);
                     if (confirmed) {
                         currentLevel = -2;
                         option = 0;
                         optionMax = 1;
-                        indicator.move(width * 0.245, height * 0.25);
+                        indicator.move(baseWidth * 0.245, baseHeight * 0.25);
                     }
                 } else if (currentLevel == -1) {
-                    indicator.move(width * 0.26, height * 0.47);
+                    indicator.move(baseWidth * 0.26, baseHeight * 0.47);
                     if (confirmed) {
                         showFPS = !showFPS;
                     }
@@ -250,12 +253,12 @@ void keyReleased() {
                 break;
             default:
                 if (currentLevel == 0) {
-                    indicator.move(width * 0.35, height * 0.58);
+                    indicator.move(baseWidth * 0.35, baseHeight * 0.58);
                     if (confirmed) {
                         exit();
                     }
                 } else if (currentLevel == -1) {
-                    indicator.move(width * 0.35, height * 0.58);
+                    indicator.move(baseWidth * 0.35, baseHeight * 0.58);
                     if (confirmed) {
                         settings[1] = "" + muteMusic;
                         settings[4] = "" + muteSFX;
@@ -263,7 +266,7 @@ void keyReleased() {
                         saveStrings(settingsFile, settings);
                         currentLevel = 0;
                         option = 0;
-                        indicator.move(width * 0.35, height * 0.25);
+                        indicator.move(baseWidth * 0.35, baseHeight * 0.25);
                     }
                 }
                 break;
@@ -307,7 +310,7 @@ float offset;
 int lastBackground;
 int winDelay;
 void draw() {
-    scale(width/500.0, height/300.0);
+    scale(float(width)/baseWidth, float(height)/baseHeight);
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
@@ -322,12 +325,12 @@ void draw() {
         //update the value of the last used background
         lastBackground = index;
         background = backgrounds[index]; //set the background image to the new one
-        columns = width / background.width; //calculate the number of columns needed
-        rows = height / background.height; //calculate the number of rows needed
-        if (width % background.width > 0) { //if there is a bit of width remaining (not an exact fit)
+        columns = baseWidth / background.width; //calculate the number of columns needed
+        rows = baseHeight / background.height; //calculate the number of rows needed
+        if (baseWidth % background.width > 0) { //if there is a bit of width remaining (not an exact fit)
             columns++; //then increase the columns by 1
         }
-        if (height % background.height > 0) { //if there is a bit of height remaining (not an exact fit)
+        if (baseHeight % background.height > 0) { //if there is a bit of height remaining (not an exact fit)
             rows++; //then increase the rows by 1
         }
         offset = 0; //set the offset to 0 so that the tiles start at the top
@@ -400,11 +403,11 @@ void draw() {
         case -2:
             fill(0, 50);
             rect(0,0, width,height);
-            displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
-            displayText("BACK", bigFont, width/2, height * 0.58);
+            displayText("FRUIT RUNNERS", titleFont, baseWidth/2, baseHeight * 0.05);
+            displayText("BACK", bigFont, baseWidth/2, baseHeight * 0.58);
             indicator.redraw();
-            displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
-            displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
+            displayText("UP/DOWN TO SELECT", smallFont, baseWidth/2, baseHeight * 0.895);
+            displayText("ENTER TO CONFIRM", smallFont, baseWidth/2 - 1, baseHeight * 0.895 + 12);
             if (showFPS) {
                 displayText(int(frameRate) + " FPS", smallFont, 28, 2);
             }
@@ -412,39 +415,39 @@ void draw() {
         case -1:
             fill(0, 50);
             rect(0,0, width,height);
-            displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
+            displayText("FRUIT RUNNERS", titleFont, baseWidth/2, baseHeight * 0.05);
             if (muteMusic) {
-                displayText("MUSIC ON", bigFont, width/2, height * 0.25);
+                displayText("MUSIC ON", bigFont, baseWidth/2, baseHeight * 0.25);
             } else {
-                displayText("MUSIC OFF", bigFont, width/2, height * 0.25);
+                displayText("MUSIC OFF", bigFont, baseWidth/2, baseHeight * 0.25);
             }
             if (muteSFX) {
-                displayText("EFFECTS ON", bigFont, width/2, height * 0.36);
+                displayText("EFFECTS ON", bigFont, baseWidth/2, baseHeight * 0.36);
             } else {
-                displayText("EFFECTS OFF", bigFont, width/2, height * 0.36);
+                displayText("EFFECTS OFF", bigFont, baseWidth/2, baseHeight * 0.36);
             }
             if (showFPS) {
-                displayText("HIDE FPS", bigFont, width/2, height * 0.47);
+                displayText("HIDE FPS", bigFont, baseWidth/2, baseHeight * 0.47);
             } else {
-                displayText("SHOW FPS", bigFont, width/2, height * 0.47);
+                displayText("SHOW FPS", bigFont, baseWidth/2, baseHeight * 0.47);
             }
-            displayText("BACK", bigFont, width/2, height * 0.58);
+            displayText("BACK", bigFont, baseWidth/2, baseHeight * 0.58);
             indicator.redraw();
-            displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
-            displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
+            displayText("UP/DOWN TO SELECT", smallFont, baseWidth/2, baseHeight * 0.895);
+            displayText("ENTER TO CONFIRM", smallFont, baseWidth/2 - 1, baseHeight * 0.895 + 12);
             if (showFPS) {
                 displayText(int(frameRate) + " FPS", smallFont, 28, 2);
             }
             break;
         case 0:
-            displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
-            displayText("PLAY", bigFont, width/2, height * 0.25);
-            displayText("OPTIONS", bigFont, width/2, height * 0.36);
-            displayText("HONORS", bigFont, width/2, height * 0.47);
-            displayText("QUIT", bigFont, width/2, height * 0.58);
+            displayText("FRUIT RUNNERS", titleFont, baseWidth/2, baseHeight * 0.05);
+            displayText("PLAY", bigFont, baseWidth/2, baseHeight * 0.25);
+            displayText("OPTIONS", bigFont, baseWidth/2, baseHeight * 0.36);
+            displayText("HONORS", bigFont, baseWidth/2, baseHeight * 0.47);
+            displayText("QUIT", bigFont, baseWidth/2, baseHeight * 0.58);
             indicator.redraw();
-            displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
-            displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
+            displayText("UP/DOWN TO SELECT", smallFont, baseWidth/2, baseHeight * 0.895);
+            displayText("ENTER TO CONFIRM", smallFont, baseWidth/2 - 1, baseHeight * 0.895 + 12);
             if (showFPS) {
                 displayText(int(frameRate) + " FPS", smallFont, 28, 2);
             }
@@ -493,7 +496,7 @@ private void loadLevel() {
                 objects = new Object[]{ // Terrain creation
                     //Border
                     new Terrain(TerrainType.BRICK, -46,0, 1,15),
-                    new Terrain(TerrainType.BRICK, width-2,0, 1,15),
+                    new Terrain(TerrainType.BRICK, baseWidth-2,0, 1,15),
                     new Terrain(TerrainType.BRICK, 0,-46, 15,1),
                     //Level Terrain
                     new Terrain(TerrainType.COTTONCANDY, 0,255, 1, 1),
@@ -534,7 +537,7 @@ private void loadLevel() {
                 objects = new Object[]{
                     //Border
                     new Terrain(TerrainType.BRICK, -46,0, 1,15),
-                    new Terrain(TerrainType.BRICK, width-2,0, 1,15),
+                    new Terrain(TerrainType.BRICK, baseWidth-2,0, 1,15),
                     new Terrain(TerrainType.BRICK, 0,-46, 15,1),
                     //Level Terrain
                     new Terrain(TerrainType.GRASS, 0,140, 3,6),
@@ -567,12 +570,12 @@ private void loadLevel() {
             //if the level HAS changed, initialise all of the objects for this level
             if (lastLevelLoaded != currentLevel) {
                 objects = new Object[]{
-                    new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1)
+                    new Terrain(TerrainType.GRASS, -player.Width, baseHeight - 48, 13, 1)
                 };
                 entities = new ArrayList<Entity>();
             }
             //spawn the character just offscreen
-            player.spawn(-player.Width, height - (48 + player.Height));
+            player.spawn(-player.Width, baseHeight - (48 + player.Height));
             player.movingRight = true; //set the player to be permanently moving to the right
             player.flipped = false;
             break;
