@@ -30,7 +30,6 @@ int optionMax;
 
 int gameStart;
 ArrayList<Integer> times;
-
 final int baseWidth = 500;
 final int baseHeight = 300;
 
@@ -310,7 +309,7 @@ float offset;
 int lastBackground;
 int winDelay;
 void draw() {
-    scale(float(width)/baseWidth, float(height)/baseHeight);
+    //scale(float(width)/baseWidth, float(height)/baseHeight);
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
@@ -344,26 +343,23 @@ void draw() {
         skipFrames = 2;
     }
     if (frameCount % skipFrames == 0) {
-        for (int x = 0; x < columns; x++) {
-            for (int y = 0; y < rows; y++) {
-                image(background, x * background.width, y * background.height + offset);
-            }
-            //this part ensures that the gap at the top created by offsetting the y axis is filled
-            image(background, x * background.width, offset - background.height);
-        }
-        //this simple if statement ensures that the offset is increased every loop until it has reached
-        //  the size of one full tile height, then resets it to 0 so that the next iteration of draw()
-        //  displays the tiles starting from the top again (with no offset)
         if (offset >= background.height) {
             offset = 0;
         } else {
             offset += 0.32;
         }
-        
-        //redraw all of the level objects so that they appear in front of the background
-        for (Object obj : objects) {
-            obj.redraw();
+    }
+    for (int x = 0; x < columns; x++) {
+        for (int y = 0; y < rows; y++) {
+            image(background, x * background.width, y * background.height + offset);
         }
+        //this part ensures that the gap at the top created by offsetting the y axis is filled
+        image(background, x * background.width, offset - background.height);
+    }
+
+    //redraw all of the level objects so that they appear in front of the background
+    for (Object obj : objects) {
+        obj.redraw();
     }
     
     //move all of the entities however much they should be moved,
