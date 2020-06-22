@@ -35,16 +35,29 @@ PGraphics canvas;
 final int baseWidth = 500;
 final int baseHeight = 300;
 
+final boolean stretchFullscreen = false;
+final float version = 4.8;
+String download;
+
 void settings() {
     PJOGL.setIcon("Assets\\Players\\Mask Dude\\Jump.png");
     size(baseWidth, baseHeight, P2D); //set window size and set graphics renderer to P2D
 }
 
 void setup() {
-    surface.setTitle("Fruit Runners");
+    surface.setTitle("Fruit Runners v"+version);
     surface.setResizable(false);
-    noCursor();
+    if (stretchFullscreen) {
+        noCursor();
+    }
     background(33,31,48); //set a backgroud color for when the game is loading up
+    
+    //HTTP GET CURRENT VERSION - first line of response
+    String[] response = new String[]{ ""+version, "latest-download-url" };
+    if (float(response[0]) != version) {
+        download = response[1];
+    }
+    
     settings = new String[] { "Mute Music:", "false", "", "Mute Sound Effects:", "false", "", "Show FPS:", "false" };
     settingsFile = new File(sketchPath("settings.txt"));
     if (settingsFile.exists()) {
@@ -146,7 +159,7 @@ void setup() {
 
 void keyPressed() {
     //ignore key presses if this is the main menu
-    if (currentLevel <= 0 || player.spawning) {
+    if (currentLevel <= 0 || player.spawning || download != null) {
         return;
     }
     //otherwise, check the keycode and get the player ready to move accordingly
@@ -170,6 +183,9 @@ void keyPressed() {
 }
 
 void keyReleased() {
+    if (download != null) {
+        return;
+    }
     if (currentLevel <= 0) { //if on the menu, check to see if the option selected should be updated or has been chosen
         boolean confirmed = false;
         switch (keyCode) {
@@ -311,9 +327,9 @@ float offset;
 int lastBackground;
 int winDelay;
 void draw() {
-    //scale(float(width)/baseWidth, float(height)/baseHeight);
     canvas.beginDraw();
     canvas.noStroke();
+    canvas.noSmooth();
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
@@ -441,13 +457,19 @@ void draw() {
             break;
         case 0:
             displayText("FRUIT RUNNERS", titleFont, baseWidth/2, baseHeight * 0.05);
-            displayText("PLAY", bigFont, baseWidth/2, baseHeight * 0.25);
-            displayText("OPTIONS", bigFont, baseWidth/2, baseHeight * 0.36);
-            displayText("HONORS", bigFont, baseWidth/2, baseHeight * 0.47);
-            displayText("QUIT", bigFont, baseWidth/2, baseHeight * 0.58);
-            indicator.redraw();
-            displayText("UP/DOWN TO SELECT", smallFont, baseWidth/2, baseHeight * 0.895);
-            displayText("ENTER TO CONFIRM", smallFont, baseWidth/2 - 1, baseHeight * 0.895 + 12);
+            if (download != null) {
+                displayText("This version is outdated!", mediumFont, baseWidth/2, -40+baseHeight/2);
+                displayText("Download the latest version by", mediumFont, baseWidth/2, -20+baseHeight/2);
+                displayText("running update.bat", mediumFont, baseWidth/2, baseHeight/2);
+            } else {
+                displayText("PLAY", bigFont, baseWidth/2, baseHeight * 0.25);
+                displayText("OPTIONS", bigFont, baseWidth/2, baseHeight * 0.36);
+                displayText("HONORS", bigFont, baseWidth/2, baseHeight * 0.47);
+                displayText("QUIT", bigFont, baseWidth/2, baseHeight * 0.58);
+                indicator.redraw();
+                displayText("UP/DOWN TO SELECT", smallFont, baseWidth/2, baseHeight * 0.895);
+                displayText("ENTER TO CONFIRM", smallFont, baseWidth/2 - 1, baseHeight * 0.895 + 12);
+            }
             if (showFPS) {
                 displayText(int(frameRate) + " FPS", smallFont, 28, 2);
             }
@@ -471,7 +493,11 @@ void draw() {
             break;
     }
     canvas.endDraw();
-    image(canvas, 0,0, width,height);
+    if (stretchFullscreen) {
+        image(canvas, 0,0, width,height); //stretch to fit
+    } else {
+        image(canvas, (width/2)-(baseWidth/2),(height/2)-(baseHeight/2)); //keep original size but center it if resized
+    }
 }
 
 //this function is used for displaying the text on the menu (with an outline)
@@ -575,6 +601,10 @@ private void loadLevel() {
                     new Terrain(TerrainType.GRASS, -player.Width, baseHeight - 48, 13, 1)
                 };
                 entities = new ArrayList<Entity>();
+            }
+            if (download != null) {
+                player.disabled = true;
+                break;
             }
             //spawn the character just offscreen
             player.spawn(-player.Width, baseHeight - (48 + player.Height));
