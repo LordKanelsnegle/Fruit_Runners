@@ -2,9 +2,9 @@
 //  It extends the Entity class and thus inherits most necessary properties by default.
 public class Player extends Entity {
     int sprite = 0; //an index for keeping track of the currently used character
-    Boolean jumping, doubleJumped, wallJumping, falling, justKilled; //movement flags for tracking how to move the player
+    boolean jumping, doubleJumped, wallJumping, falling, justKilled; //movement flags for tracking how to move the player
     public Animation animationState; //a variable for tracking the currently playing animation
-    public Boolean movingRight, movingLeft, spawning = false; //more movement flags but these are public so they
+    public boolean movingRight, movingLeft, spawning = false; //more movement flags but these are public so they
                                             //  can be edited from Fruit_Runners functions
     public Player() {
         //on initialization, set the width and height properties to 32 since all of the player sprites are 32x32
@@ -17,7 +17,7 @@ public class Player extends Entity {
     float fallSpeed = 0;
     int fallSpeedCap = 10;
     public void checkCollisions() {
-        Boolean supported = false;
+        boolean supported = false;
         float rightFootPosition = xPosition + 0.7 * Width;
         float leftFootPosition = xPosition + 0.3 * Width;
         float feetPosition = yPosition + Height;
@@ -170,7 +170,7 @@ public class Player extends Entity {
             }
         }
         
-        if (currentLevel != 0) {
+        if (currentLevel > 0) {
             speedCap = 2.4;
             if (animationState == Animation.RUN) {
                 playSound(Sound.RUN, true);
@@ -249,7 +249,7 @@ public class Player extends Entity {
         doubleJumped = false;
         wallJumping = false;
         justKilled = false;
-        if (currentLevel == 0) {
+        if (currentLevel <= 0) {
             changeAnimation(Animation.IDLE);
         } else {
             changeAnimation(Animation.APPEAR);

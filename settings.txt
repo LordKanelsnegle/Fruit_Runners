@@ -1,0 +1,8 @@
+Mute Music:
+false
+
+Mute Sound Effects:
+false
+
+Fullscreen:
+false

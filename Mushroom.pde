@@ -4,7 +4,7 @@ public class Mushroom extends Entity {
     float initialX, initialY;
     float patrolOne, patrolTwo;
     MushroomAnimation animationState; //a variable for tracking the currently playing animation
-    Boolean movingRight, movingLeft;
+    boolean movingRight, movingLeft;
     public Mushroom(float x, float y, float pOne, float pTwo) {
         //on initialization, set the width and height properties to 32 since all of the mushroom sprites are 32x32
         Width = 32;

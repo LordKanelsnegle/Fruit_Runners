@@ -10,15 +10,15 @@ public class Object {
 //this is the base class for the player, enemies, items and traps in the level as they will all need the following
 //  properties and functions (since they need to be redrawable (animated), able to move and able to die)
 public class Entity {
-    Boolean disabled = false;
+    boolean disabled = false;
     PImage[] spriteSheets; //this is an array of the available character spritesheets
     PImage spriteSheet; //the sprite sheet in use at any given time
     int frame = 0; //a frame counter for animations
     int maxFrame = 0; //the maximum frame for a given animation (to know when to reset the frame variable)
     public float xPosition, yPosition; //position properties
     public int Width, Height; //dimension properties
-    public Boolean flipped = false; //direction properties
-    public Boolean died = false; //death flag
+    public boolean flipped = false; //direction properties
+    public boolean died = false; //death flag
     
     //this function draws the entity, using get() to select the required sprite from the sprite sheet
     //most of the entity assets used are designed to run at 20 fps but the game itself should run at 60 to be smooth, so this variable
@@ -51,7 +51,7 @@ public class Entity {
         }
         popMatrix();
         int skipFrames = 3;
-        if (currentLevel == 0) {
+        if (currentLevel <= 0) {
             skipFrames *= 2;
         }
         if (frameCount % skipFrames == 0) { //if 3 (or 6 if menu) frames have passed, allow the next animation frame to be drawn

@@ -6,20 +6,29 @@ PImage[] players; //array containing all of the player files
 PImage[] mushrooms; //array containing all of the mushroom files
 PImage[] fruits; //array containing all of the fruit files
 PImage terrain; //terrain spritesheet
-Boolean triggerNewLevel = true; //flag for signalling when to change the level
+boolean triggerNewLevel = true; //flag for signalling when to change the level
 int currentLevel = 0; //integer to keep track of which level to display when the triggerNewLevel flag is set to true
 Object[] objects; //array of objects to keep track of which things need to be redrawn
 ArrayList<Entity> entities; //list of entities to keep track of which entities need to move and be redrawn
 
 Player player; //global instance of the player for use where needed
-PImage indicator; //image of an indicator for use on the main menu
 Minim minim; //for audio functionality
 AudioPlayer ambient; //menu and game theme music player
 AudioPlayer[] soundEffects; //array of sound effect audio players
+File settingsFile;
+String[] settings;
+boolean muteMusic, muteSFX, showFPS;
 
 PFont titleFont; //font for the menu title
-PFont optionsFont; //font for the menu options
+PFont bigFont; //font for the menu options
+PFont mediumFont; //font for timer
 PFont smallFont; //font for the tips and fps counter
+PImage indicatorSprite; //image of an indicator for use on the main menu
+Indicator indicator;
+int option;
+
+int gameStart;
+ArrayList<Integer> times;
 
 void settings() {
     PJOGL.setIcon("Assets\\Players\\Mask Dude\\Jump.png");
@@ -32,7 +41,17 @@ void setup() {
     background(33,31,48); //set a backgroud color for when the game is loading up
     noCursor();
     noStroke();
-    indicator = loadImage("Assets\\Menu\\Strawberry.png"); //load the indicator
+    settings = new String[] { "Mute Music:", "false", "", "Mute Sound Effects:", "false", "", "Show FPS:", "false" };
+    settingsFile = new File(sketchPath("settings.txt"));
+    if (settingsFile.exists()) {
+        settings = loadStrings("settings.txt");
+    } else {
+        saveStrings(settingsFile, settings);
+    }
+    muteMusic = boolean(settings[1]);
+    muteSFX = boolean(settings[4]);
+    showFPS = boolean(settings[7]);
+    times = new ArrayList<Integer>();
     minim = new Minim(this); //pass 'this' to Minim so it can load files
     ambient = minim.loadFile("Assets\\Sound\\Menu Theme.mp3"); //load menu theme mp3 into ambient
     ambient.setGain(-10); //set gain to -10db (reduce volume)
@@ -106,15 +125,21 @@ void setup() {
     collectedSprite = loadImage("Assets\\Items\\Fruits\\Collected.png");
     terrain = loadImage("Assets\\Terrain\\Terrain.png");
     titleFont = createFont("Assets\\Menu\\Text\\Title.ttf", 42); //load the font for the menu title
-    optionsFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25); //load the font for the menu options
+    bigFont = createFont("Assets\\Menu\\Text\\Options.ttf", 25); //load the font for the menu options
+    mediumFont = createFont("Assets\\Menu\\Text\\Options.ttf", 15); //load the font for the small text
     smallFont = createFont("Assets\\Menu\\Text\\Options.ttf", 10); //load the font for the small text
+    indicatorSprite = loadImage("Assets\\Menu\\Strawberry.png");
+    indicator = new Indicator();
+    indicator.move(width * 0.35, height * 0.25);
     player = new Player(); //initialize the player variable
-    ambient.loop(); //play/loop the menu music once all assets have loaded
+    if (!muteMusic) {
+        ambient.loop(); //play/loop the menu music once all assets have loaded
+    }
 }
 
 void keyPressed() {
     //ignore key presses if this is the main menu
-    if (currentLevel == 0 || player.spawning) {
+    if (currentLevel <= 0 || player.spawning) {
         return;
     }
     //otherwise, check the keycode and get the player ready to move accordingly
@@ -137,43 +162,101 @@ void keyPressed() {
     }
 }
 
-int option = 0;
 void keyReleased() {
-    if (currentLevel == 0) { //if on the menu, check to see if the option selected should be updated or has been chosen
+    if (currentLevel <= 0) { //if on the menu, check to see if the option selected should be updated or has been chosen
+        boolean confirmed = false;
         switch (keyCode) {
             case UP: //if the up key was pressed, decrement the option
                 option--;
                 if (option < 0) { //if the option is negative, wrap it back around to the lowest option
-                    option = 2;
+                    option = 3;
                 }
                 playSound(Sound.SELECT, false); //play the option select sound effect
                 break;
             case DOWN: //if the down key was pressed, increment the option
                 option++;
-                if (option > 2) { //if the option is too large, wrap it back around to the highest option
+                if (option > 3) { //if the option is too large, wrap it back around to the highest option
                     option = 0;
                 }
                 playSound(Sound.SELECT, false); //play the option select sound effect
                 break;
             case ENTER: //if the player presses the confirm key (enter), play the confirm sound effect
                 playSound(Sound.CONFIRM, false);
-                if (option == 0) { //if the play option is selected
-                    currentLevel++;
-                    if (ambient.isPlaying()) { //if the music is playing (ie hasnt been disabled)
-                        ambient.pause(); //stop playing the menu theme
-                        ambient = minim.loadFile("Assets\\Sound\\Game Theme.mp3"); //technically should avoid loading files outside of setup() but shouldnt be a big deal
-                        ambient.setGain(-10); //set gain to -10db again since loading a new track resets the gain
-                        ambient.loop(); //loop the game music
+                confirmed = true;
+                break;
+        }
+        switch (option) {
+            case 0:
+                if (currentLevel == 0) {
+                    indicator.move(width * 0.35, height * 0.25);
+                    if (confirmed) {
+                        currentLevel++;
+                        if (!muteMusic) { //if the music is playing (ie hasnt been disabled)
+                            ambient.pause(); //stop playing the menu theme
+                            ambient = minim.loadFile("Assets\\Sound\\Game Theme.mp3"); //technically should avoid loading files outside of setup() but shouldnt be a big deal
+                            ambient.setGain(-10); //set gain to -10db again since loading a new track resets the gain
+                            ambient.loop(); //loop the game music
+                        }
+                        times.clear();
+                        gameStart = millis();
+                        player.die(); //kill the player to load the next level
                     }
-                    player.die(); //kill the player to load the next level
-                } else if (option == 1) { //if the music toggle has been selected
-                    if (ambient.isPlaying()) {
-                        ambient.pause(); //pause the music if its playing
-                    } else {
-                        ambient.loop(); //otherwise play/loop it
+                } else {
+                    indicator.move(width * 0.245, height * 0.25);
+                    if (confirmed) {
+                        if (muteMusic) {
+                            muteMusic = false;
+                            ambient.loop();
+                        } else {
+                            muteMusic = true;
+                            ambient.pause();
+                        }
                     }
-                } else { //if the quit option was selected, quit the game
-                    exit();
+                }
+                break;
+            case 1:
+                if (currentLevel == 0) {
+                    indicator.move(width * 0.285, height * 0.36);
+                    if (confirmed) {
+                        currentLevel = -1;
+                        option = 0;
+                    indicator.move(width * 0.245, height * 0.25);
+                    }
+                } else {
+                    indicator.move(width * 0.24, height * 0.36);
+                    if (confirmed) {
+                        muteSFX = !muteSFX;
+                    }
+                }
+                break;
+            case 2:
+                if (currentLevel == 0) {
+                    indicator.move(width * 0.305, height * 0.47);
+                    if (confirmed) {
+                        currentLevel = -2;
+                    }
+                } else {
+                    indicator.move(width * 0.24, height * 0.47);
+                    if (confirmed) {
+                        showFPS = !showFPS;
+                    }
+                }
+                break;
+            default:
+                if (currentLevel == 0) {
+                    indicator.move(width * 0.35, height * 0.58);
+                    if (confirmed) {
+                        exit();
+                    }
+                } else {
+                    indicator.move(width * 0.35, height * 0.58);
+                    if (confirmed) {
+                        settings[1] = "" + muteMusic;
+                        settings[4] = "" + muteSFX;
+                        settings[7] = "" + showFPS;
+                        saveStrings(settingsFile, settings);
+                        currentLevel = 0;
+                    }
                 }
                 break;
         }
@@ -246,7 +329,7 @@ void draw() {
     
     //these nested for loops display the grid of background tiles
     int skipFrames = 1;
-    if (currentLevel == 0) {
+    if (currentLevel <= 0) {
         skipFrames = 2;
     }
     if (frameCount % skipFrames == 0) {
@@ -274,7 +357,7 @@ void draw() {
     
     //move all of the entities however much they should be moved,
     //  then redraw all of the level entities so that they appear in front of the background
-    Boolean levelComplete = !entities.isEmpty();
+    boolean levelComplete = !entities.isEmpty();
     for (Entity ent : entities) {
         ent.move();
         ent.redraw();
@@ -286,6 +369,7 @@ void draw() {
     
     if (levelComplete) {
         if (winDelay == 90) {
+            times.add(millis() - gameStart);
             currentLevel++;
             if (currentLevel == 3) {
                 currentLevel = 0;
@@ -303,37 +387,68 @@ void draw() {
         player.checkCollisions();
     }
     player.redraw();
+    println(option);
     
-    //if this is the menu, additionally display menu text
-    if (currentLevel == 0) {
-        displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
-        displayText("PLAY", optionsFont, width/2, height * 0.25);
-        //display different music option text depending on whether the music is playing or not
-        if (ambient.isPlaying()) {
-            displayText("MUSIC OFF", optionsFont, width/2, height * 0.36);
-        } else {
-            displayText("MUSIC ON", optionsFont, width/2, height * 0.36);
-        }
-        displayText("QUIT", optionsFont, width/2, height * 0.47);
-        switch (option) {  //check the currently selected option and display the indicator beside it
-            case 0:
-                image(indicator, width * 0.35, height * 0.25);
-                break;
-            case 1:
-                if (ambient.isPlaying()) {
-                    image(indicator, width * 0.24, height * 0.36);
-                } else {
-                    image(indicator, width * 0.26, height * 0.36);
-                }
-                break;
-            default:
-                image(indicator, width * 0.35, height * 0.47);
-                break;
-        }
-        displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
-        displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
+    switch (currentLevel) {
+        case -2:
+        case -1:
+            fill(0, 0.2);
+            rect(0,0, width,height);
+            displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
+            if (muteMusic) {
+                displayText("MUSIC ON", bigFont, width/2, height * 0.25);
+            } else {
+                displayText("MUSIC OFF", bigFont, width/2, height * 0.25);
+            }
+            if (muteSFX) {
+                displayText("EFFECTS ON", bigFont, width/2, height * 0.36);
+            } else {
+                displayText("EFFECTS OFF", bigFont, width/2, height * 0.36);
+            }
+            if (showFPS) {
+                displayText("HIDE FPS", bigFont, width/2, height * 0.47);
+            } else {
+                displayText("SHOW FPS", bigFont, width/2, height * 0.47);
+            }
+            displayText("BACK", bigFont, width/2, height * 0.58);
+            indicator.redraw();
+            displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
+            displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
+            if (showFPS) {
+                displayText(int(frameRate) + " FPS", smallFont, 28, 2);
+            }
+            break;
+        case 0:
+            displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
+            displayText("PLAY", bigFont, width/2, height * 0.25);
+            displayText("OPTIONS", bigFont, width/2, height * 0.36);
+            displayText("HONORS", bigFont, width/2, height * 0.47);
+            displayText("QUIT", bigFont, width/2, height * 0.58);
+            indicator.redraw();
+            displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
+            displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
+            if (showFPS) {
+                displayText(int(frameRate) + " FPS", smallFont, 28, 2);
+            }
+            break;
+        default:
+            int playTime = millis() - gameStart;
+            int seconds = playTime / 1000;
+            int milliseconds = (playTime % 1000)/10;
+            int minutes = seconds / 60;
+            if (minutes > 0) {
+                seconds = seconds % minutes;
+            }
+            displayText(nf(minutes, 2), mediumFont, 18, 2);
+            displayText(":", mediumFont, 34, 4);
+            displayText(nf(seconds, 2), mediumFont, 50, 2);
+            displayText(":", smallFont, 65, 5);
+            displayText(nf(milliseconds, 2), smallFont, 76, 4);
+            if (showFPS) {
+                displayText(int(frameRate) + " FPS", smallFont, 30, 20);
+            }
+            break;
     }
-    displayText(int(frameRate) + " FPS", smallFont, 28, 2);
 }
 
 //this function is used for displaying the text on the menu (with an outline)
@@ -355,19 +470,6 @@ private void displayText(String text, PFont font, float x, float y) {
 int lastLevelLoaded = -1; //keep track of the last level loaded so we dont load resources (by creating a class instance) if the level hasn't changed
 private void loadLevel() {
     switch(currentLevel) { //check the current level
-        case 0: //MENU LEVEL
-            //if the level HAS changed, initialise all of the objects for this level
-            if (lastLevelLoaded != currentLevel) {
-                objects = new Object[]{
-                    new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1)
-                };
-                entities = new ArrayList<Entity>();
-            }
-            //spawn the character just offscreen
-            player.spawn(-player.Width, height - (48 + player.Height));
-            player.movingRight = true; //set the player to be permanently moving to the right
-            player.flipped = false;
-            break;
         case 1: //FIRST LEVEL
             if (lastLevelLoaded != currentLevel) {
                 objects = new Object[]{ // Terrain creation
@@ -443,13 +545,26 @@ private void loadLevel() {
             //spawn the player
             player.spawn(460-32,250-32);
             break;
+        default: //MENU levels
+            //if the level HAS changed, initialise all of the objects for this level
+            if (lastLevelLoaded != currentLevel) {
+                objects = new Object[]{
+                    new Terrain(TerrainType.GRASS, -player.Width, height - 48, 13, 1)
+                };
+                entities = new ArrayList<Entity>();
+            }
+            //spawn the character just offscreen
+            player.spawn(-player.Width, height - (48 + player.Height));
+            player.movingRight = true; //set the player to be permanently moving to the right
+            player.flipped = false;
+            break;
     }
     lastLevelLoaded = currentLevel; //update the value of the last level loaded to be the current level
 }
 
 //the following 2 functions and enumerator are used for playing and stopping sound effects
-public void playSound(Sound sound, Boolean loop) {
-    if (currentLevel == 0 && !(sound == Sound.SELECT || sound == Sound.CONFIRM || sound == Sound.HURT)) { //dont play sound effects on main menu unless its a menu or death sound
+public void playSound(Sound sound, boolean loop) {
+    if (muteSFX || (currentLevel <= 0 && !(sound == Sound.SELECT || sound == Sound.CONFIRM || sound == Sound.HURT))) { //dont play sound effects on main menu unless its a menu or death sound
         return;
     }
     int effect = 0;
@@ -539,4 +654,16 @@ public enum Sound {
     COLLECT,
     KILL,
     SUCCESS
+}
+
+class Indicator {
+    float xPosition;
+    float yPosition;
+    public void move(float x, float y) {
+        xPosition = x;
+        yPosition = y;
+    }
+    public void redraw() {
+        image(indicatorSprite, xPosition,yPosition);
+    }
 }
