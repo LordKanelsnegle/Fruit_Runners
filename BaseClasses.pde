@@ -30,26 +30,26 @@ public class Entity {
         //none of the sprite sheets have multiple lines so the y variable is always 0, but the x variable depends on the frame.
         //  also, if the sprite is facing right (needs to be flipped), the sprite is scaled and position is inverted
         int framePosition = frame * Width;
-        pushMatrix();
+        canvas.pushMatrix();
         if (flipped) {
-            scale(-1, 1);
-            beginShape();
-            texture(spriteSheet);
-            vertex(-xPosition-Width,yPosition, framePosition,0);
-            vertex(-xPosition,yPosition, framePosition+Width,0);
-            vertex(-xPosition,yPosition+Height, framePosition+Width,Height);
-            vertex(-xPosition-Width,yPosition+Height, framePosition,Height);
-            endShape();
+            canvas.scale(-1,1);
+            canvas.beginShape();
+            canvas.texture(spriteSheet);
+            canvas.vertex(-xPosition-Width,yPosition, framePosition,0);
+            canvas.vertex(-xPosition,yPosition, framePosition+Width,0);
+            canvas.vertex(-xPosition,yPosition+Height, framePosition+Width,Height);
+            canvas.vertex(-xPosition-Width,yPosition+Height, framePosition,Height);
+            canvas.endShape();
         } else {
-            beginShape();
-            texture(spriteSheet);
-            vertex(xPosition,yPosition, framePosition,0);
-            vertex(xPosition+Width,yPosition, framePosition+Width,0);
-            vertex(xPosition+Width,yPosition+Height, framePosition+Width,Height);
-            vertex(xPosition,yPosition+Height, framePosition,Height);
-            endShape();
+            canvas.beginShape();
+            canvas.texture(spriteSheet);
+            canvas.vertex(xPosition,yPosition, framePosition,0);
+            canvas.vertex(xPosition+Width,yPosition, framePosition+Width,0);
+            canvas.vertex(xPosition+Width,yPosition+Height, framePosition+Width,Height);
+            canvas.vertex(xPosition,yPosition+Height, framePosition,Height);
+            canvas.endShape();
         }
-        popMatrix();
+        canvas.popMatrix();
         int skipFrames = 3;
         if (currentLevel <= 0) {
             skipFrames *= 2;

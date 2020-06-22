@@ -26,7 +26,7 @@ public class Terrain extends Object {
     public void redraw() {
         int totalWidth = 0;
         int totalHeight = 0;
-        pushMatrix();
+        canvas.pushMatrix();
         for (int y = 0; y < vertical; y++) {
             for (int x = 0; x < horizontal; x++) {
                 int xOffset = 0;
@@ -42,13 +42,13 @@ public class Terrain extends Object {
                     }
                     totalWidth += spriteWidth;
                     float xPos = xPosition + x * spriteWidth;
-                    beginShape();
-                    texture(spriteSheet);
-                    vertex(xPos,yPosition, xOffset,0);
-                    vertex(xPos+spriteSheet.width-xOffset,yPosition, spriteSheet.width,0);
-                    vertex(xPos+spriteSheet.width-xOffset,yPosition+spriteSheet.height, spriteSheet.width,spriteSheet.height);
-                    vertex(xPos,yPosition+spriteSheet.height, xOffset,spriteSheet.height);
-                    endShape();
+                    canvas.beginShape();
+                    canvas.texture(spriteSheet);
+                    canvas.vertex(xPos,yPosition, xOffset,0);
+                    canvas.vertex(xPos+spriteSheet.width-xOffset,yPosition, spriteSheet.width,0);
+                    canvas.vertex(xPos+spriteSheet.width-xOffset,yPosition+spriteSheet.height, spriteSheet.width,spriteSheet.height);
+                    canvas.vertex(xPos,yPosition+spriteSheet.height, xOffset,spriteSheet.height);
+                    canvas.endShape();
                 } else {
                     if (x == 0) {
                         spriteHeight -= 2 + yOffset;
@@ -60,17 +60,17 @@ public class Terrain extends Object {
                     }
                     float xPos = xPosition + x * spriteWidth;
                     float yPos = yPosition + y * spriteHeight;
-                    beginShape();
-                    texture(spriteSheet);
-                    vertex(xPos,yPos, xOffset,yOffset);
-                    vertex(xPos+spriteSheet.width-xOffset,yPos, spriteSheet.width,yOffset);
-                    vertex(xPos+spriteSheet.width-xOffset,yPos+spriteSheet.height-yOffset, spriteSheet.width,spriteSheet.height);
-                    vertex(xPos,yPos+spriteSheet.height-yOffset, xOffset,spriteSheet.height);
-                    endShape();
+                    canvas.beginShape();
+                    canvas.texture(spriteSheet);
+                    canvas.vertex(xPos,yPos, xOffset,yOffset);
+                    canvas.vertex(xPos+spriteSheet.width-xOffset,yPos, spriteSheet.width,yOffset);
+                    canvas.vertex(xPos+spriteSheet.width-xOffset,yPos+spriteSheet.height-yOffset, spriteSheet.width,spriteSheet.height);
+                    canvas.vertex(xPos,yPos+spriteSheet.height-yOffset, xOffset,spriteSheet.height);
+                    canvas.endShape();
                 }
             }
         }
-        popMatrix();
+        canvas.popMatrix();
         Width = totalWidth;
         Height = totalHeight;
     }

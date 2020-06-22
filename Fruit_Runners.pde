@@ -30,6 +30,8 @@ int optionMax;
 
 int gameStart;
 ArrayList<Integer> times;
+
+PGraphics canvas;
 final int baseWidth = 500;
 final int baseHeight = 300;
 
@@ -41,9 +43,8 @@ void settings() {
 void setup() {
     surface.setTitle("Fruit Runners");
     surface.setResizable(false);
-    background(33,31,48); //set a backgroud color for when the game is loading up
     noCursor();
-    noStroke();
+    background(33,31,48); //set a backgroud color for when the game is loading up
     settings = new String[] { "Mute Music:", "false", "", "Mute Sound Effects:", "false", "", "Show FPS:", "false" };
     settingsFile = new File(sketchPath("settings.txt"));
     if (settingsFile.exists()) {
@@ -51,6 +52,7 @@ void setup() {
     } else {
         saveStrings(settingsFile, settings);
     }
+    canvas = createGraphics(baseWidth,baseHeight,P2D);
     muteMusic = boolean(settings[1]);
     muteSFX = boolean(settings[4]);
     showFPS = boolean(settings[7]);
@@ -310,6 +312,8 @@ int lastBackground;
 int winDelay;
 void draw() {
     //scale(float(width)/baseWidth, float(height)/baseHeight);
+    canvas.beginDraw();
+    canvas.noStroke();
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
@@ -351,10 +355,10 @@ void draw() {
     }
     for (int x = 0; x < columns; x++) {
         for (int y = 0; y < rows; y++) {
-            image(background, x * background.width, y * background.height + offset);
+            canvas.image(background, x * background.width, y * background.height + offset);
         }
         //this part ensures that the gap at the top created by offsetting the y axis is filled
-        image(background, x * background.width, offset - background.height);
+        canvas.image(background, x * background.width, offset - background.height);
     }
 
     //redraw all of the level objects so that they appear in front of the background
@@ -466,21 +470,23 @@ void draw() {
             }
             break;
     }
+    canvas.endDraw();
+    image(canvas, 0,0, width,height);
 }
 
 //this function is used for displaying the text on the menu (with an outline)
 private void displayText(String text, PFont font, float x, float y) {
-    textFont(font); //set the font
-    textAlign(CENTER, TOP); //set the text align to be centered and anchored from the top
-    fill(0); //set the color to black
+    canvas.textFont(font); //set the font
+    canvas.textAlign(CENTER, TOP); //set the text align to be centered and anchored from the top
+    canvas.fill(0); //set the color to black
     //create an outline effect by putting two black texts behind the white one with varied offsets
     for(int i = -1; i < 2; i++){
-        text(text, x + i, y);
-        text(text, x, y + i);
+        canvas.text(text, x + i, y);
+        canvas.text(text, x, y + i);
     }
     //set the color back to white and display the main text
-    fill(255);
-    text(text, x, y);
+    canvas.fill(255);
+    canvas.text(text, x, y);
 }
 
 //this function (and variable) set up the scene programmatically depending on the level that needs to be loaded
@@ -681,6 +687,6 @@ class Indicator {
         yPosition = y;
     }
     public void redraw() {
-        image(indicatorSprite, xPosition,yPosition);
+        canvas.image(indicatorSprite, xPosition,yPosition);
     }
 }
