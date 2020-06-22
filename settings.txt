@@ -1,8 +1,8 @@
 Mute Music:
-false
+true
 
 Mute Sound Effects:
 false
 
 Fullscreen:
-false
+true

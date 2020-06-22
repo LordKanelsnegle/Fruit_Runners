@@ -26,6 +26,7 @@ PFont smallFont; //font for the tips and fps counter
 PImage indicatorSprite; //image of an indicator for use on the main menu
 Indicator indicator;
 int option;
+int optionMax;
 
 int gameStart;
 ArrayList<Integer> times;
@@ -131,6 +132,8 @@ void setup() {
     indicatorSprite = loadImage("Assets\\Menu\\Strawberry.png");
     indicator = new Indicator();
     indicator.move(width * 0.35, height * 0.25);
+    option = 0;
+    optionMax = 3;
     player = new Player(); //initialize the player variable
     if (!muteMusic) {
         ambient.loop(); //play/loop the menu music once all assets have loaded
@@ -169,13 +172,13 @@ void keyReleased() {
             case UP: //if the up key was pressed, decrement the option
                 option--;
                 if (option < 0) { //if the option is negative, wrap it back around to the lowest option
-                    option = 3;
+                    option = optionMax;
                 }
                 playSound(Sound.SELECT, false); //play the option select sound effect
                 break;
             case DOWN: //if the down key was pressed, increment the option
                 option++;
-                if (option > 3) { //if the option is too large, wrap it back around to the highest option
+                if (option > optionMax) { //if the option is too large, wrap it back around to the highest option
                     option = 0;
                 }
                 playSound(Sound.SELECT, false); //play the option select sound effect
@@ -201,7 +204,7 @@ void keyReleased() {
                         gameStart = millis();
                         player.die(); //kill the player to load the next level
                     }
-                } else {
+                } else if (currentLevel == -1) {
                     indicator.move(width * 0.245, height * 0.25);
                     if (confirmed) {
                         if (muteMusic) {
@@ -220,10 +223,10 @@ void keyReleased() {
                     if (confirmed) {
                         currentLevel = -1;
                         option = 0;
-                    indicator.move(width * 0.245, height * 0.25);
+                        indicator.move(width * 0.245, height * 0.25);
                     }
-                } else {
-                    indicator.move(width * 0.24, height * 0.36);
+                } else if (currentLevel == -1) {
+                    indicator.move(width * 0.2, height * 0.36);
                     if (confirmed) {
                         muteSFX = !muteSFX;
                     }
@@ -234,9 +237,12 @@ void keyReleased() {
                     indicator.move(width * 0.305, height * 0.47);
                     if (confirmed) {
                         currentLevel = -2;
+                        option = 0;
+                        optionMax = 1;
+                        indicator.move(width * 0.245, height * 0.25);
                     }
-                } else {
-                    indicator.move(width * 0.24, height * 0.47);
+                } else if (currentLevel == -1) {
+                    indicator.move(width * 0.26, height * 0.47);
                     if (confirmed) {
                         showFPS = !showFPS;
                     }
@@ -248,7 +254,7 @@ void keyReleased() {
                     if (confirmed) {
                         exit();
                     }
-                } else {
+                } else if (currentLevel == -1) {
                     indicator.move(width * 0.35, height * 0.58);
                     if (confirmed) {
                         settings[1] = "" + muteMusic;
@@ -256,6 +262,8 @@ void keyReleased() {
                         settings[7] = "" + showFPS;
                         saveStrings(settingsFile, settings);
                         currentLevel = 0;
+                        option = 0;
+                        indicator.move(width * 0.35, height * 0.25);
                     }
                 }
                 break;
@@ -387,12 +395,22 @@ void draw() {
         player.checkCollisions();
     }
     player.redraw();
-    println(option);
     
     switch (currentLevel) {
         case -2:
+            fill(0, 50);
+            rect(0,0, width,height);
+            displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
+            displayText("BACK", bigFont, width/2, height * 0.58);
+            indicator.redraw();
+            displayText("UP/DOWN TO SELECT", smallFont, width/2, height * 0.895);
+            displayText("ENTER TO CONFIRM", smallFont, width/2 - 1, height * 0.895 + 12);
+            if (showFPS) {
+                displayText(int(frameRate) + " FPS", smallFont, 28, 2);
+            }
+            break;
         case -1:
-            fill(0, 0.2);
+            fill(0, 50);
             rect(0,0, width,height);
             displayText("FRUIT RUNNERS", titleFont, width/2, height * 0.05);
             if (muteMusic) {
