@@ -35,7 +35,6 @@ PGraphics canvas;
 final int baseWidth = 500;
 final int baseHeight = 300;
 
-final boolean stretchFullscreen = false;
 final float version = 4.8;
 String download;
 
@@ -46,10 +45,6 @@ void settings() {
 
 void setup() {
     surface.setTitle("Fruit Runners v"+version);
-    surface.setResizable(false);
-    if (stretchFullscreen) {
-        noCursor();
-    }
     background(33,31,48); //set a backgroud color for when the game is loading up
     
     //HTTP GET CURRENT VERSION - first line of response
@@ -493,8 +488,8 @@ void draw() {
             break;
     }
     canvas.endDraw();
-    if (stretchFullscreen) {
-        image(canvas, 0,0, width,height); //stretch to fit
+    if (width >= 1.5*baseWidth && height >= 1.5*baseHeight) {
+        image(canvas, (width/2)-(1.5*baseWidth/2),(height/2)-(1.5*baseHeight/2), 1.5*baseWidth,1.5*baseHeight); //larger if fullscreen
     } else {
         image(canvas, (width/2)-(baseWidth/2),(height/2)-(baseHeight/2)); //keep original size but center it if resized
     }
