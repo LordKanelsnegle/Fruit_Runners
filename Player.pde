@@ -238,7 +238,6 @@ public class Player extends Entity {
     
     //this function allows the player to be spawned at a given point
     public void spawn(float x, float y) {
-        spawning = true;
         xPosition = x; //set the player's x coordinate
         yPosition = y; //set the player's y coordinate
         died = false; //reset the death flag
@@ -250,7 +249,12 @@ public class Player extends Entity {
         doubleJumped = false;
         wallJumping = false;
         justKilled = false;
-        changeAnimation(Animation.APPEAR);
+        if (currentLevel == 0) {
+            changeAnimation(Animation.IDLE);
+        } else {
+            changeAnimation(Animation.APPEAR);
+            spawning = true;
+        }
     }
     
     public void die() {
