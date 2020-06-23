@@ -1,4 +1,5 @@
 import ddf.minim.*; //import Minim audio library
+import http.requests.*;
 
 PImage background; //for storing the background tile
 PImage[] backgrounds; //array containing all of the backgroud tile files
@@ -35,7 +36,7 @@ PGraphics canvas;
 final int baseWidth = 500;
 final int baseHeight = 300;
 
-final float version = 4.8;
+final float version = 4.7;
 String download;
 
 void settings() {
@@ -46,12 +47,15 @@ void settings() {
 void setup() {
     surface.setTitle("Fruit Runners v"+version);
     background(33,31,48); //set a backgroud color for when the game is loading up
-    
-    //HTTP GET CURRENT VERSION - first line of response
-    String[] response = new String[]{ ""+version, "latest-download-url" };
-    if (float(response[0]) != version) {
-        download = response[1];
-    }
+    try {
+        GetRequest get = new GetRequest("https://playtogether.gg/fruitrunners.php");
+        get.send();
+        String content = get.getContent().substring(0, get.getContent().indexOf(".zip"));
+        String v = content.substring(content.lastIndexOf("v")+1, content.length());
+        if (float(v) != version) {
+            download = "tinyurl.com/fruitrunners";
+        }
+    } catch(NullPointerException e) {};
     
     settings = new String[] { "Mute Music:", "false", "", "Mute Sound Effects:", "false", "", "Show FPS:", "false" };
     settingsFile = new File(sketchPath("settings.txt"));
@@ -61,6 +65,7 @@ void setup() {
         saveStrings(settingsFile, settings);
     }
     canvas = createGraphics(baseWidth,baseHeight,P2D);
+    canvas.noSmooth();
     muteMusic = boolean(settings[1]);
     muteSFX = boolean(settings[4]);
     showFPS = boolean(settings[7]);
@@ -324,7 +329,6 @@ int winDelay;
 void draw() {
     canvas.beginDraw();
     canvas.noStroke();
-    canvas.noSmooth();
     //if the player is dead, trigger a new level
     if (player.died) {
         triggerNewLevel = true;
@@ -454,8 +458,8 @@ void draw() {
             displayText("FRUIT RUNNERS", titleFont, baseWidth/2, baseHeight * 0.05);
             if (download != null) {
                 displayText("This version is outdated!", mediumFont, baseWidth/2, -40+baseHeight/2);
-                displayText("Download the latest version by", mediumFont, baseWidth/2, -20+baseHeight/2);
-                displayText("running update.bat", mediumFont, baseWidth/2, baseHeight/2);
+                displayText("Download the latest version at", mediumFont, baseWidth/2, -20+baseHeight/2);
+                displayText("tinyurl.com/fruitrunners", mediumFont, baseWidth/2, baseHeight/2);
             } else {
                 displayText("PLAY", bigFont, baseWidth/2, baseHeight * 0.25);
                 displayText("OPTIONS", bigFont, baseWidth/2, baseHeight * 0.36);
