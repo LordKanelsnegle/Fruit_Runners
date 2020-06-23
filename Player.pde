@@ -5,7 +5,9 @@ public class Player extends Entity {
     boolean jumping, doubleJumped, wallJumping, falling, justKilled; //movement flags for tracking how to move the player
     public Animation animationState; //a variable for tracking the currently playing animation
     public boolean movingRight, movingLeft, spawning = false; //more movement flags but these are public so they
-                                            //  can be edited from Fruit_Runners functions
+    int wallJumpFrames;
+    int forceDirection;
+    
     public Player() {
         //on initialization, set the width and height properties to 32 since all of the player sprites are 32x32
         Width = 32;
@@ -76,13 +78,11 @@ public class Player extends Entity {
                 if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + fallSpeed) {
                     yPosition = obj.yPosition - Height; //using = method instead of += method to prevent weird spazzing
                     supported = true;
-                    println("collision below "+frameCount);
                 }
                 //collisions above player
                 else if (headPosition <= obj.yPosition + obj.Height && headPosition >= obj.yPosition + obj.Height - jumpSpeed) {
                     yPosition += obj.yPosition + obj.Height - headPosition;
                     jumping = false;
-                    println("collision above "+frameCount);
                 }
             }
             //HORIZONTAL COLLISIONS - check if standing within vertical bounds of object
@@ -102,7 +102,6 @@ public class Player extends Entity {
                     } else {
                         changeAnimation(Animation.IDLE);
                     }
-                    println("collision left "+frameCount);
                 }
                 //collisions on right of player
                 else if (rightFootPosition + 4 >= obj.xPosition && rightFootPosition <= obj.xPosition + 4 + speed) {
@@ -119,9 +118,6 @@ public class Player extends Entity {
                     } else {
                         changeAnimation(Animation.IDLE);
                     }
-                    println("collision right "+frameCount);
-                } else {
-                    wallJumping = false;
                 }
             }
         }
@@ -187,7 +183,7 @@ public class Player extends Entity {
         }
         
         jumpSpeed *= jumpAcceleration;
-        if (jumping && !wallJumping) {
+        if (jumping) {
             yPosition -= jumpSpeed;
             if (jumpSpeed < fallSpeed) {
                 changeAnimation(Animation.FALL);
@@ -199,6 +195,16 @@ public class Player extends Entity {
             speed = speedCap;
         }
         int direction = int(movingRight) - int(movingLeft);
+        if (forceDirection != 0) {
+            direction = forceDirection;
+            if (wallJumpFrames < 5) {
+                wallJumpFrames++;
+            } else {
+                wallJumpFrames = 0;
+                forceDirection = 0;
+                doubleJumped = false;
+            }
+        }
         if (direction == 0) {
             speed = 0;
         } else {
@@ -227,7 +233,12 @@ public class Player extends Entity {
             jumpSpeed = 9;
             jumping = true;
             if (wallJumping) {
-                doubleJumped = false;
+                wallJumping = false;
+                if (flipped) {
+                    forceDirection = 1;
+                } else {
+                    forceDirection = -1;
+                }
             }
             changeAnimation(Animation.JUMP);
             Sound jump = Sound.JUMP;
@@ -252,6 +263,8 @@ public class Player extends Entity {
         jumping = false;
         doubleJumped = false;
         wallJumping = false;
+        wallJumpFrames = 0;
+        forceDirection = 0;
         justKilled = false;
         if (currentLevel <= 0) {
             changeAnimation(Animation.IDLE);
