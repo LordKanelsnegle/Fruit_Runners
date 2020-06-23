@@ -76,15 +76,17 @@ public class Player extends Entity {
                 if (feetPosition >= obj.yPosition && feetPosition <= obj.yPosition + fallSpeed) {
                     yPosition = obj.yPosition - Height; //using = method instead of += method to prevent weird spazzing
                     supported = true;
+                    println("collision below "+frameCount);
                 }
                 //collisions above player
                 else if (headPosition <= obj.yPosition + obj.Height && headPosition >= obj.yPosition + obj.Height - jumpSpeed) {
                     yPosition += obj.yPosition + obj.Height - headPosition;
                     jumping = false;
+                    println("collision above "+frameCount);
                 }
             }
             //HORIZONTAL COLLISIONS - check if standing within vertical bounds of object
-            if (feetPosition-2 >= obj.yPosition && headPosition <= obj.yPosition + obj.Height) {
+            if (feetPosition-speed >= obj.yPosition && headPosition <= obj.yPosition + obj.Height) {
                 //collisions on left of player
                 if (leftFootPosition - 4 <= obj.xPosition + obj.Width && leftFootPosition - 4 >= obj.xPosition + obj.Width - 4 - speed) {
                     xPosition += obj.xPosition + obj.Width - (leftFootPosition - 4);
@@ -100,6 +102,7 @@ public class Player extends Entity {
                     } else {
                         changeAnimation(Animation.IDLE);
                     }
+                    println("collision left "+frameCount);
                 }
                 //collisions on right of player
                 else if (rightFootPosition + 4 >= obj.xPosition && rightFootPosition <= obj.xPosition + 4 + speed) {
@@ -116,6 +119,7 @@ public class Player extends Entity {
                     } else {
                         changeAnimation(Animation.IDLE);
                     }
+                    println("collision right "+frameCount);
                 } else {
                     wallJumping = false;
                 }
