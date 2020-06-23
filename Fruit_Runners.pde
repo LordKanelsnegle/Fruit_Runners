@@ -36,7 +36,7 @@ PGraphics canvas;
 final int baseWidth = 500;
 final int baseHeight = 300;
 
-final float version = 4.7;
+final float version = 4.8;
 String download;
 
 void settings() {
