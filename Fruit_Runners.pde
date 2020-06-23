@@ -475,12 +475,9 @@ void draw() {
             break;
         default:
             int playTime = millis() - gameStart;
-            int seconds = playTime / 1000;
+            int minutes = (playTime / 60000) % 60;
+            int seconds = (playTime / 1000) % 60;
             int milliseconds = (playTime % 1000)/10;
-            int minutes = seconds / 60;
-            if (minutes > 0) {
-                seconds = seconds % minutes;
-            }
             displayText(nf(minutes, 2), mediumFont, 18, 2);
             displayText(":", mediumFont, 34, 4);
             displayText(nf(seconds, 2), mediumFont, 50, 2);
