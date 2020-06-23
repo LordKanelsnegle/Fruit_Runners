@@ -82,7 +82,7 @@ public class Player extends Entity {
                 //collisions above player
                 else if (headPosition <= obj.yPosition + obj.Height && headPosition >= obj.yPosition + obj.Height - jumpSpeed) {
                     yPosition += obj.yPosition + obj.Height - headPosition;
-                    jumping = false;
+                    jumpSpeed *= 0.3;
                 }
             }
             //HORIZONTAL COLLISIONS - check if standing within vertical bounds of object
@@ -189,6 +189,7 @@ public class Player extends Entity {
                 changeAnimation(Animation.FALL);
             }
         }
+        
         if (speed < speedCap) {
             speed *= acceleration;
         } else {
@@ -196,9 +197,11 @@ public class Player extends Entity {
         }
         int direction = int(movingRight) - int(movingLeft);
         if (forceDirection != 0) {
-            direction = forceDirection;
-            if (wallJumpFrames < 5) {
+            if (wallJumpFrames < 10) { //adds small delay between jumps
                 wallJumpFrames++;
+                if (wallJumpFrames <= 5) {
+                    direction = forceDirection;
+                }
             } else {
                 wallJumpFrames = 0;
                 forceDirection = 0;
@@ -221,7 +224,7 @@ public class Player extends Entity {
     //this function controls the vertical movement of the player
     public void jump() {
         if (falling && !wallJumping) {
-            if (!doubleJumped) {
+            if (!doubleJumped && wallJumpFrames == 0) {
                 doubleJumped = true;
                 jumpSpeed = 7;
                 jumping = true;
