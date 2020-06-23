@@ -86,7 +86,7 @@ public class Player extends Entity {
                 }
             }
             //HORIZONTAL COLLISIONS - check if standing within vertical bounds of object
-            if (feetPosition-speed >= obj.yPosition && headPosition <= obj.yPosition + obj.Height) {
+            if (feetPosition-speedCap >= obj.yPosition && headPosition <= obj.yPosition + obj.Height) {
                 //collisions on left of player
                 if (leftFootPosition - 4 <= obj.xPosition + obj.Width && leftFootPosition - 4 >= obj.xPosition + obj.Width - 4 - speed) {
                     xPosition += obj.xPosition + obj.Width - (leftFootPosition - 4);
@@ -306,6 +306,7 @@ public class Player extends Entity {
                     flipped = true;
                 }
             }
+            wallJumping = false;
         }
         animationState = animation; //update the animation state to reflect the new animation
         int index = 0;

@@ -1,5 +1,5 @@
 Mute Music:
-false
+true
 
 Mute Sound Effects:
 false
