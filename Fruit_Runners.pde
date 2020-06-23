@@ -537,7 +537,7 @@ private void loadLevel() {
                     add(new Mushroom(270,198, 0,0));
                     add(new Mushroom(320,153, 0,0));
                     add(new Mushroom(367,108, 0,0));
-                    add(new Mushroom(410,63, 0,50));
+                    //add(new Mushroom(410,63, 0,50));
          
                 }};
                 //Fruit Spawn

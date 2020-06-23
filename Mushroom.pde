@@ -28,6 +28,7 @@ public class Mushroom extends Entity {
             delay++;
             return;
         }
+        println(movingLeft+" "+movingRight);
         if (speed < speedCap) {
             speed *= acceleration;
         } else {
@@ -86,6 +87,7 @@ public class Mushroom extends Entity {
             movingLeft = false;
         }
         delay = -60;
+        speed = 0;
     }
     
     public void die() {

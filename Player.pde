@@ -86,7 +86,7 @@ public class Player extends Entity {
                 }
             }
             //HORIZONTAL COLLISIONS - check if standing within vertical bounds of object
-            if (feetPosition-speedCap >= obj.yPosition && headPosition <= obj.yPosition + obj.Height) {
+            if (feetPosition-2 >= obj.yPosition && headPosition <= obj.yPosition + obj.Height) {
                 //collisions on left of player
                 if (leftFootPosition - 4 <= obj.xPosition + obj.Width && leftFootPosition - 4 >= obj.xPosition + obj.Width - 4 - speed) {
                     xPosition += obj.xPosition + obj.Width - (leftFootPosition - 4);
